@@ -1,0 +1,224 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BRACKET_H_	bracket.h	2;"	d
+Bool	nr3.h	/^typedef bool Bool;$/;"	t
+Bracketmethod	bracket.h	/^struct Bracketmethod { $/;"	s
+Char	nr3.h	/^typedef char Char; \/\/ 8 bit integer$/;"	t
+Complex	nr3.h	/^typedef complex<double> Complex; \/\/ default complex type$/;"	t
+DBRENT_H_	dbrent.h	2;"	d
+DF1DIM_H_	dF1dim.h	2;"	d
+DLINMIN_H_	dlinmin.h	2;"	d
+Dbrent	dbrent.h	/^	Dbrent(const Doub toll=3.0e-8) : tol(toll) {}$/;"	f	struct:Dbrent
+Dbrent	dbrent.h	/^struct Dbrent : Bracketmethod {$/;"	s
+Df1dim	dF1dim.h	/^	Df1dim(VecDoub_I &pp, VecDoub_I &xii, T &funcdd) : p(pp),$/;"	f	struct:Df1dim
+Df1dim	dF1dim.h	/^struct Df1dim {$/;"	s
+Dlinemethod	dlinmin.h	/^	Dlinemethod(T &funcc) : func(funcc) {}$/;"	f	struct:Dlinemethod
+Dlinemethod	dlinmin.h	/^struct Dlinemethod {$/;"	s
+Doub	nr3.h	/^typedef double Doub; \/\/ default floating type$/;"	t
+FRPRMN_H_	frprmn.h	2;"	d
+FUNCD_H_	funcd.h	2;"	d
+Frprmn	frprmn.h	/^	Frprmn(T &funcd, const Doub ftoll=1e-7) : Dlinemethod<T>(funcd),$/;"	f	struct:Frprmn
+Frprmn	frprmn.h	/^struct Frprmn : Dlinemethod<T> {$/;"	s
+Funcd	funcd.h	/^struct Funcd { \/\/Name Funcd is arbitrary.$/;"	s
+GAMMA	funcd.h	/^double GAMMA;$/;"	v
+Int	nr3.h	/^typedef int Int; \/\/ 32 bit integer$/;"	t
+KAPPA	funcd.h	/^double KAPPA;$/;"	v
+Ldoub	nr3.h	/^typedef long double Ldoub;$/;"	t
+Llong	nr3.h	/^typedef __int64 Llong; \/\/ 64 bit integer$/;"	t
+Llong	nr3.h	/^typedef long long int Llong; \/\/ 64 bit integer$/;"	t
+MAX	nr3.h	/^inline const T &MAX(const T &a, const T &b)$/;"	f
+MAX	nr3.h	/^inline float MAX(const double &a, const float &b)$/;"	f
+MAX	nr3.h	/^inline float MAX(const float &a, const double &b)$/;"	f
+MIN	nr3.h	/^inline const T &MIN(const T &a, const T &b)$/;"	f
+MIN	nr3.h	/^inline float MIN(const double &a, const float &b)$/;"	f
+MIN	nr3.h	/^inline float MIN(const float &a, const double &b)$/;"	f
+MU	funcd.h	/^const double MU=1;$/;"	v
+Mat3DDoub	nr3.h	/^typedef NRMat3d<Doub> Mat3DDoub, Mat3DDoub_O, Mat3DDoub_IO;$/;"	t
+Mat3DDoub_I	nr3.h	/^typedef const NRMat3d<Doub> Mat3DDoub_I;$/;"	t
+Mat3DDoub_IO	nr3.h	/^typedef NRMat3d<Doub> Mat3DDoub, Mat3DDoub_O, Mat3DDoub_IO;$/;"	t
+Mat3DDoub_O	nr3.h	/^typedef NRMat3d<Doub> Mat3DDoub, Mat3DDoub_O, Mat3DDoub_IO;$/;"	t
+MatBool	nr3.h	/^typedef NRmatrix<Bool> MatBool, MatBool_O, MatBool_IO;$/;"	t
+MatBool_I	nr3.h	/^typedef const NRmatrix<Bool> MatBool_I;$/;"	t
+MatBool_IO	nr3.h	/^typedef NRmatrix<Bool> MatBool, MatBool_O, MatBool_IO;$/;"	t
+MatBool_O	nr3.h	/^typedef NRmatrix<Bool> MatBool, MatBool_O, MatBool_IO;$/;"	t
+MatChar	nr3.h	/^typedef NRmatrix<Char> MatChar, MatChar_O, MatChar_IO;$/;"	t
+MatChar_I	nr3.h	/^typedef const NRmatrix<Char> MatChar_I;$/;"	t
+MatChar_IO	nr3.h	/^typedef NRmatrix<Char> MatChar, MatChar_O, MatChar_IO;$/;"	t
+MatChar_O	nr3.h	/^typedef NRmatrix<Char> MatChar, MatChar_O, MatChar_IO;$/;"	t
+MatDoub	nr3.h	/^typedef NRmatrix<Doub> MatDoub, MatDoub_O, MatDoub_IO;$/;"	t
+MatDoub_I	nr3.h	/^typedef const NRmatrix<Doub> MatDoub_I;$/;"	t
+MatDoub_IO	nr3.h	/^typedef NRmatrix<Doub> MatDoub, MatDoub_O, MatDoub_IO;$/;"	t
+MatDoub_O	nr3.h	/^typedef NRmatrix<Doub> MatDoub, MatDoub_O, MatDoub_IO;$/;"	t
+MatInt	nr3.h	/^typedef NRmatrix<Int> MatInt, MatInt_O, MatInt_IO;$/;"	t
+MatInt_I	nr3.h	/^typedef const NRmatrix<Int> MatInt_I;$/;"	t
+MatInt_IO	nr3.h	/^typedef NRmatrix<Int> MatInt, MatInt_O, MatInt_IO;$/;"	t
+MatInt_O	nr3.h	/^typedef NRmatrix<Int> MatInt, MatInt_O, MatInt_IO;$/;"	t
+MatLlong	nr3.h	/^typedef NRmatrix<Llong> MatLlong, MatLlong_O, MatLlong_IO;$/;"	t
+MatLlong_I	nr3.h	/^typedef const NRmatrix<Llong> MatLlong_I;$/;"	t
+MatLlong_IO	nr3.h	/^typedef NRmatrix<Llong> MatLlong, MatLlong_O, MatLlong_IO;$/;"	t
+MatLlong_O	nr3.h	/^typedef NRmatrix<Llong> MatLlong, MatLlong_O, MatLlong_IO;$/;"	t
+MatUchar	nr3.h	/^typedef NRmatrix<Uchar> MatUchar, MatUchar_O, MatUchar_IO;$/;"	t
+MatUchar_I	nr3.h	/^typedef const NRmatrix<Uchar> MatUchar_I;$/;"	t
+MatUchar_IO	nr3.h	/^typedef NRmatrix<Uchar> MatUchar, MatUchar_O, MatUchar_IO;$/;"	t
+MatUchar_O	nr3.h	/^typedef NRmatrix<Uchar> MatUchar, MatUchar_O, MatUchar_IO;$/;"	t
+MatUint	nr3.h	/^typedef NRmatrix<Uint> MatUint, MatUint_O, MatUint_IO;$/;"	t
+MatUint_I	nr3.h	/^typedef const NRmatrix<Uint> MatUint_I;$/;"	t
+MatUint_IO	nr3.h	/^typedef NRmatrix<Uint> MatUint, MatUint_O, MatUint_IO;$/;"	t
+MatUint_O	nr3.h	/^typedef NRmatrix<Uint> MatUint, MatUint_O, MatUint_IO;$/;"	t
+MatUllong	nr3.h	/^typedef NRmatrix<Ullong> MatUllong, MatUllong_O, MatUllong_IO;$/;"	t
+MatUllong_I	nr3.h	/^typedef const NRmatrix<Ullong> MatUllong_I;$/;"	t
+MatUllong_IO	nr3.h	/^typedef NRmatrix<Ullong> MatUllong, MatUllong_O, MatUllong_IO;$/;"	t
+MatUllong_O	nr3.h	/^typedef NRmatrix<Ullong> MatUllong, MatUllong_O, MatUllong_IO;$/;"	t
+NRMat3d	nr3.h	/^NRMat3d<T>::NRMat3d(): nn(0), mm(0), kk(0), v(NULL) {}$/;"	f	class:NRMat3d
+NRMat3d	nr3.h	/^NRMat3d<T>::NRMat3d(int n, int m, int k) : nn(n), mm(m), kk(k), v(new T**[n])$/;"	f	class:NRMat3d
+NRMat3d	nr3.h	/^class NRMat3d {$/;"	c
+NRcatch	nr3.h	/^void NRcatch(NRerror err) {$/;"	f
+NRerror	nr3.h	/^	NRerror(char *m, char *f, int l) : message(m), file(f), line(l) {}$/;"	f	struct:NRerror
+NRerror	nr3.h	/^struct NRerror {$/;"	s
+NRmatrix	nr3.h	/^NRmatrix<T>::NRmatrix() : nn(0), mm(0), v(NULL) {}$/;"	f	class:NRmatrix
+NRmatrix	nr3.h	/^NRmatrix<T>::NRmatrix(const NRmatrix &rhs) : nn(rhs.nn), mm(rhs.mm), v(nn>0 ? new T*[nn] : NULL)$/;"	f	class:NRmatrix
+NRmatrix	nr3.h	/^NRmatrix<T>::NRmatrix(int n, int m) : nn(n), mm(m), v(n>0 ? new T*[n] : NULL)$/;"	f	class:NRmatrix
+NRmatrix	nr3.h	/^NRmatrix<T>::NRmatrix(int n, int m, const T &a) : nn(n), mm(m), v(n>0 ? new T*[n] : NULL)$/;"	f	class:NRmatrix
+NRmatrix	nr3.h	/^NRmatrix<T>::NRmatrix(int n, int m, const T *a) : nn(n), mm(m), v(n>0 ? new T*[n] : NULL)$/;"	f	class:NRmatrix
+NRmatrix	nr3.h	/^class NRmatrix {$/;"	c
+NRvector	nr3.h	/^NRvector<T>::NRvector() : nn(0), v(NULL) {}$/;"	f	class:NRvector
+NRvector	nr3.h	/^NRvector<T>::NRvector(const NRvector<T> &rhs) : nn(rhs.nn), v(nn>0 ? new T[nn] : NULL)$/;"	f	class:NRvector
+NRvector	nr3.h	/^NRvector<T>::NRvector(int n) : nn(n), v(n>0 ? new T[n] : NULL) {}$/;"	f	class:NRvector
+NRvector	nr3.h	/^NRvector<T>::NRvector(int n, const T *a) : nn(n), v(n>0 ? new T[n] : NULL)$/;"	f	class:NRvector
+NRvector	nr3.h	/^NRvector<T>::NRvector(int n, const T& a) : nn(n), v(n>0 ? new T[n] : NULL)$/;"	f	class:NRvector
+NRvector	nr3.h	/^class NRvector {$/;"	c
+NRvector	nr3.h	98;"	d
+NaN	nr3.h	/^static const Doub NaN = numeric_limits<Doub>::quiet_NaN();$/;"	v
+SIGN	nr3.h	/^inline T SIGN(const T &a, const T &b)$/;"	f
+SIGN	nr3.h	/^inline float SIGN(const double &a, const float &b)$/;"	f
+SIGN	nr3.h	/^inline float SIGN(const float &a, const double &b)$/;"	f
+SQR	nr3.h	/^inline T SQR(const T a) {return a*a;}$/;"	f
+SWAP	nr3.h	/^inline void SWAP(T &a, T &b)$/;"	f
+Uchar	nr3.h	/^typedef unsigned char Uchar;$/;"	t
+Uint	nr3.h	/^typedef unsigned int Uint;$/;"	t
+Ullong	nr3.h	/^typedef unsigned __int64 Ullong;$/;"	t
+Ullong	nr3.h	/^typedef unsigned long long int Ullong;$/;"	t
+VecBool	nr3.h	/^typedef NRvector<Bool> VecBool, VecBool_O, VecBool_IO;$/;"	t
+VecBool_I	nr3.h	/^typedef const NRvector<Bool> VecBool_I;$/;"	t
+VecBool_IO	nr3.h	/^typedef NRvector<Bool> VecBool, VecBool_O, VecBool_IO;$/;"	t
+VecBool_O	nr3.h	/^typedef NRvector<Bool> VecBool, VecBool_O, VecBool_IO;$/;"	t
+VecChar	nr3.h	/^typedef NRvector<Char> VecChar, VecChar_O, VecChar_IO;$/;"	t
+VecChar_I	nr3.h	/^typedef const NRvector<Char> VecChar_I;$/;"	t
+VecChar_IO	nr3.h	/^typedef NRvector<Char> VecChar, VecChar_O, VecChar_IO;$/;"	t
+VecChar_O	nr3.h	/^typedef NRvector<Char> VecChar, VecChar_O, VecChar_IO;$/;"	t
+VecCharp	nr3.h	/^typedef NRvector<Char*> VecCharp, VecCharp_O, VecCharp_IO;$/;"	t
+VecCharp_I	nr3.h	/^typedef const NRvector<Char*> VecCharp_I;$/;"	t
+VecCharp_IO	nr3.h	/^typedef NRvector<Char*> VecCharp, VecCharp_O, VecCharp_IO;$/;"	t
+VecCharp_O	nr3.h	/^typedef NRvector<Char*> VecCharp, VecCharp_O, VecCharp_IO;$/;"	t
+VecComplex	nr3.h	/^typedef NRvector<Complex> VecComplex, VecComplex_O, VecComplex_IO;$/;"	t
+VecComplex_I	nr3.h	/^typedef const NRvector<Complex> VecComplex_I;$/;"	t
+VecComplex_IO	nr3.h	/^typedef NRvector<Complex> VecComplex, VecComplex_O, VecComplex_IO;$/;"	t
+VecComplex_O	nr3.h	/^typedef NRvector<Complex> VecComplex, VecComplex_O, VecComplex_IO;$/;"	t
+VecDoub	nr3.h	/^typedef NRvector<Doub> VecDoub, VecDoub_O, VecDoub_IO;$/;"	t
+VecDoub_I	nr3.h	/^typedef const NRvector<Doub> VecDoub_I;$/;"	t
+VecDoub_IO	nr3.h	/^typedef NRvector<Doub> VecDoub, VecDoub_O, VecDoub_IO;$/;"	t
+VecDoub_O	nr3.h	/^typedef NRvector<Doub> VecDoub, VecDoub_O, VecDoub_IO;$/;"	t
+VecDoubp	nr3.h	/^typedef NRvector<Doub*> VecDoubp, VecDoubp_O, VecDoubp_IO;$/;"	t
+VecDoubp_I	nr3.h	/^typedef const NRvector<Doub*> VecDoubp_I;$/;"	t
+VecDoubp_IO	nr3.h	/^typedef NRvector<Doub*> VecDoubp, VecDoubp_O, VecDoubp_IO;$/;"	t
+VecDoubp_O	nr3.h	/^typedef NRvector<Doub*> VecDoubp, VecDoubp_O, VecDoubp_IO;$/;"	t
+VecInt	nr3.h	/^typedef NRvector<Int> VecInt, VecInt_O, VecInt_IO;$/;"	t
+VecInt_I	nr3.h	/^typedef const NRvector<Int> VecInt_I;$/;"	t
+VecInt_IO	nr3.h	/^typedef NRvector<Int> VecInt, VecInt_O, VecInt_IO;$/;"	t
+VecInt_O	nr3.h	/^typedef NRvector<Int> VecInt, VecInt_O, VecInt_IO;$/;"	t
+VecLlong	nr3.h	/^typedef NRvector<Llong> VecLlong, VecLlong_O, VecLlong_IO;$/;"	t
+VecLlong_I	nr3.h	/^typedef const NRvector<Llong> VecLlong_I;$/;"	t
+VecLlong_IO	nr3.h	/^typedef NRvector<Llong> VecLlong, VecLlong_O, VecLlong_IO;$/;"	t
+VecLlong_O	nr3.h	/^typedef NRvector<Llong> VecLlong, VecLlong_O, VecLlong_IO;$/;"	t
+VecUchar	nr3.h	/^typedef NRvector<Uchar> VecUchar, VecUchar_O, VecUchar_IO;$/;"	t
+VecUchar_I	nr3.h	/^typedef const NRvector<Uchar> VecUchar_I;$/;"	t
+VecUchar_IO	nr3.h	/^typedef NRvector<Uchar> VecUchar, VecUchar_O, VecUchar_IO;$/;"	t
+VecUchar_O	nr3.h	/^typedef NRvector<Uchar> VecUchar, VecUchar_O, VecUchar_IO;$/;"	t
+VecUint	nr3.h	/^typedef NRvector<Uint> VecUint, VecUint_O, VecUint_IO;$/;"	t
+VecUint_I	nr3.h	/^typedef const NRvector<Uint> VecUint_I;$/;"	t
+VecUint_IO	nr3.h	/^typedef NRvector<Uint> VecUint, VecUint_O, VecUint_IO;$/;"	t
+VecUint_O	nr3.h	/^typedef NRvector<Uint> VecUint, VecUint_O, VecUint_IO;$/;"	t
+VecUllong	nr3.h	/^typedef NRvector<Ullong> VecUllong, VecUllong_O, VecUllong_IO;$/;"	t
+VecUllong_I	nr3.h	/^typedef const NRvector<Ullong> VecUllong_I;$/;"	t
+VecUllong_IO	nr3.h	/^typedef NRvector<Ullong> VecUllong, VecUllong_O, VecUllong_IO;$/;"	t
+VecUllong_O	nr3.h	/^typedef NRvector<Ullong> VecUllong, VecUllong_O, VecUllong_IO;$/;"	t
+_NR3_H_	nr3.h	2;"	d
+assign	nr3.h	/^void NRmatrix<T>::assign(int newn, int newm, const T& a)$/;"	f	class:NRmatrix
+assign	nr3.h	/^void NRvector<T>::assign(int newn, const T& a)$/;"	f	class:NRvector
+ax	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
+bracket	bracket.h	/^	void bracket(const Doub a, const Doub b, T &func)$/;"	f	struct:Bracketmethod
+bx	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
+cx	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
+df	dF1dim.h	/^	Doub df(const Doub x)$/;"	f	struct:Df1dim
+df	funcd.h	/^	void df(VecDoub_I &x, VecDoub_O &deriv) \/\/Name df is fixed.$/;"	f	struct:Funcd
+dft	dF1dim.h	/^	VecDoub dft;$/;"	m	struct:Df1dim
+dim1	nr3.h	/^inline int NRMat3d<T>::dim1() const$/;"	f	class:NRMat3d
+dim2	nr3.h	/^inline int NRMat3d<T>::dim2() const$/;"	f	class:NRMat3d
+dim3	nr3.h	/^inline int NRMat3d<T>::dim3() const$/;"	f	class:NRMat3d
+fa	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
+fb	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
+fc	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
+file	nr3.h	/^	char *file;$/;"	m	struct:NRerror
+fmin	dbrent.h	/^	Doub xmin,fmin;$/;"	m	struct:Dbrent
+fret	frprmn.h	/^	Doub fret; \/\/Value of the function at the minimum.$/;"	m	struct:Frprmn
+ftol	frprmn.h	/^	const Doub ftol;$/;"	m	struct:Frprmn
+func	dlinmin.h	/^	T &func;$/;"	m	struct:Dlinemethod
+funcd	dF1dim.h	/^	T &funcd;$/;"	m	struct:Df1dim
+funcvalue	funcd.h	/^	double funcvalue;$/;"	m	struct:Funcd
+iter	frprmn.h	/^	Int iter;$/;"	m	struct:Frprmn
+kk	nr3.h	/^	int kk;$/;"	m	class:NRMat3d
+length	funcd.h	/^const int length=40;\/\/must be even: # DOF's along x will be 2*(dimx-1)$/;"	v
+line	nr3.h	/^	int line;$/;"	m	struct:NRerror
+linmin	dlinmin.h	/^	Doub linmin()$/;"	f	struct:Dlinemethod
+message	nr3.h	/^	char *message;$/;"	m	struct:NRerror
+minimize	dbrent.h	/^	Doub minimize(T &funcd)$/;"	f	struct:Dbrent
+minimize	frprmn.h	/^	VecDoub minimize(VecDoub_I &pp)$/;"	f	struct:Frprmn
+mm	nr3.h	/^	int mm;$/;"	m	class:NRMat3d
+mm	nr3.h	/^	int mm;$/;"	m	class:NRmatrix
+mov3	bracket.h	/^	inline void mov3(Doub &a, Doub &b, Doub &c, const Doub d, const Doub e,$/;"	f	struct:Bracketmethod
+n	dF1dim.h	/^	Int n;$/;"	m	struct:Df1dim
+n	dlinmin.h	/^	Int n;$/;"	m	struct:Dlinemethod
+ncols	nr3.h	/^inline int NRmatrix<T>::ncols() const$/;"	f	class:NRmatrix
+nn	nr3.h	/^	int nn;	\/\/ size of array. upper index is nn-1$/;"	m	class:NRvector
+nn	nr3.h	/^	int nn;$/;"	m	class:NRMat3d
+nn	nr3.h	/^	int nn;$/;"	m	class:NRmatrix
+nrows	nr3.h	/^inline int NRmatrix<T>::nrows() const$/;"	f	class:NRmatrix
+operator ()	dF1dim.h	/^	Doub operator()(const Doub x)$/;"	f	struct:Df1dim
+operator ()	funcd.h	/^	Doub operator() (VecDoub_I &x)$/;"	f	struct:Funcd
+operator =	nr3.h	/^NRmatrix<T> & NRmatrix<T>::operator=(const NRmatrix<T> &rhs)$/;"	f	class:NRmatrix
+operator =	nr3.h	/^NRvector<T> & NRvector<T>::operator=(const NRvector<T> &rhs)$/;"	f	class:NRvector
+operator []	nr3.h	/^inline T & NRvector<T>::operator[](const int i)	\/\/subscripting$/;"	f	class:NRvector
+operator []	nr3.h	/^inline T* NRmatrix<T>::operator[](const int i)	\/\/subscripting: pointer to row i$/;"	f	class:NRmatrix
+operator []	nr3.h	/^inline T** NRMat3d<T>::operator[](const int i) \/\/subscripting: pointer to row i$/;"	f	class:NRMat3d
+operator []	nr3.h	/^inline const T & NRvector<T>::operator[](const int i) const	\/\/subscripting$/;"	f	class:NRvector
+operator []	nr3.h	/^inline const T* NRmatrix<T>::operator[](const int i) const$/;"	f	class:NRmatrix
+operator []	nr3.h	/^inline const T* const * NRMat3d<T>::operator[](const int i) const$/;"	f	class:NRMat3d
+p	dF1dim.h	/^	const VecDoub &p;$/;"	m	struct:Df1dim
+p	dlinmin.h	/^	VecDoub p;$/;"	m	struct:Dlinemethod
+resize	nr3.h	/^void NRmatrix<T>::resize(int newn, int newm)$/;"	f	class:NRmatrix
+resize	nr3.h	/^void NRvector<T>::resize(int newn)$/;"	f	class:NRvector
+shft2	bracket.h	/^	inline void shft2(Doub &a, Doub &b, const Doub c)$/;"	f	struct:Bracketmethod
+shft3	bracket.h	/^	inline void shft3(Doub &a, Doub &b, Doub &c, const Doub d)$/;"	f	struct:Bracketmethod
+size	nr3.h	/^inline int NRvector<T>::size() const$/;"	f	class:NRvector
+throw	nr3.h	68;"	d
+throw	nr3.h	77;"	d
+tol	dbrent.h	/^	const Doub tol;$/;"	m	struct:Dbrent
+turn_on_floating_exceptions	nr3.h	/^	turn_on_floating_exceptions() {$/;"	f	struct:turn_on_floating_exceptions
+turn_on_floating_exceptions	nr3.h	/^struct turn_on_floating_exceptions {$/;"	s
+v	nr3.h	/^	T ***v;$/;"	m	class:NRMat3d
+v	nr3.h	/^	T **v;$/;"	m	class:NRmatrix
+v	nr3.h	/^	T *v;$/;"	m	class:NRvector
+value_type	nr3.h	/^	typedef T value_type; \/\/ make T available externally$/;"	t	class:NRmatrix
+value_type	nr3.h	/^	typedef T value_type; \/\/ make T available externally$/;"	t	class:NRvector
+xi	dF1dim.h	/^	const VecDoub &xi;$/;"	m	struct:Df1dim
+xi	dlinmin.h	/^	VecDoub xi;$/;"	m	struct:Dlinemethod
+xmin	dbrent.h	/^	Doub xmin,fmin;$/;"	m	struct:Dbrent
+xt	dF1dim.h	/^	VecDoub xt;$/;"	m	struct:Df1dim
+yes_turn_on_floating_exceptions	nr3.h	/^turn_on_floating_exceptions yes_turn_on_floating_exceptions;$/;"	v
+~NRMat3d	nr3.h	/^NRMat3d<T>::~NRMat3d()$/;"	f	class:NRMat3d
+~NRmatrix	nr3.h	/^NRmatrix<T>::~NRmatrix()$/;"	f	class:NRmatrix
+~NRvector	nr3.h	/^NRvector<T>::~NRvector()$/;"	f	class:NRvector
