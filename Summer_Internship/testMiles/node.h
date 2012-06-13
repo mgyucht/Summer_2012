@@ -8,61 +8,65 @@
 // simulation. 
 
 #include <iostream>
-#include <vector>
 #include "nr3.h"
 
 using namespace std;
 
 struct Node {
     
-    // position contains the position of the node segment. sprlen contains
-    // the distance between the node segment and a neighboring node segment.
+    // position contains the position of the node segment. 
     // sprstiff contains the stiffness modulus of the spring. restlen is the
     // rest length of the spring. 
     //
     // In these vectors, the indexing is as follows: for position, the first
-    // entry is the abcissa, and the second entry is the ordinate. For sprlen
-    // and sprstiff for a node at (i, j), the first entry corresponds to the
+    // entry is the abcissa, and the second entry is the ordinate. For restlen and
+    // sprstiff for a node at (i, j), the first entry corresponds to the
     // bond with node at (i, j + 1), the second entry with node at (i + 1, j), 
     // and third entry with node at (i + 1, j - 1).
     
-    vector<double> position;
-    vector<double> sprlen;
-    vector<double> sprstiff;
-    double restlen;
-    
-    // energy contains the current energy of the node segment.
-    
-    double energy;
+    double *position, *sprstiff, *restlen;
     
     // Node(vector<double> position, vector<double> sprlen,
     // vector<double> sprstiff) is the initializer for the node
     // structure. Each of the variables passed is copied into the
     // corresponding variable for the node segment.
     
-    Node(vector<double> pos, vector<double> len, vector<double> stiff, double rlen) {
-        position = pos;
-        sprlen = len;
-        sprstiff = stiff;
-        restlen = rlen;
+    Node() {
+        position = new double[2];
+        sprstiff = new double[3];
+        restlen = new double[3];
     }
     
-    ~Node() { }
+    Node(double *pos, double *stiff, double *rlen) : position(pos), 
+            sprstiff(stiff), restlen(rlen) {}
     
-    double calcEnergy() {
-        double en = 0;
+    Node(Node & a) {
         
-        for (int i = 0; i < sprlen.size(); i++) {
-            en += sprstiff[i] / 2 * (sprlen[i] - restlen) * (sprlen[i] - restlen) / restlen;
-        }
+        this->position = a.position;
+        this->sprstiff = a.sprstiff;
+        this->restlen = a.restlen;
         
-        return en;
+    }
+
+    ~Node() {
+        delete[] position;
+        delete[] sprstiff;
+        delete[] restlen;
     }
     
-    Node operator= (const Node &a) {
-        Node b (a.position, a.sprlen, a.sprstiff, a.rlen);
-        return b;
+    // printPos() is designed to test the functionality of the Node struct.
+    // It prints the position as a coordinate in the xy-plane. 
+    // Sample output:
+    // (0, 0.3)
+    
+    void printPos() {
+        
+        double xpos = position[0];
+        double ypos = position[1];
+
+        cout << setw(5) << "(" << xpos << ", " << ypos << ") ";
     }
+    
 };
 
 typedef NRvector<Node> VecNode1D;

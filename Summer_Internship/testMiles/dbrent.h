@@ -59,8 +59,10 @@ struct Dbrent : Bracketmethod {
             // tolerance, we're done.
             
 			if (abs(x - xm) <= (tol2 - 0.5 * (b - a))) {
+                
 				fmin = fx;
 				return xmin = x;
+                
 			}
             
 			if (abs(e) > tol1) {
@@ -72,9 +74,11 @@ struct Dbrent : Bracketmethod {
                 
                 // Secant method with both points.
 				if (dw != dx) 
+                    
                     d1=(w-x)*dx/(dx-dw); 
                 
 				if (dv != dx) 
+                    
                     d2=(v-x)*dx/(dx-dv); 
                 
                 // Which of these two estimates of d shall we take? We will insist that they be
@@ -93,40 +97,62 @@ struct Dbrent : Bracketmethod {
                 // Take only an acceptable d, and if both are acceptable, then take the smallest one.
                 
 				if (ok1 || ok2) {
+                    
 					if (ok1 && ok2)
+                        
 						d = (abs(d1) < abs(d2) ? d1 : d2);
+                    
 					else if (ok1)
+                        
 						d = d1;
+                    
 					else
+                        
 						d = d2;
                     
 					if (abs(d) <= abs(0.5 * olde)) {
+                        
 						u = x + d;
                         
 						if (u - a < tol2 || b - u < tol2)
+                            
 							d = SIGN(tol1, xm - x);
+                        
 					} else { 
+                        
                         // Decide which segment by the sign of the derivative.
 						d = 0.5 * (e = (dx >= 0.0 ? a - x : b - x));
+                        
 					}
+                    
 				} else {
+                    
 					d = 0.5 * (e = (dx >= 0.0 ? a - x : b - x));
 				}
+                
 			} else {
+                
 				d = 0.5 * (e = (dx >= 0.0 ? a - x : b - x));
+                
 			}
+            
 			if (abs(d) >= tol1) {
+                
 				u = x + d;
 				fu = funcd(u);
+                
 			} else {
                 
 				u = x + SIGN(tol1, d);
 				fu = funcd(u);
                 
                 // If the minimum step in the downhill direction takes us uphill, then we are done.
+                
 				if (fu > fx) {
+                    
 					fmin=fx;
 					return xmin=x;
+                    
 				}
 			}
             
@@ -135,20 +161,40 @@ struct Dbrent : Bracketmethod {
             //Now all the housekeeping, sigh.
             
 			if (fu <= fx) {
-				if (u >= x) a=x; 
-                else b=x;
+                
+				if (u >= x)
+                    
+                    a=x; 
+                
+                else 
+                    
+                    b=x;
+                
 				mov3(v,fv,dv,w,fw,dw);
 				mov3(w,fw,dw,x,fx,dx);
 				mov3(x,fx,dx,u,fu,du);
+                
 			} else {
-				if (u < x) a=u; 
-                else b=u;
+                
+				if (u < x)
+                    
+                    a=u; 
+                
+                else
+                    
+                    b=u;
+                
 				if (fu <= fw || w == x) {
+                    
 					mov3(v,fv,dv,w,fw,dw);
 					mov3(w,fw,dw,u,fu,du);
+                    
 				} else if (fu < fv || v == x || v == w) {
+                    
 					mov3(v,fv,dv,u,fu,du);
+                    
 				}
+                
 			}
 		}
 		throw("Too many iterations in routine dbrent");
