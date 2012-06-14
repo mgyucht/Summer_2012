@@ -97,10 +97,10 @@ int main (int argc, char *argv[]) {
     // TESTING CODE
     
     printf("Hurray! It all works!\n");
-    printf("Now to test the energy function: \n\n");
+    printf("Now to test the energy function: \n");
     
     Funcd test;
-    double energy = test(nodeNetwork, netSize);
+    double energy = test(nodeNetwork, netSize, strain);
     printf("\nEnergy (drumroll, please): %5f\n", energy);
     
     

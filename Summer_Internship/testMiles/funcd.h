@@ -44,7 +44,7 @@ struct Funcd {
     // Node ***x is a Node two-dimensional array, and the size of that array is
     // netSize x netSize.
     
-	Doub operator() ( Node ***x, int netSize) {
+	Doub operator() ( Node ***x, int netSize, int strain ) {
         
 		double funcvalue = 0;
         
@@ -64,8 +64,12 @@ struct Funcd {
                 //  
                 // Make sure to impose the periodic boundary condition here. 
                 // This is done by making a temporary node copy of the 
-                // corresponding mode (using modulo arithemetic). This should
-                // also take into account strain.
+                // corresponding mode (using modulo arithemetic). 
+                //
+                // Strain is obtained by shifting the bonds at the top of the
+                // network over by an integer number of points in the
+                // x-direction. When measuring the energy, it only affects the
+                // topmost row (i = iMax).
                 
                 Node **nPtr = new Node*[4];
                 isiMax = i == iMax;
@@ -74,8 +78,8 @@ struct Funcd {
                 
                 nPtr[0] = x[i][j];
                 
-                int i1 = isiMax ? 0 : i + 1;
                 int j1 = isjMax ? 0 : j + 1;
+                int i1 = isiMax ? 0 : i + 1;
                 int j2 = isjMin ? jMax : j - 1;
                 
                 nPtr[1] = x[i][j1];
@@ -85,7 +89,7 @@ struct Funcd {
                 for (int k = 1; k < 4; k++) {
                     
                     funcvalue += 0.5 * nPtr[k]->sprstiff[k] / nPtr[k]->restlen[k]
-                                    * deltaLSqrd(nPtr, k);
+                                    * deltaLSqrd(nPtr, k, strain);
                     
                 }
             } // Cycling all columns in a row
@@ -94,16 +98,31 @@ struct Funcd {
 		return funcvalue;
 	}
 	
-    // df(Node ***x, int netSize) is the gradient function for the 
+    // df(Node ***x, double ***dx, int netSize) is the gradient function for the 
     // network. This determines the gradient function for a point in the
     // network.
+    
+    void df(Node ***x, double ***dx, int netSize) {
+        
+        iMax = netSize - 1;
+        jMax = netSize - 1;
+        
+        for (int i = 0; i <= iMax; i++) {
+            for (int j = 0; j <= jMax; j++) {
+                //
+                // TODO:GRADIENT FUNCTION AUGH
+                //
+            }
+        }
+    }
 
+private: 
     
     // deltaLSqrd returns the square change in the length of the spring
     // between nodes nPtr[0] and nPtr[k].
     
-    double deltaLSqrd(Node **x, int k) {
-        double lijk = euclDistSqrd(x[0]->position, x[k]->position, k);
+    double deltaLSqrd(Node **x, int k, int strain) {
+        double lijk = euclDistSqrd(x[0]->position, x[k]->position, k, strain);
         double l0 = RESTLEN;
         
         return (lijk - l0) * (lijk - l0);
@@ -111,11 +130,13 @@ struct Funcd {
     
     // euclDistSqrd is a Euclidean distance calculator that works with the
     // pointer nPtr declared in operator(). It takes into account the periodic
-    // boundary condition for the system. 
+    // boundary condition for the system. This is the function that incorporates
+    // strain into the network.
+    // 
     // Note that we use jMax + 1 and iMax + 1 in these expressions because they
-    // are equivalent to the size of the network netSize.
+    // are equivalent to the size of the network netSize. 
     
-    double euclDistSqrd(double *vec1, double *vec2, int k) {
+    double euclDistSqrd(double *vec1, double *vec2, int k, int strain) {
         
         double xshift = 0.0, yshift = 0.0;
         
@@ -133,7 +154,7 @@ struct Funcd {
             case 2: 
                 if (isiMax) {
                 
-                    xshift += (jMax + 1) * RESTLEN / 2.0;
+                    xshift += (jMax + strain + 1) * RESTLEN / 2.0;
                     yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
                     
                 }
@@ -143,7 +164,7 @@ struct Funcd {
             case 3:
                 if (isiMax) {
                 
-                    xshift += (jMax + 1) * RESTLEN / 2.0;
+                    xshift += (jMax + strain + 1) * RESTLEN / 2.0;
                     yshift += (iMax + 1)* RESTLEN * sqrt(3.0) / 2.0;
                     
                 }
