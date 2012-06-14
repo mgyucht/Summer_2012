@@ -1,0 +1,9 @@
+Summer_2012.git
+---------------
+
+Primary Author: Miles Yucht
+---------------------------
+
+This git repository contains my work during the summer of 2012. This includes code written in C++ to create a model consisting of a triangular network
+of springs for networks of actin filaments in the cytoskeleton of cells. Additionally, there are several papers on the topic of modeling cell cytoskeletons and experiments
+measuring the mechanical properties of cytoskeletons.
