@@ -32,11 +32,15 @@ struct Funcd {
     // a network. This operator must contain the energy function for the 
     // network.
     
-	Doub operator() ( VecNode2D &x ) {
-		double funcvalue=0;
+	Doub operator() ( Node ***x, int netSize) {
         
-        for(int i=0; i < x.nrows(); i++) {
-            for (int j = 0; j < x.ncols(); j++) {
+		double funcvalue = 0;
+        
+        int iMax = netSize - 1;
+        int jMax = netSize - 1;
+        
+        for(int i=0; i <= iMax; i++) {
+            for (int j = 0; j <= jMax; j++) {
                 // Make the pointer array Node *nPtr[]. This shall point to the
                 // following nodes:
                 //  
@@ -49,6 +53,37 @@ struct Funcd {
                 // This is done by making a temporary node copy of the 
                 // corresponding mode (using modulo arithemetic). This should
                 // also take into account strain.
+                
+                Node **nPtr = new Node*[4];
+                bool isiMax = i == iMax, isjMax = j == jMax;
+                
+                nPtr[0] = x[i][j];
+                
+                // PBC is NOT WORKING... :P
+                
+                if (!isiMax)
+                    nPtr[1] = x[i][j + 1];
+                else
+                    nPtr[1] = x[i][0];
+                
+                if (!isjMax)
+                    nPtr[2] = x[i + 1][j];
+                else 
+                    nPtr[2] = x[0][j];
+                
+                if (!(isiMax && isjMax))
+                    nPtr[3] = x[i + 1][j - 1];
+                else
+                    nPtr[3] = x[0][0];
+                
+                for (int k = 0; k < 3; k++) {
+                    
+                    funcvalue += 0.5 * nPtr[k]->sprstiff[k] / nPtr[k]->restlen[k] 
+                                    * euclDistSqrd(nPtr[k]->position, nPtr[0]->position);
+                     
+                    printf("%d, %d, %2f, %2f, %3f\n", i, j, nPtr[k]->sprstiff[k], nPtr[k]->restlen[k], 
+                            euclDistSqrd(nPtr[k]->position, nPtr[0]->position));
+                }
             }
 		}
         
@@ -72,6 +107,11 @@ struct Funcd {
                 // GRADIENT FUNCTION HERE
             }
         }
+    }
+    
+    double euclDistSqrd(double *vec1, double *vec2) {
+        return ((vec2[0] - vec1[0]) * (vec2[0] - vec1[0]) 
+                + (vec2[1] - vec1[1]) * (vec2[1] - vec1[1]));
     }
 };
 

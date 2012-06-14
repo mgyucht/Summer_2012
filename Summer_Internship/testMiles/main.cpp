@@ -40,83 +40,69 @@ double randDouble(int, int);
 
 int main (int argc, char *argv[]) {
     
-    double pBond = 1.0, youngMod = 1.0;
-    int netSize = 200, strain = 0;
-    bool allocated[4];
+    double pBond = 0.7, youngMod = 1.0;
+    int netSize = 5, strain = 0;
     
     srand( time(NULL) );
     
-    // If there are not the right number of arguments, end the program's
-    // execution.
-
-    if (argc != 9) {
-        usageExit();
-    }
-    
     //Otherwise, parse the command line parameters.
 
-    for (int i = 1; i < 9; i += 2) {
+    for (int i = 1; i < argc; i += 2) {
         string str = argv[i];
         if (!str.compare("-str")) {
             strain = atoi(argv[i + 1]);
-            allocated[0] = true;
         } else if (!str.compare("-size")) {
             netSize = atoi(argv[i + 1]);
-            allocated[1] = true;
         } else if (!str.compare("-p")) {
             pBond = atof(argv[i + 1]);
-            allocated[2] = true;
         } else if (!str.compare("-y")) {
             youngMod = atof(argv[i + 1]);
-            allocated[3] = true;
+        } else if (!str.compare("-help") || !str.compare("help")) {
+            usageExit();
         } else {
             cout << argv[i] << " is an illegal argument. " << endl;
             usageExit();
-            exit(0);
         }
     }
-    
-    for (int i = 0; i < 4; i++) 
-        if (!allocated[i])
-            usageExit();
     
     // Now that those are parsed, we can start to generate our network.
      
     Node ***nodeNetwork = new Node**[netSize];
-    for (int i = 0; i < netSize; i++)
-        nodeNetwork[i] = new Node*[netSize];
     
     for (int i = 0; i < netSize; i++) {
+        
+        nodeNetwork[i] = new Node*[netSize];
+        
         for (int j = 0; j < netSize; j++) {
             
-            double pos[] = {
-                RESTLEN * (i / 2.0  + j), 
-                sqrt(3) / 4 * RESTLEN * i
-            };
+            double *pos = new double [2];
             
-            cout << "(" << pos[0] << ", " << pos[1] << ") "; 
+            pos[0] = RESTLEN * (i / 2.0  + j);
+            pos[1] = sqrt(3) / 4 * RESTLEN * i;
             
             double *sstiff = stiffVecGen(pBond, youngMod, 3);
-            double rlen[] = { RESTLEN, RESTLEN, RESTLEN};
+            double *rlen = new double [3];
+            
+            rlen[0] = rlen[1] = rlen[2] = RESTLEN;
             
             // Assign these data to the correct node
             
             nodeNetwork[i][j] = new Node(&*pos, &*sstiff, &*rlen);
         }
-        cout << endl;
     }
     
     // TESTING CODE
     
-    for (int i = 0; i < netSize; i++) {
-        for (int j = 0; j < netSize; j++) {
-            cout << i << " " << j << ": " << nodeNetwork[i][j] << "| ";
-        }
-        cout << endl;
-    }
+    printf("Hurray! It all works!\n");
+    printf("Now to test the energy function: \n");
+    
+    Funcd test;
+    double energy = test(nodeNetwork, netSize);
+    printf("Energy (drumroll, please): %5f\n", energy);
+    
+    
 
     /* AND THEN THIS......
-    Funcd funcd;
     Frprmn<Funcd> frprmn(funcd);
     nodeNetwork = frprmn.minimalize(nodeNetwork);
     
@@ -150,8 +136,7 @@ double *stiffVecGen(double prob, double yMod, int numSprings) {
     
 }
 
-//randDouble returns a random number in the range [low, high). 
-
+//randDouble returns a random number in the range [low, high).  
 double randDouble(int low, int high) {
     
     double x = low + (high - low) * ((double) rand() / ((double) RAND_MAX + 1));
