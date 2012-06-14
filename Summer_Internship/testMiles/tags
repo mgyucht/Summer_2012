@@ -4,24 +4,32 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+ATTR	._bracket.h	/^/;"	v
+ATTR	._dbrent.h	/^/;"	v
+ATTR	._df1dim.h	/^/;"	v
+ATTR	._dlinmin.h	/^/;"	v
+ATTR	._frprmn.h	/^/;"	v
+ATTR	._funcd.h	/^/;"	v
+ATTR	._main.cpp	/^/;"	v
+ATTR	._nr3.h	/^/;"	v
 BRACKET_H_	bracket.h	2;"	d
 Bool	nr3.h	/^typedef bool Bool;$/;"	t
 Bracketmethod	bracket.h	/^struct Bracketmethod { $/;"	s
 Char	nr3.h	/^typedef char Char; \/\/ 8 bit integer$/;"	t
 Complex	nr3.h	/^typedef complex<double> Complex; \/\/ default complex type$/;"	t
 DBRENT_H_	dbrent.h	2;"	d
-DF1DIM_H_	dF1dim.h	2;"	d
-DLINMIN_H_	dlinmin.h	2;"	d
+DF1DIM_H_	dF1dim.h	8;"	d
+DLINMIN_H_	dlinmin.h	8;"	d
 Dbrent	dbrent.h	/^	Dbrent(const Doub toll=3.0e-8) : tol(toll) {}$/;"	f	struct:Dbrent
 Dbrent	dbrent.h	/^struct Dbrent : Bracketmethod {$/;"	s
-Df1dim	dF1dim.h	/^	Df1dim(VecDoub_I &pp, VecDoub_I &xii, T &funcdd) : p(pp),$/;"	f	struct:Df1dim
+Df1dim	dF1dim.h	/^	Df1dim(VecDoub_I &pp, VecDoub_I &xii, T &funcdd) : $/;"	f	struct:Df1dim
 Df1dim	dF1dim.h	/^struct Df1dim {$/;"	s
 Dlinemethod	dlinmin.h	/^	Dlinemethod(T &funcc) : func(funcc) {}$/;"	f	struct:Dlinemethod
 Dlinemethod	dlinmin.h	/^struct Dlinemethod {$/;"	s
 Doub	nr3.h	/^typedef double Doub; \/\/ default floating type$/;"	t
-FRPRMN_H_	frprmn.h	2;"	d
-FUNCD_H_	funcd.h	7;"	d
-Frprmn	frprmn.h	/^	Frprmn(T &funcd, const Doub ftoll=1e-7) : Dlinemethod<T>(funcd),$/;"	f	struct:Frprmn
+FRPRMN_H_	frprmn.h	9;"	d
+FUNCD_H_	funcd.h	19;"	d
+Frprmn	frprmn.h	/^    Frprmn(T &funcd, const Doub ftoll=1e-7) : Dlinemethod<T>(funcd), $/;"	f	struct:Frprmn
 Frprmn	frprmn.h	/^struct Frprmn : Dlinemethod<T> {$/;"	s
 Funcd	funcd.h	/^struct Funcd {$/;"	s
 Int	nr3.h	/^typedef int Int; \/\/ 32 bit integer$/;"	t
@@ -34,7 +42,6 @@ MAX	nr3.h	/^inline float MAX(const float &a, const double &b)$/;"	f
 MIN	nr3.h	/^inline const T &MIN(const T &a, const T &b)$/;"	f
 MIN	nr3.h	/^inline float MIN(const double &a, const float &b)$/;"	f
 MIN	nr3.h	/^inline float MIN(const float &a, const double &b)$/;"	f
-MU	funcd.h	/^const double MU = 1;$/;"	v
 Mat3DDoub	nr3.h	/^typedef NRMat3d<Doub> Mat3DDoub, Mat3DDoub_O, Mat3DDoub_IO;$/;"	t
 Mat3DDoub_I	nr3.h	/^typedef const NRMat3d<Doub> Mat3DDoub_I;$/;"	t
 Mat3DDoub_IO	nr3.h	/^typedef NRMat3d<Doub> Mat3DDoub, Mat3DDoub_O, Mat3DDoub_IO;$/;"	t
@@ -91,7 +98,9 @@ NRvector	nr3.h	/^NRvector<T>::NRvector(int n, const T& a) : nn(n), v(n>0 ? new T
 NRvector	nr3.h	/^class NRvector {$/;"	c
 NRvector	nr3.h	98;"	d
 NaN	nr3.h	/^static const Doub NaN = numeric_limits<Doub>::quiet_NaN();$/;"	v
-Node	node.h	/^    Node(vector<double> pos, vector<double> len, vector<double> stiff, double rlen) {$/;"	f	struct:Node
+Node	node.h	/^    Node() {$/;"	f	struct:Node
+Node	node.h	/^    Node(Node & a) {$/;"	f	struct:Node
+Node	node.h	/^    Node(double *pos, double *stiff, double *rlen) : position(pos), $/;"	f	struct:Node
 Node	node.h	/^struct Node {$/;"	s
 RESTLEN	funcd.h	/^const double RESTLEN = 1;$/;"	v
 SIGN	nr3.h	/^inline T SIGN(const T &a, const T &b)$/;"	f
@@ -158,8 +167,8 @@ assign	nr3.h	/^void NRvector<T>::assign(int newn, const T& a)$/;"	f	class:NRvect
 ax	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
 bracket	bracket.h	/^	void bracket(const Doub a, const Doub b, T &func)$/;"	f	struct:Bracketmethod
 bx	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
-calcEnergy	node.h	/^    double calcEnergy() {$/;"	f	struct:Node
 cx	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
+deltaLSqrd	funcd.h	/^    double deltaLSqrd(Node **x, int k) {$/;"	f	struct:Funcd
 df	dF1dim.h	/^	Doub df(const Doub x)$/;"	f	struct:Df1dim
 df	funcd.h	/^	void df(const VecDoub_I &x, VecDoub_O &deriv) $/;"	f	struct:Funcd
 df	funcd.h	/^    void df(const VecNode2D &x, VecNode2D &deriv) {$/;"	f	struct:Funcd
@@ -167,22 +176,28 @@ dft	dF1dim.h	/^	VecDoub dft;$/;"	m	struct:Df1dim
 dim1	nr3.h	/^inline int NRMat3d<T>::dim1() const$/;"	f	class:NRMat3d
 dim2	nr3.h	/^inline int NRMat3d<T>::dim2() const$/;"	f	class:NRMat3d
 dim3	nr3.h	/^inline int NRMat3d<T>::dim3() const$/;"	f	class:NRMat3d
-energy	node.h	/^    double energy;$/;"	m	struct:Node
+euclDistSqrd	funcd.h	/^    double euclDistSqrd(double *vec1, double *vec2, int k) {$/;"	f	struct:Funcd
 fa	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
 fb	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
 fc	bracket.h	/^	Doub ax,bx,cx,fa,fb,fc;$/;"	m	struct:Bracketmethod
 file	nr3.h	/^	char *file;$/;"	m	struct:NRerror
 fmin	dbrent.h	/^	Doub xmin,fmin;$/;"	m	struct:Dbrent
-fret	frprmn.h	/^	Doub fret; \/\/Value of the function at the minimum.$/;"	m	struct:Frprmn
+fret	frprmn.h	/^	Doub fret; $/;"	m	struct:Frprmn
 ftol	frprmn.h	/^	const Doub ftol;$/;"	m	struct:Frprmn
 func	dlinmin.h	/^	T &func;$/;"	m	struct:Dlinemethod
 funcd	dF1dim.h	/^	T &funcd;$/;"	m	struct:Df1dim
+iMax	funcd.h	/^int iMax, jMax;$/;"	v
+isiMax	funcd.h	/^bool isiMax, isjMax, isjMin;$/;"	v
+isjMax	funcd.h	/^bool isiMax, isjMax, isjMin;$/;"	v
+isjMin	funcd.h	/^bool isiMax, isjMax, isjMin;$/;"	v
 iter	frprmn.h	/^	Int iter;$/;"	m	struct:Frprmn
+jMax	funcd.h	/^int iMax, jMax;$/;"	v
 kk	nr3.h	/^	int kk;$/;"	m	class:NRMat3d
 length	funcd.h	/^const int length=40;$/;"	v
 line	nr3.h	/^	int line;$/;"	m	struct:NRerror
-linmin	dlinmin.h	/^	Doub linmin()$/;"	f	struct:Dlinemethod
+linmin	dlinmin.h	/^	Doub linmin() {$/;"	f	struct:Dlinemethod
 main	main.cpp	/^int main (int argc, char *argv[]) {$/;"	f
+main	test.cpp	/^int main () {$/;"	f
 message	nr3.h	/^	char *message;$/;"	m	struct:NRerror
 minimize	dbrent.h	/^	Doub minimize(T &funcd) {$/;"	f	struct:Dbrent
 minimize	frprmn.h	/^	VecDoub minimize(VecDoub_I &pp)$/;"	f	struct:Frprmn
@@ -196,9 +211,8 @@ nn	nr3.h	/^	int nn;	\/\/ size of array. upper index is nn-1$/;"	m	class:NRvector
 nn	nr3.h	/^	int nn;$/;"	m	class:NRMat3d
 nn	nr3.h	/^	int nn;$/;"	m	class:NRmatrix
 nrows	nr3.h	/^inline int NRmatrix<T>::nrows() const$/;"	f	class:NRmatrix
-operator ()	dF1dim.h	/^	Doub operator()(const Doub x)$/;"	f	struct:Df1dim
-operator ()	funcd.h	/^	Doub operator() ( VecNode2D &x ) {$/;"	f	struct:Funcd
-operator =	node.h	/^    Node operator= (const Node &a) {$/;"	f	struct:Node
+operator ()	dF1dim.h	/^	Doub operator()(const Doub x) {$/;"	f	struct:Df1dim
+operator ()	funcd.h	/^	Doub operator() ( Node ***x, int netSize) {$/;"	f	struct:Funcd
 operator =	nr3.h	/^NRmatrix<T> & NRmatrix<T>::operator=(const NRmatrix<T> &rhs)$/;"	f	class:NRmatrix
 operator =	nr3.h	/^NRvector<T> & NRvector<T>::operator=(const NRvector<T> &rhs)$/;"	f	class:NRvector
 operator []	nr3.h	/^inline T & NRvector<T>::operator[](const int i)	\/\/subscripting$/;"	f	class:NRvector
@@ -209,22 +223,25 @@ operator []	nr3.h	/^inline const T* NRmatrix<T>::operator[](const int i) const$/
 operator []	nr3.h	/^inline const T* const * NRMat3d<T>::operator[](const int i) const$/;"	f	class:NRMat3d
 p	dF1dim.h	/^	const VecDoub &p;$/;"	m	struct:Df1dim
 p	dlinmin.h	/^	VecDoub p;$/;"	m	struct:Dlinemethod
-position	node.h	/^    vector<double> position;$/;"	m	struct:Node
+position	node.h	/^    double *position, *sprstiff, *restlen;$/;"	m	struct:Node
+printPos	node.h	/^    void printPos() {$/;"	f	struct:Node
 randDouble	main.cpp	/^double randDouble(int low, int high) {$/;"	f
+randDouble	test.cpp	/^double randDouble(int low, int high) {$/;"	f
 resize	nr3.h	/^void NRmatrix<T>::resize(int newn, int newm)$/;"	f	class:NRmatrix
 resize	nr3.h	/^void NRvector<T>::resize(int newn)$/;"	f	class:NRvector
-restlen	node.h	/^    double restlen;$/;"	m	struct:Node
+restlen	node.h	/^    double *position, *sprstiff, *restlen;$/;"	m	struct:Node
 shft2	bracket.h	/^    inline void shft2(Doub &a, Doub &b, const Doub c)$/;"	f	struct:Bracketmethod
 shft3	bracket.h	/^	inline void shft3(Doub &a, Doub &b, Doub &c, const Doub d)$/;"	f	struct:Bracketmethod
 size	nr3.h	/^inline int NRvector<T>::size() const$/;"	f	class:NRvector
-sprlen	node.h	/^    vector<double> sprlen;$/;"	m	struct:Node
-sprstiff	node.h	/^    vector<double> sprstiff;$/;"	m	struct:Node
-stiffVecGen	main.cpp	/^vector<double> stiffVecGen(double prob, double yMod, int numSprings) {$/;"	f
+sprstiff	node.h	/^    double *position, *sprstiff, *restlen;$/;"	m	struct:Node
+stiffVecGen	main.cpp	/^double *stiffVecGen(double prob, double yMod, int numSprings) {$/;"	f
+stiffVecGen	test.cpp	/^double *stiffVecGen(double prob, double yMod, int numSprings) {$/;"	f
 throw	nr3.h	68;"	d
 throw	nr3.h	77;"	d
 tol	dbrent.h	/^	const Doub tol;$/;"	m	struct:Dbrent
 turn_on_floating_exceptions	nr3.h	/^	turn_on_floating_exceptions() {$/;"	f	struct:turn_on_floating_exceptions
 turn_on_floating_exceptions	nr3.h	/^struct turn_on_floating_exceptions {$/;"	s
+usageExit	main.cpp	/^void usageExit() {$/;"	f
 v	nr3.h	/^	T ***v;$/;"	m	class:NRMat3d
 v	nr3.h	/^	T **v;$/;"	m	class:NRmatrix
 v	nr3.h	/^	T *v;$/;"	m	class:NRvector
@@ -238,4 +255,4 @@ yes_turn_on_floating_exceptions	nr3.h	/^turn_on_floating_exceptions yes_turn_on_
 ~NRMat3d	nr3.h	/^NRMat3d<T>::~NRMat3d()$/;"	f	class:NRMat3d
 ~NRmatrix	nr3.h	/^NRmatrix<T>::~NRmatrix()$/;"	f	class:NRmatrix
 ~NRvector	nr3.h	/^NRvector<T>::~NRvector()$/;"	f	class:NRvector
-~Node	node.h	/^    ~Node() { }$/;"	f	struct:Node
+~Node	node.h	/^    ~Node() {$/;"	f	struct:Node

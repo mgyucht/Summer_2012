@@ -77,8 +77,11 @@ int main (int argc, char *argv[]) {
             
             double *pos = new double [2];
             
+            // x-coordinate
             pos[0] = RESTLEN * (i / 2.0  + j);
-            pos[1] = sqrt(3) / 4 * RESTLEN * i;
+            
+            // y-coordinate
+            pos[1] = sqrt(3) / 2 * RESTLEN * i;
             
             double *sstiff = stiffVecGen(pBond, youngMod, 3);
             double *rlen = new double [3];
@@ -94,11 +97,11 @@ int main (int argc, char *argv[]) {
     // TESTING CODE
     
     printf("Hurray! It all works!\n");
-    printf("Now to test the energy function: \n");
+    printf("Now to test the energy function: \n\n");
     
     Funcd test;
     double energy = test(nodeNetwork, netSize);
-    printf("Energy (drumroll, please): %5f\n", energy);
+    printf("\nEnergy (drumroll, please): %5f\n", energy);
     
     
 
