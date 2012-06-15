@@ -24,7 +24,7 @@ struct Node {
     // bond with node at (i, j + 1), the second entry with node at (i + 1, j), 
     // and third entry with node at (i + 1, j - 1).
     
-    double *position, *sprstiff, *restlen;
+    double *position, *sprstiff, restlen;
     
     // Node(vector<double> position, vector<double> sprlen,
     // vector<double> sprstiff) is the initializer for the node
@@ -34,10 +34,10 @@ struct Node {
     Node() {
         position = new double[2];
         sprstiff = new double[3];
-        restlen = new double[3];
+        restlen = 0;
     }
     
-    Node(double *pos, double *stiff, double *rlen) : position(pos), 
+    Node(double *pos, double *stiff, double rlen) : position(pos), 
             sprstiff(stiff), restlen(rlen) {}
     
     Node(Node & a) {
@@ -51,7 +51,6 @@ struct Node {
     ~Node() {
         delete[] position;
         delete[] sprstiff;
-        delete[] restlen;
     }
     
     // printPos() is designed to test the functionality of the Node struct.

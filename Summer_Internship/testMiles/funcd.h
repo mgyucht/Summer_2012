@@ -44,7 +44,7 @@ struct Funcd {
     // Node ***x is a Node two-dimensional array, and the size of that array is
     // netSize x netSize.
     
-	Doub operator() ( Node ***x, int netSize, int strain ) {
+	Doub operator() ( Node ***x, int netSize, double strain ) {
         
 		double funcvalue = 0;
         
@@ -88,7 +88,7 @@ struct Funcd {
                 
                 for (int k = 1; k < 4; k++) {
                     
-                    funcvalue += 0.5 * nPtr[k]->sprstiff[k] / nPtr[k]->restlen[k]
+                    funcvalue += 0.5 * nPtr[k]->sprstiff[k] / nPtr[k]->restlen
                                     * deltaLSqrd(nPtr, k, strain);
                     
                 }
@@ -121,9 +121,9 @@ private:
     // deltaLSqrd returns the square change in the length of the spring
     // between nodes nPtr[0] and nPtr[k].
     
-    double deltaLSqrd(Node **x, int k, int strain) {
+    double deltaLSqrd(Node **x, int k, double strain) {
         double lijk = euclDistSqrd(x[0]->position, x[k]->position, k, strain);
-        double l0 = RESTLEN;
+        double l0 = x[0]->restlen;
         
         return (lijk - l0) * (lijk - l0);
     }
@@ -136,7 +136,7 @@ private:
     // Note that we use jMax + 1 and iMax + 1 in these expressions because they
     // are equivalent to the size of the network netSize. 
     
-    double euclDistSqrd(double *vec1, double *vec2, int k, int strain) {
+    double euclDistSqrd(double *vec1, double *vec2, int k, double strain) {
         
         double xshift = 0.0, yshift = 0.0;
         

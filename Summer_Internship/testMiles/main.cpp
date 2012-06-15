@@ -26,6 +26,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <ctime>
 #include <time.h>
 #include "nr3.h"
 #include "funcd.h"
@@ -40,8 +41,8 @@ double randDouble(int, int);
 
 int main (int argc, char *argv[]) {
     
-    double pBond = 0.7, youngMod = 1.0;
-    int netSize = 5, strain = 0;
+    double pBond = 0.7, strain = 0.0, youngMod = 1.0;
+    int netSize = 5;
     
     srand( time(NULL) );
     
@@ -50,7 +51,7 @@ int main (int argc, char *argv[]) {
     for (int i = 1; i < argc; i += 2) {
         string str = argv[i];
         if (!str.compare("-str")) {
-            strain = atoi(argv[i + 1]);
+            strain = atof(argv[i + 1]);
         } else if (!str.compare("-size")) {
             netSize = atoi(argv[i + 1]);
         } else if (!str.compare("-p")) {
@@ -84,13 +85,12 @@ int main (int argc, char *argv[]) {
             pos[1] = sqrt(3) / 2 * RESTLEN * i;
             
             double *sstiff = stiffVecGen(pBond, youngMod, 3);
-            double *rlen = new double [3];
             
-            rlen[0] = rlen[1] = rlen[2] = RESTLEN;
+            double rlen = RESTLEN;
             
             // Assign these data to the correct node
             
-            nodeNetwork[i][j] = new Node(&*pos, &*sstiff, &*rlen);
+            nodeNetwork[i][j] = new Node(&*pos, &*sstiff, rlen);
         }
     }
     

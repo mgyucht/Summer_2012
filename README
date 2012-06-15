@@ -26,9 +26,10 @@ For help, run
 The help file will tell you the correct usage to set the parameters for the
 simulation. 
 
-At the moment, the project compiles but is in the testing stage. I am currently
-working on implementing an energy function in the Funcd class in funcd.h to
-measure the energy of a network. 
+At the moment, the project compiles but is in the testing stage. Presently, the
+program will calculate the energy of a network with a given strain as subject to
+Lees-Edwards boundary conditions. I am currently implementing the gradient
+function df in funcd.h to calculate the gradient for the entire system.
 
 If you are not Chase Broedersz or me (Miles Yucht), I gladly offer you my code
 and am open to suggestions, but I would appreciate it if you would not edit what
