@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-
-double randDouble(int low, int high);
-double *stiffVecGen(double, double, int);
+#include "nr3.h"
 
 using namespace std;
 
@@ -27,6 +25,16 @@ int main () {
         cout << ")" << endl;
     }
     
+    cout << "Testing double to Doub conversions: " << endl;
+    
+    double x = 3;
+    Doub y = x;
+    
+    if (y)
+        cout << "Success!" << endl;
+    else 
+        cout << "Failure!" << endl;
+    
     return 0;
 }
 
@@ -44,7 +52,7 @@ double *stiffVecGen(double prob, double yMod, int numSprings) {
     
 }
 
-//randDouble returns a random number in the range [low, high). 
+//randDouble returns a random number in the range [low, high).
 
 double randDouble(int low, int high) {
     

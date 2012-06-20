@@ -1,0 +1,281 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 42.16     35.80    35.80 766875600     0.00     0.00  Funcd::euclDist(double const*, int)
+ 35.10     65.61    29.81  1136112     0.00     0.00  Funcd::operator()(double*)
+ 22.35     84.58    18.98 766875600     0.00     0.00  Funcd::deltaLSqrd(double*, int, int, int)
+  0.41     84.93     0.35     2512     0.00     0.03  Funcd::df(double*, double*)
+  0.02     84.95     0.02     2247     0.00     0.03  Df1dim<Funcd>::df(double)
+  0.01     84.96     0.01      265     0.00     0.29  double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&)
+  0.00     84.96     0.00   250937     0.00     0.00  abs(double)
+  0.00     84.96     0.00   119064     0.00     0.00  MAX(double, double)
+  0.00     84.96     0.00     4430     0.00     0.00  mov3(double&, double&, double&, double, double, double)
+  0.00     84.96     0.00     3197     0.00     0.00  Df1dim<Funcd>::operator()(double)
+  0.00     84.96     0.00     2513     0.00     0.00  Funcd::Funcd(double***, double***)
+  0.00     84.96     0.00      675     0.00     0.00  randDouble(int, int)
+  0.00     84.96     0.00      327     0.00     0.00  SIGN(double, double)
+  0.00     84.96     0.00      265     0.00     0.29  Dlinemethod<Funcd>::linmin()
+  0.00     84.96     0.00      265     0.00     0.00  void Bracketmethod::bracket<Df1dim<Funcd> >(double, double, Df1dim<Funcd>&)
+  0.00     84.96     0.00      265     0.00     0.00  Bracketmethod::Bracketmethod()
+  0.00     84.96     0.00      265     0.00     0.00  Dbrent::Dbrent(double)
+  0.00     84.96     0.00      265     0.00     0.00  Df1dim<Funcd>::Df1dim(double*, double*, Funcd&)
+  0.00     84.96     0.00      265     0.00     0.00  Df1dim<Funcd>::~Df1dim()
+  0.00     84.96     0.00      265     0.00     0.00  std::numeric_limits<double>::epsilon()
+  0.00     84.96     0.00      225     0.00     0.00  stiffVecGen(double, double, int)
+  0.00     84.96     0.00       12     0.00     0.00  SWAP(double, double)
+  0.00     84.96     0.00        1     0.00     0.00  Dlinemethod<Funcd>::Dlinemethod(Funcd&)
+  0.00     84.96     0.00        1     0.00    84.96  Frprmn<Funcd>::minimize(double*)
+  0.00     84.96     0.00        1     0.00     0.00  Frprmn<Funcd>::Frprmn(Funcd&, double)
+  0.00     84.96     0.00        1     0.00     0.00  std::operator|(std::_Ios_Openmode, std::_Ios_Openmode)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.01% of 84.96 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]    100.0    0.00   84.96                 main [1]
+                0.00   84.96       1/1           Frprmn<Funcd>::minimize(double*) [2]
+                0.00    0.00       2/1136112     Funcd::operator()(double*) [4]
+                0.00    0.00     225/225         stiffVecGen(double, double, int) [29]
+                0.00    0.00       1/2513        Funcd::Funcd(double***, double***) [21]
+                0.00    0.00       1/1           Frprmn<Funcd>::Frprmn(Funcd&, double) [32]
+                0.00    0.00       1/1           std::operator|(std::_Ios_Openmode, std::_Ios_Openmode) [33]
+-----------------------------------------------
+                0.00   84.96       1/1           main [1]
+[2]    100.0    0.00   84.96       1         Frprmn<Funcd>::minimize(double*) [2]
+                0.00   76.02     265/265         Dlinemethod<Funcd>::linmin() [5]
+                0.04    8.90     265/2512        Funcd::df(double*, double*) [3]
+                0.00    0.00       1/1136112     Funcd::operator()(double*) [4]
+                0.00    0.00  238395/250937      abs(double) [18]
+                0.00    0.00  119064/119064      MAX(double, double) [19]
+-----------------------------------------------
+                0.04    8.90     265/2512        Frprmn<Funcd>::minimize(double*) [2]
+                0.31   75.44    2247/2512        Df1dim<Funcd>::df(double) [7]
+[3]     99.7    0.35   84.34    2512         Funcd::df(double*, double*) [3]
+               29.72   54.62 1132912/1136112     Funcd::operator()(double*) [4]
+                0.00    0.00    2512/2513        Funcd::Funcd(double***, double***) [21]
+-----------------------------------------------
+                0.00    0.00       1/1136112     Frprmn<Funcd>::minimize(double*) [2]
+                0.00    0.00       2/1136112     main [1]
+                0.08    0.15    3197/1136112     Df1dim<Funcd>::operator()(double) [10]
+               29.72   54.62 1132912/1136112     Funcd::df(double*, double*) [3]
+[4]     99.6   29.81   54.77 1136112         Funcd::operator()(double*) [4]
+               18.98   35.80 766875600/766875600     Funcd::deltaLSqrd(double*, int, int, int) [8]
+-----------------------------------------------
+                0.00   76.02     265/265         Frprmn<Funcd>::minimize(double*) [2]
+[5]     89.5    0.00   76.02     265         Dlinemethod<Funcd>::linmin() [5]
+                0.01   75.95     265/265         double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+                0.00    0.06     265/265         void Bracketmethod::bracket<Df1dim<Funcd> >(double, double, Df1dim<Funcd>&) [11]
+                0.00    0.00     265/265         Df1dim<Funcd>::Df1dim(double*, double*, Funcd&) [26]
+                0.00    0.00     265/265         Dbrent::Dbrent(double) [25]
+                0.00    0.00     265/265         Df1dim<Funcd>::~Df1dim() [27]
+-----------------------------------------------
+                0.01   75.95     265/265         Dlinemethod<Funcd>::linmin() [5]
+[6]     89.4    0.01   75.95     265         double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+                0.02   75.75    2247/2247        Df1dim<Funcd>::df(double) [7]
+                0.00    0.18    2402/3197        Df1dim<Funcd>::operator()(double) [10]
+                0.00    0.00   12542/250937      abs(double) [18]
+                0.00    0.00    4430/4430        mov3(double&, double&, double&, double, double, double) [20]
+                0.00    0.00     327/327         SIGN(double, double) [23]
+                0.00    0.00     265/265         std::numeric_limits<double>::epsilon() [28]
+-----------------------------------------------
+                0.02   75.75    2247/2247        double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+[7]     89.2    0.02   75.75    2247         Df1dim<Funcd>::df(double) [7]
+                0.31   75.44    2247/2512        Funcd::df(double*, double*) [3]
+-----------------------------------------------
+               18.98   35.80 766875600/766875600     Funcd::operator()(double*) [4]
+[8]     64.5   18.98   35.80 766875600         Funcd::deltaLSqrd(double*, int, int, int) [8]
+               35.80    0.00 766875600/766875600     Funcd::euclDist(double const*, int) [9]
+-----------------------------------------------
+               35.80    0.00 766875600/766875600     Funcd::deltaLSqrd(double*, int, int, int) [8]
+[9]     42.1   35.80    0.00 766875600         Funcd::euclDist(double const*, int) [9]
+-----------------------------------------------
+                0.00    0.06     795/3197        void Bracketmethod::bracket<Df1dim<Funcd> >(double, double, Df1dim<Funcd>&) [11]
+                0.00    0.18    2402/3197        double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+[10]     0.3    0.00    0.24    3197         Df1dim<Funcd>::operator()(double) [10]
+                0.08    0.15    3197/1136112     Funcd::operator()(double*) [4]
+-----------------------------------------------
+                0.00    0.06     265/265         Dlinemethod<Funcd>::linmin() [5]
+[11]     0.1    0.00    0.06     265         void Bracketmethod::bracket<Df1dim<Funcd> >(double, double, Df1dim<Funcd>&) [11]
+                0.00    0.06     795/3197        Df1dim<Funcd>::operator()(double) [10]
+                0.00    0.00      12/12          SWAP(double, double) [30]
+-----------------------------------------------
+                0.00    0.00   12542/250937      double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+                0.00    0.00  238395/250937      Frprmn<Funcd>::minimize(double*) [2]
+[18]     0.0    0.00    0.00  250937         abs(double) [18]
+-----------------------------------------------
+                0.00    0.00  119064/119064      Frprmn<Funcd>::minimize(double*) [2]
+[19]     0.0    0.00    0.00  119064         MAX(double, double) [19]
+-----------------------------------------------
+                0.00    0.00    4430/4430        double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+[20]     0.0    0.00    0.00    4430         mov3(double&, double&, double&, double, double, double) [20]
+-----------------------------------------------
+                0.00    0.00       1/2513        main [1]
+                0.00    0.00    2512/2513        Funcd::df(double*, double*) [3]
+[21]     0.0    0.00    0.00    2513         Funcd::Funcd(double***, double***) [21]
+-----------------------------------------------
+                0.00    0.00     675/675         stiffVecGen(double, double, int) [29]
+[22]     0.0    0.00    0.00     675         randDouble(int, int) [22]
+-----------------------------------------------
+                0.00    0.00     327/327         double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+[23]     0.0    0.00    0.00     327         SIGN(double, double) [23]
+-----------------------------------------------
+                0.00    0.00     265/265         Dbrent::Dbrent(double) [25]
+[24]     0.0    0.00    0.00     265         Bracketmethod::Bracketmethod() [24]
+-----------------------------------------------
+                0.00    0.00     265/265         Dlinemethod<Funcd>::linmin() [5]
+[25]     0.0    0.00    0.00     265         Dbrent::Dbrent(double) [25]
+                0.00    0.00     265/265         Bracketmethod::Bracketmethod() [24]
+-----------------------------------------------
+                0.00    0.00     265/265         Dlinemethod<Funcd>::linmin() [5]
+[26]     0.0    0.00    0.00     265         Df1dim<Funcd>::Df1dim(double*, double*, Funcd&) [26]
+-----------------------------------------------
+                0.00    0.00     265/265         Dlinemethod<Funcd>::linmin() [5]
+[27]     0.0    0.00    0.00     265         Df1dim<Funcd>::~Df1dim() [27]
+-----------------------------------------------
+                0.00    0.00     265/265         double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [6]
+[28]     0.0    0.00    0.00     265         std::numeric_limits<double>::epsilon() [28]
+-----------------------------------------------
+                0.00    0.00     225/225         main [1]
+[29]     0.0    0.00    0.00     225         stiffVecGen(double, double, int) [29]
+                0.00    0.00     675/675         randDouble(int, int) [22]
+-----------------------------------------------
+                0.00    0.00      12/12          void Bracketmethod::bracket<Df1dim<Funcd> >(double, double, Df1dim<Funcd>&) [11]
+[30]     0.0    0.00    0.00      12         SWAP(double, double) [30]
+-----------------------------------------------
+                0.00    0.00       1/1           Frprmn<Funcd>::Frprmn(Funcd&, double) [32]
+[31]     0.0    0.00    0.00       1         Dlinemethod<Funcd>::Dlinemethod(Funcd&) [31]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[32]     0.0    0.00    0.00       1         Frprmn<Funcd>::Frprmn(Funcd&, double) [32]
+                0.00    0.00       1/1           Dlinemethod<Funcd>::Dlinemethod(Funcd&) [31]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[33]     0.0    0.00    0.00       1         std::operator|(std::_Ios_Openmode, std::_Ios_Openmode) [33]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+  [22] randDouble(int, int)   [11] void Bracketmethod::bracket<Df1dim<Funcd> >(double, double, Df1dim<Funcd>&) [7] Df1dim<Funcd>::df(double)
+  [29] stiffVecGen(double, double, int) [24] Bracketmethod::Bracketmethod() [26] Df1dim<Funcd>::Df1dim(double*, double*, Funcd&)
+  [19] MAX(double, double)     [8] Funcd::deltaLSqrd(double*, int, int, int) [27] Df1dim<Funcd>::~Df1dim()
+  [18] abs(double)             [3] Funcd::df(double*, double*) [10] Df1dim<Funcd>::operator()(double)
+  [23] SIGN(double, double)    [9] Funcd::euclDist(double const*, int) [2] Frprmn<Funcd>::minimize(double*)
+  [30] SWAP(double, double)   [21] Funcd::Funcd(double***, double***) [32] Frprmn<Funcd>::Frprmn(Funcd&, double)
+  [20] mov3(double&, double&, double&, double, double, double) [4] Funcd::operator()(double*) [28] std::numeric_limits<double>::epsilon()
+   [5] Dlinemethod<Funcd>::linmin() [6] double Dbrent::minimize<Df1dim<Funcd> >(Df1dim<Funcd>&) [33] std::operator|(std::_Ios_Openmode, std::_Ios_Openmode)
+  [31] Dlinemethod<Funcd>::Dlinemethod(Funcd&) [25] Dbrent::Dbrent(double)
