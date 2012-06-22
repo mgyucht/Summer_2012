@@ -6,8 +6,6 @@
 
 #include <stdio.h>
 
-extern int netSize;
-
 // Utility function used in this structure or others derived from it.
 inline void shft2(double &a, double &b, const double c)
 {
@@ -60,9 +58,9 @@ inline double SIGN(double a, double b) {
 //program.
 
 void usageExit() {
-    printf("\nThe correct usage is\n");
-    printf("\n program -str <strain> -size <network size> -p <bond ");
-    printf("probability> -y <young's modulus for spring>\n");
+    printf("usage:");
+    printf("\n   program [-str <strain>] [-size <network size>] [-p <bond ");
+    printf("probability>] [-y <young's modulus for spring>]\n");
     exit(EXIT_FAILURE);
 }
 

@@ -11,9 +11,9 @@ of cells. Additionally, there are several papers on the topic of modeling
 cell cytoskeletons and experiments measuring the mechanical properties of
 cytoskeletons.
 
-The main file is located in main.cpp and is compiled by the following command:
+The main file is located in program.cpp and is compiled by the following command:
 
-    $ g++ -g -o program main.cpp
+    $ g++ -o program program.cpp
     
 So, to run the program, run 
 
@@ -26,11 +26,3 @@ For help, run
 The help file will tell you the correct usage to set the parameters for the
 simulation. 
 
-At the moment, the project compiles but is in the testing stage. Presently, the
-program will calculate the energy of a network with a given strain as subject to
-Lees-Edwards boundary conditions. I am currently implementing the gradient
-function df in funcd.h to calculate the gradient for the entire system.
-
-If you are not Chase Broedersz or me (Miles Yucht), I gladly offer you my code
-and am open to suggestions, but I would appreciate it if you would not edit what
-I have written so far without contacting me first (mgyucht@gmail.com).

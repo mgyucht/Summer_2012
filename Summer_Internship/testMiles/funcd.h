@@ -22,10 +22,13 @@
 #include <stdio.h>
 #include "debug.h"
 
+#define xadj pos[2 * k] + xshift 
+#define yadj pos[2 * k + 1] + yshift
+
 using namespace std;
 
 const double RESTLEN = 1;
-const double DEL = 1e-7;
+const double DEL = 1e-11;
 
 // isiMax, isjMax and isjMin are true whenever i = iMax, j = jMax, or j = jMin
 // respectively. Basically, they trigger periodic boundary condition code.
@@ -229,7 +232,7 @@ struct Funcd {
                     position[0] -= DEL;
                     position[1] += DEL;
                     dytemp += prefactor * deltaLSqrd(position, i, j, k);
-                    
+                    position[1] -= DEL;
                 }
                 
                 dx[(i * netSize + j) * 2] = (dxtemp - current) / DEL;
@@ -238,7 +241,7 @@ struct Funcd {
             }   
         }
         
-    }
+    } // End of df();
     
     private:
     
@@ -294,7 +297,7 @@ struct Funcd {
             case 2: 
                 if (isiMax) {
                 
-                    xshift += (jMax + 1) * RESTLEN / 2.0 + strain * RESTLEN;
+                    xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
                     yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
                     
                 }
@@ -304,7 +307,7 @@ struct Funcd {
             case 3:
                 if (isiMax) {
                 
-                    xshift += (jMax + 1) * RESTLEN / 2.0 + strain * RESTLEN;
+                    xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
                     yshift += (iMax + 1)* RESTLEN * sqrt(3.0) / 2.0;
                     
                 }
@@ -328,7 +331,7 @@ struct Funcd {
                 if (isiMin) {
                     
                     yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                    xshift -= (jMax + 1) * RESTLEN / 2.0 + strain * RESTLEN;
+                    xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
                     
                 }
                 break;
@@ -338,7 +341,7 @@ struct Funcd {
                 if (isiMin) {
                 
                     yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                    xshift -= (jMax + 1) * RESTLEN / 2.0 + strain * RESTLEN;
+                    xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
                     
                 }
                 if (isjMax)
@@ -348,25 +351,9 @@ struct Funcd {
                 break;
         }
         
-        // xadj and yadj refer to nPtr[k = 1, 2, 3].
+        // xadj and yadj refer to the nodes around pos[0/1].
         
-        double xadj = pos[2 * k] + xshift; 
-        double yadj = pos[2 * k + 1] + yshift;
-        
-        // x and y refer to nPtr[0] always.
-        
-        double x = pos[0];
-        double y = pos[1];
-        
-        double dist = sqrt((xadj - x) * (xadj - x) + (yadj - y) * (yadj - y));
-        
-        #if DEBUGDIST
-
-        printf("(%.2f, %.2f) -> (%.2f, %.2f) is %.2f\n", x, y, xadj, yadj, dist);
-        
-        #endif
-        
-        return dist;
+        return sqrt((xadj - pos[0]) * (xadj - pos[0]) + (yadj - pos[1]) * (yadj - pos[1]));
     }
 };
 

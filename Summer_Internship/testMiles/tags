@@ -4,109 +4,100 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-BRACKET_H_	bracket.h	2;"	d
-Bracketmethod	bracket.h	/^struct Bracketmethod {$/;"	s
-DBRENT_H_	dbrent.h	2;"	d
-DEBUGDIST	debug.h	11;"	d
-DEBUGENERGY	debug.h	10;"	d
-DEBUGFRPRMN	debug.h	17;"	d
-DEBUGGRADIENT	debug.h	14;"	d
-DEL	funcd.h	/^const double DEL = 1e-7;$/;"	v
-DEL	trialfuncd.h	/^const double DEL = 1e-7;$/;"	v
-DF1DIM_H_	dF1dim.h	8;"	d
-DLINMIN_H_	dlinmin.h	8;"	d
-Dbrent	dbrent.h	/^    Dbrent(const double toll=3.0e-8) : tol(toll) {}$/;"	f	struct:Dbrent
-Dbrent	dbrent.h	/^struct Dbrent : Bracketmethod {$/;"	s
-Df1dim	dF1dim.h	/^    Df1dim(double *pp, double *xii, T &funcdd) :$/;"	f	struct:Df1dim
-Df1dim	dF1dim.h	/^struct Df1dim {$/;"	s
-Dlinemethod	dlinmin.h	/^    Dlinemethod(T &funcc) : func(funcc) {}$/;"	f	struct:Dlinemethod
-Dlinemethod	dlinmin.h	/^struct Dlinemethod {$/;"	s
-FRPRMN_H_	frprmn.h	9;"	d
-FUNCD_H_	funcd.h	19;"	d
-FUNCD_H_	trialfuncd.h	19;"	d
-Frprmn	frprmn.h	/^    Frprmn(T &funcd, const double ftoll=1e-7) : Dlinemethod<T>(funcd),$/;"	f	struct:Frprmn
-Frprmn	frprmn.h	/^struct Frprmn : Dlinemethod<T> {$/;"	s
-Funcd	funcd.h	/^    Funcd(double *** ssprstiff, double *** rrestlen) : spr(ssprstiff), rlen(rrestlen) {}$/;"	f	struct:Funcd
-Funcd	funcd.h	/^struct Funcd {$/;"	s
-Funcd	trialfuncd.h	/^    Funcd(double *** ssprstiff, double *** rrestlen) : spr(ssprstiff), rlen(rrestlen) {}$/;"	f	struct:Funcd
-Funcd	trialfuncd.h	/^struct Funcd {$/;"	s
-MAX	utils.h	/^inline double MAX(double a, double b) {$/;"	f
-RESTLEN	funcd.h	/^const double RESTLEN = 1;$/;"	v
-RESTLEN	trialfuncd.h	/^const double RESTLEN = 1;$/;"	v
-SIGN	utils.h	/^inline double SIGN(double a, double b) {$/;"	f
-SWAP	utils.h	/^inline void SWAP(double a, double b) {$/;"	f
-_DEBUG_H_	debug.h	2;"	d
-_UTILS_H_	utils.h	2;"	d
-abs	utils.h	/^inline double abs(double a) {$/;"	f
-ax	bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
-bracket	bracket.h	/^        void bracket(const double a, const double b, T &func)$/;"	f	struct:Bracketmethod
-bx	bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
-cx	bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
-deltaLSqrd	funcd.h	/^    double deltaLSqrd(double * pos, const int row, const int col, const int k) {$/;"	f	struct:Funcd
-deltaLSqrd	trialfuncd.h	/^    double deltaLSqrd(double * pos, const int row, const int col, const int k) {$/;"	f	struct:Funcd
-df	dF1dim.h	/^    double df(const double x) {$/;"	f	struct:Df1dim
-df	funcd.h	/^    void df(double *x, double *dx) {$/;"	f	struct:Funcd
-df	trialfuncd.h	/^    void df(double *x, double *dx) {$/;"	f	struct:Funcd
-dft	dF1dim.h	/^    double *dft;$/;"	m	struct:Df1dim
-euclDist	funcd.h	/^    double euclDist(const double * pos, const int k) {$/;"	f	struct:Funcd
-euclDist	trialfuncd.h	/^    double euclDist(const double * pos, const int k, const int i, const int j) {$/;"	f	struct:Funcd
-fa	bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
-fb	bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
-fc	bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
-fmin	dbrent.h	/^    double xmin,fmin;$/;"	m	struct:Dbrent
-fret	frprmn.h	/^    double fret;$/;"	m	struct:Frprmn
-ftol	frprmn.h	/^    const double ftol;$/;"	m	struct:Frprmn
-func	dlinmin.h	/^    T &func;$/;"	m	struct:Dlinemethod
-funcd	dF1dim.h	/^    T &funcd;$/;"	m	struct:Df1dim
-i1	funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-i1	trialfuncd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-i2	funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-i2	trialfuncd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-iMax	funcd.h	/^int iMax, jMax;$/;"	v
-iMax	trialfuncd.h	41;"	d
-isiMax	funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
-isiMax	trialfuncd.h	33;"	d
-isiMin	funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
-isiMin	trialfuncd.h	34;"	d
-isjMax	funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
-isjMax	trialfuncd.h	35;"	d
-isjMin	funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
-isjMin	trialfuncd.h	36;"	d
-iter	frprmn.h	/^    int iter;$/;"	m	struct:Frprmn
-j1	funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-j1	trialfuncd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-j2	funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-j2	trialfuncd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
-jMax	funcd.h	/^int iMax, jMax;$/;"	v
-jMax	trialfuncd.h	42;"	d
-linmin	dlinmin.h	/^    double linmin() {$/;"	f	struct:Dlinemethod
-main	program.cpp	/^int main (int argc, char *argv[]) {$/;"	f
-main	test.cpp	/^int main () {$/;"	f
-minimize	dbrent.h	/^        double minimize(T &funcd) {$/;"	f	struct:Dbrent
-minimize	frprmn.h	/^    double *minimize(double *pp)$/;"	f	struct:Frprmn
-mov3	utils.h	/^inline void mov3(double &a, double &b, double &c, const double d, const double e,$/;"	f
-n	dlinmin.h	/^    int n;$/;"	m	struct:Dlinemethod
-netSize	program.cpp	/^int netSize;$/;"	v
-operator ()	dF1dim.h	/^    double operator() (const double x) {$/;"	f	struct:Df1dim
-operator ()	funcd.h	/^    double operator() ( double *x ) {$/;"	f	struct:Funcd
-operator ()	trialfuncd.h	/^    double operator() ( double *x ) {$/;"	f	struct:Funcd
-p	dF1dim.h	/^    const double *p;$/;"	m	struct:Df1dim
-p	dlinmin.h	/^    double *p;$/;"	m	struct:Dlinemethod
-randDouble	test.cpp	/^double randDouble(int low, int high) {$/;"	f
-randDouble	utils.h	/^double randDouble(int low, int high) {$/;"	f
-rlen	funcd.h	/^    double *** rlen;$/;"	m	struct:Funcd
-rlen	trialfuncd.h	/^    double *** rlen;$/;"	m	struct:Funcd
-shft2	utils.h	/^inline void shft2(double &a, double &b, const double c)$/;"	f
-shft3	utils.h	/^inline void shft3(double &a, double &b, double &c, const double d)$/;"	f
-spr	funcd.h	/^    double *** spr; $/;"	m	struct:Funcd
-spr	trialfuncd.h	/^    double *** spr; $/;"	m	struct:Funcd
-stiffVecGen	test.cpp	/^double *stiffVecGen(double prob, double yMod, int numSprings) {$/;"	f
-stiffVecGen	utils.h	/^double *stiffVecGen(double prob, double yMod, int numSprings) {$/;"	f
-strain	program.cpp	/^double strain;$/;"	v
-tol	dbrent.h	/^    const double tol;$/;"	m	struct:Dbrent
-usageExit	utils.h	/^void usageExit() {$/;"	f
-xi	dF1dim.h	/^    const double *xi;$/;"	m	struct:Df1dim
-xi	dlinmin.h	/^    double *xi;$/;"	m	struct:Dlinemethod
-xmin	dbrent.h	/^    double xmin,fmin;$/;"	m	struct:Dbrent
-xt	dF1dim.h	/^    double *xt;$/;"	m	struct:Df1dim
-~Df1dim	dF1dim.h	/^    ~Df1dim() {$/;"	f	struct:Df1dim
+BRACKET_H_	headers/bracket.h	2;"	d
+Bracketmethod	headers/bracket.h	/^struct Bracketmethod {$/;"	s
+CC	makefile	/^CC = g++$/;"	m
+DBRENT_H_	headers/dbrent.h	2;"	d
+DEBUGDIST	headers/debug.h	11;"	d
+DEBUGENERGY	headers/debug.h	10;"	d
+DEBUGFRPRMN	headers/debug.h	17;"	d
+DEBUGGRADIENT	headers/debug.h	14;"	d
+DEL	headers/funcd.h	/^const double DEL = 1e-11;$/;"	v
+DF1DIM_H_	headers/dF1dim.h	8;"	d
+DLINMIN_H_	headers/dlinmin.h	8;"	d
+Dbrent	headers/dbrent.h	/^    Dbrent(const double toll=3.0e-8) : tol(toll) {}$/;"	f	struct:Dbrent
+Dbrent	headers/dbrent.h	/^struct Dbrent : Bracketmethod {$/;"	s
+Df1dim	headers/dF1dim.h	/^    Df1dim(double *pp, double *xii, T &funcdd) :$/;"	f	struct:Df1dim
+Df1dim	headers/dF1dim.h	/^struct Df1dim {$/;"	s
+Dlinemethod	headers/dlinmin.h	/^    Dlinemethod(T &funcc) : func(funcc) {}$/;"	f	struct:Dlinemethod
+Dlinemethod	headers/dlinmin.h	/^struct Dlinemethod {$/;"	s
+FRPRMN_H_	headers/frprmn.h	9;"	d
+FUNCD_H_	headers/funcd.h	19;"	d
+Frprmn	headers/frprmn.h	/^    Frprmn(T &funcd, const double ftoll=1e-7) : Dlinemethod<T>(funcd),$/;"	f	struct:Frprmn
+Frprmn	headers/frprmn.h	/^struct Frprmn : Dlinemethod<T> {$/;"	s
+Funcd	headers/funcd.h	/^    Funcd(double *** ssprstiff, double *** rrestlen) : spr(ssprstiff), rlen(rrestlen) {}$/;"	f	struct:Funcd
+Funcd	headers/funcd.h	/^struct Funcd {$/;"	s
+MAX	headers/utils.h	/^inline double MAX(double a, double b) {$/;"	f
+PRINTENERGY	headers/debug.h	19;"	d
+PRINTNONAFFINITY	headers/debug.h	23;"	d
+PRINTPOS	headers/debug.h	22;"	d
+PROGRAM_H_FILES	makefile	/^PROGRAM_H_FILES = program.cpp bracket.h dbrent.h debug.h dF1dim.h dlinmin.h frprmn.h funcd.h utils.h$/;"	m
+RESTLEN	headers/funcd.h	/^const double RESTLEN = 1;$/;"	v
+SIGN	headers/utils.h	/^inline double SIGN(double a, double b) {$/;"	f
+SWAP	headers/utils.h	/^inline void SWAP(double a, double b) {$/;"	f
+_DEBUG_H_	headers/debug.h	2;"	d
+_NONAFFINITY_H_	headers/nonaffinity.h	2;"	d
+_UTILS_H_	headers/utils.h	2;"	d
+abs	headers/utils.h	/^inline double abs(double a) {$/;"	f
+ax	headers/bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
+bracket	headers/bracket.h	/^        void bracket(const double a, const double b, T &func)$/;"	f	struct:Bracketmethod
+bx	headers/bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
+cx	headers/bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
+deltaLSqrd	headers/funcd.h	/^    double deltaLSqrd(double * pos, const int row, const int col, const int k) {$/;"	f	struct:Funcd
+df	headers/dF1dim.h	/^    double df(const double x) {$/;"	f	struct:Df1dim
+df	headers/funcd.h	/^    void df(double *x, double *dx) {$/;"	f	struct:Funcd
+dft	headers/dF1dim.h	/^    double *dft;$/;"	m	struct:Df1dim
+euclDist	headers/funcd.h	/^    double euclDist(const double * pos, const int k) {$/;"	f	struct:Funcd
+fa	headers/bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
+fb	headers/bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
+fc	headers/bracket.h	/^    double ax, bx, cx, fa, fb, fc;$/;"	m	struct:Bracketmethod
+fmin	headers/dbrent.h	/^    double xmin,fmin;$/;"	m	struct:Dbrent
+fret	headers/frprmn.h	/^    double fret;$/;"	m	struct:Frprmn
+ftol	headers/frprmn.h	/^    const double ftol;$/;"	m	struct:Frprmn
+func	headers/dlinmin.h	/^    T &func;$/;"	m	struct:Dlinemethod
+funcd	headers/dF1dim.h	/^    T &funcd;$/;"	m	struct:Df1dim
+i1	headers/funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
+i2	headers/funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
+iMax	headers/funcd.h	/^int iMax, jMax;$/;"	v
+isiMax	headers/funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
+isiMin	headers/funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
+isjMax	headers/funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
+isjMin	headers/funcd.h	/^bool isiMax, isiMin, isjMax, isjMin;$/;"	v
+iter	headers/frprmn.h	/^    int iter;$/;"	m	struct:Frprmn
+j1	headers/funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
+j2	headers/funcd.h	/^    int i1, i2, j1, j2;$/;"	m	struct:Funcd
+jMax	headers/funcd.h	/^int iMax, jMax;$/;"	v
+linmin	headers/dlinmin.h	/^    double linmin() {$/;"	f	struct:Dlinemethod
+main	source/batch.cpp	/^int main (int argc, char *argv[]) {$/;"	f
+main	source/program.cpp	/^int main (int argc, char *argv[]) {$/;"	f
+main	source/test.cpp	/^int main () {$/;"	f
+minimize	headers/dbrent.h	/^        double minimize(T &funcd) {$/;"	f	struct:Dbrent
+minimize	headers/frprmn.h	/^    double *minimize(double *pp)$/;"	f	struct:Frprmn
+mov3	headers/utils.h	/^inline void mov3(double &a, double &b, double &c, const double d, const double e,$/;"	f
+n	headers/dlinmin.h	/^    int n;$/;"	m	struct:Dlinemethod
+netSize	source/batch.cpp	/^int netSize;$/;"	v
+netSize	source/program.cpp	/^int netSize;$/;"	v
+nonAffinity	source/nonaffinity.cpp	/^double nonAffinity(const char * argv) {$/;"	f
+operator ()	headers/dF1dim.h	/^    double operator() (const double x) {$/;"	f	struct:Df1dim
+operator ()	headers/funcd.h	/^    double operator() ( double *x ) {$/;"	f	struct:Funcd
+p	headers/dF1dim.h	/^    const double *p;$/;"	m	struct:Df1dim
+p	headers/dlinmin.h	/^    double *p;$/;"	m	struct:Dlinemethod
+randDouble	headers/utils.h	/^double randDouble(int low, int high) {$/;"	f
+randDouble	source/test.cpp	/^double randDouble(int low, int high) {$/;"	f
+rlen	headers/funcd.h	/^    double *** rlen;$/;"	m	struct:Funcd
+shft2	headers/utils.h	/^inline void shft2(double &a, double &b, const double c)$/;"	f
+shft3	headers/utils.h	/^inline void shft3(double &a, double &b, double &c, const double d)$/;"	f
+spr	headers/funcd.h	/^    double *** spr; $/;"	m	struct:Funcd
+stiffVecGen	headers/utils.h	/^double *stiffVecGen(double prob, double yMod, int numSprings) {$/;"	f
+stiffVecGen	source/test.cpp	/^double *stiffVecGen(double prob, double yMod, int numSprings) {$/;"	f
+strain	source/batch.cpp	/^double strain;$/;"	v
+strain	source/program.cpp	/^double strain;$/;"	v
+tol	headers/dbrent.h	/^    const double tol;$/;"	m	struct:Dbrent
+usageExit	headers/utils.h	/^void usageExit() {$/;"	f
+xadj	headers/funcd.h	25;"	d
+xi	headers/dF1dim.h	/^    const double *xi;$/;"	m	struct:Df1dim
+xi	headers/dlinmin.h	/^    double *xi;$/;"	m	struct:Dlinemethod
+xmin	headers/dbrent.h	/^    double xmin,fmin;$/;"	m	struct:Dbrent
+xt	headers/dF1dim.h	/^    double *xt;$/;"	m	struct:Df1dim
+yadj	headers/funcd.h	26;"	d
+~Df1dim	headers/dF1dim.h	/^    ~Df1dim() {$/;"	f	struct:Df1dim

@@ -9,14 +9,6 @@
  * Date: Mon June 11 2012
  */
 
-/*
- * Working revisions:
- *
- * Only two dimensions.
- * nr3.h is no longer needed! Yay!
- *
- */
-
 #include <string>
 #include <ctime>
 #include <time.h>
@@ -27,6 +19,7 @@
 #include "frprmn.h"
 #include "utils.h"
 #include "debug.h"
+#include "nonaffinity.h"
 
 using namespace std;
 
@@ -37,7 +30,7 @@ int main (int argc, char *argv[]) {
 
     // Default values.
 
-    double pBond = 1.0;
+    double pBond = 0.8;
     double youngMod = 1.0;
     netSize = 20;
     strain = 0.0;
@@ -78,10 +71,12 @@ int main (int argc, char *argv[]) {
         for (int j = 0; j < netSize; j++) {
 
             // x-coordinate
-            position[i * 2 * netSize + j * 2] = RESTLEN * (i / 2.0 + j);
+            position[(i * netSize + j) * 2] = RESTLEN * (i / 2.0 + j);
+            // predicts initial positoin from strain
+            position[(i * netSize + j) * 2] += i * strain * sqrt(3.0) / 2.0;
 
             // y-coordinate
-            position[i * 2 * netSize + j * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
+            position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
 
             sprstiff[i][j] = stiffVecGen(pBond, youngMod, 3);
 
@@ -103,9 +98,10 @@ int main (int argc, char *argv[]) {
     // Print out position vector to "position_data.txt" in the following format:
     // row,column,xval,yval
 
-#if BATCH
+    #if PRINTPOS
 
-    ofstream posFile("position_data.txt", ios::app);
+    string posFileName = "position_data.txt";
+    ofstream posFile(posFileName.c_str(), ios::trunc);
 
     if (posFile.is_open()) {
 
@@ -136,6 +132,26 @@ int main (int argc, char *argv[]) {
     }
 
     posFile.close();
+    
+    #if PRINTNONAFFINITY
+    
+    string nonaffFileName = "nonaff_data.txt";
+    ofstream nonaffFile(nonaffFileName.c_str(), ios::app);
+
+    if (nonaffFile.is_open()) {
+        
+        nonaffFile << netSize << "," << strain << "," << pBond << "," 
+            << nonAffinity(posFileName.c_str()) << endl;
+    
+    }
+    
+    nonaffFile.close();
+
+    #endif //PRINTNONAFFINITY
+    
+    #endif //PRINTPOS
+    
+    #if PRINTENERGY
 
     // Print out energy and p for the experiment
 
@@ -149,7 +165,7 @@ int main (int argc, char *argv[]) {
 
     engFile.close();
 
-#endif
+    #endif
 
     // Cleanup
 

@@ -1,20 +1,14 @@
-/* program.cpp
+/* batch.cpp
  * --------
  *
- * program.cpp is the client file in simulating the spring networks.
+ * batch.cpp is a batch file identical to program but designed for batch 
+ * computation of these networks.
+ * 
  * Usage: program -str <strain> -size <network size> -p <bond probability> -y \
  * <young's modulus for springs>
  *
  * Author: Miles Yucht
  * Date: Mon June 11 2012
- */
-
-/*
- * Working revisions:
- *
- * Only two dimensions.
- * nr3.h is no longer needed! Yay!
- *
  */
 
 #include <string>
@@ -27,6 +21,7 @@
 #include "frprmn.h"
 #include "utils.h"
 #include "debug.h"
+#include "nonaffinity.h"
 
 using namespace std;
 
@@ -34,44 +29,16 @@ int netSize;
 double strain;
 
 int main (int argc, char *argv[]) {
-    
-    double pBond = 1.0;
-    
-    for (; pBond > 0.6484; pBond -= 0.03) {
 
-        printf("pBond = %3.2f\n", pBond);
-        
-        for (strain = 0.05; strain < 0.51; strain += 0.05) {
-            
-            printf("  strain = %3.2f\n", strain);
-    
+    // Default values.
 
-            // Default values.
+    double youngMod = 1.0;
+    netSize = 20;
 
-            double youngMod = 1.0;
-            netSize = 20;
+    srand( time(NULL) );
 
-            srand( time(NULL) );
-
-            //Otherwise, parse the command line parameters.
-
-            for (int i = 1; i < argc; i += 2) {
-                string str = argv[i];
-                if (!str.compare("-str")) {
-                    strain = atof(argv[i + 1]);
-                } else if (!str.compare("-size")) {
-                    netSize = atoi(argv[i + 1]);
-                } else if (!str.compare("-p")) {
-                    pBond = atof(argv[i + 1]);
-                } else if (!str.compare("-y")) {
-                    youngMod = atof(argv[i + 1]);
-                } else if (!str.compare("-help") || !str.compare("help")) {
-                    usageExit();
-                } else {
-                    printf("%s is an illegal argument.\n", argv[i]);
-                    usageExit();
-                }
-            }
+    for (double pBond = 1.0; pBond > 0.5; pBond -= 0.005) {
+        for (double strain = 0.0; strain < 0.1; strain += 0.005) {
 
             // Now that those are parsed, we can start to generate our network.
 
@@ -87,10 +54,12 @@ int main (int argc, char *argv[]) {
                 for (int j = 0; j < netSize; j++) {
 
                     // x-coordinate
-                    position[i * 2 * netSize + j * 2] = RESTLEN * (i / 2.0 + j);
+                    position[(i * netSize + j) * 2] = RESTLEN * (i / 2.0 + j);
+                    // predicts initial positoin from strain
+                    position[(i * netSize + j) * 2] += i * strain * sqrt(3.0) / 2.0;
 
                     // y-coordinate
-                    position[i * 2 * netSize + j * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
+                    position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
 
                     sprstiff[i][j] = stiffVecGen(pBond, youngMod, 3);
 
@@ -102,18 +71,19 @@ int main (int argc, char *argv[]) {
             }
 
             // Minimize energy
-            
+
             Funcd test(sprstiff, restlen);
             Frprmn<Funcd> frprmn(test);
             double *newArray = frprmn.minimize(position);
             double newEnergy = test(newArray);
-            printf("E = %f\n", newEnergy);
 
             // Print out position vector to "position_data.txt" in the following format:
             // row,column,xval,yval
 
+#if PRINTPOS
 
-            ofstream posFile("position_data.txt", ios::app);
+            string posFileName = "position_data.txt";
+            ofstream posFile(posFileName.c_str(), ios::trunc);
 
             if (posFile.is_open()) {
 
@@ -145,6 +115,26 @@ int main (int argc, char *argv[]) {
 
             posFile.close();
 
+#if PRINTNONAFFINITY
+
+            string nonaffFileName = "nonaff_data.txt";
+            ofstream nonaffFile(nonaffFileName.c_str(), ios::app);
+
+            if (nonaffFile.is_open()) {
+
+                nonaffFile << netSize << "," << strain << "," << pBond << "," 
+                    << nonAffinity(posFileName.c_str()) << endl;
+
+            }
+
+            nonaffFile.close();
+
+#endif //PRINTNONAFFINITY
+
+#endif //PRINTPOS
+
+#if PRINTENERGY
+
             // Print out energy and p for the experiment
 
             ofstream engFile("energy_data.txt", ios::app);
@@ -157,7 +147,8 @@ int main (int argc, char *argv[]) {
 
             engFile.close();
 
-            
+#endif
+
             // Cleanup
 
             delete[] position;
@@ -173,10 +164,8 @@ int main (int argc, char *argv[]) {
 
             delete[] sprstiff;
             delete[] restlen;
-            
-
         }
     }
-    
+
     return 0;
 }
