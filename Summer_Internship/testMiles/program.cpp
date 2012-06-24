@@ -104,7 +104,7 @@ int main (int argc, char *argv[]) {
     ofstream posFile(posFileName.c_str(), ios::trunc);
 
     if (posFile.is_open()) {
-
+ 
         posFile << "Network Size,Strain,Young's Modulus,Probability" << endl;
         posFile << netSize << "," << strain << "," << youngMod << ","
             << pBond << endl;
@@ -140,8 +140,10 @@ int main (int argc, char *argv[]) {
 
     if (nonaffFile.is_open()) {
         
+        double nonaff = nonAffinity(posFileName.c_str());
+        printf("Γ = %f\n", nonaff);
         nonaffFile << netSize << "," << strain << "," << pBond << "," 
-            << nonAffinity(posFileName.c_str()) << endl;
+            << nonaff << endl;
     
     }
     

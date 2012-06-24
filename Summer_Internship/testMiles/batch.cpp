@@ -1,14 +1,8 @@
 /* batch.cpp
  * --------
  *
- * batch.cpp is a batch file identical to program but designed for batch 
- * computation of these networks.
- * 
- * Usage: program -str <strain> -size <network size> -p <bond probability> -y \
- * <young's modulus for springs>
- *
  * Author: Miles Yucht
- * Date: Mon June 11 2012
+ * Date: Mon June 23 2012
  */
 
 #include <string>
@@ -32,13 +26,15 @@ int main (int argc, char *argv[]) {
 
     // Default values.
 
+    double pBond = 0.8;
     double youngMod = 1.0;
     netSize = 20;
+    strain = 0.0;
 
     srand( time(NULL) );
-
-    for (double pBond = 1.0; pBond > 0.5; pBond -= 0.005) {
-        for (double strain = 0.0; strain < 0.1; strain += 0.005) {
+    
+    for (; pBond > 0.5; pBond -= 0.025) {
+        for (strain = 0.01; strain < 0.09; strain += 0.03) {
 
             // Now that those are parsed, we can start to generate our network.
 
@@ -76,6 +72,7 @@ int main (int argc, char *argv[]) {
             Frprmn<Funcd> frprmn(test);
             double *newArray = frprmn.minimize(position);
             double newEnergy = test(newArray);
+            printf("%f, %f\n", pBond, strain);
 
             // Print out position vector to "position_data.txt" in the following format:
             // row,column,xval,yval
@@ -122,8 +119,9 @@ int main (int argc, char *argv[]) {
 
             if (nonaffFile.is_open()) {
 
+                double nonaff = nonAffinity(posFileName.c_str());
                 nonaffFile << netSize << "," << strain << "," << pBond << "," 
-                    << nonAffinity(posFileName.c_str()) << endl;
+                    << nonaff << endl;
 
             }
 
