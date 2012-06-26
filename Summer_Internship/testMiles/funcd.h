@@ -5,55 +5,55 @@
 // This header file is designed to be used for the conjugate gradient method
 // of minimizing the value of a multidimensional function.
 //
-// operator() ( VecNode2D &x )
+// operator() ( double * x )
 // ---------------------------
 //
 // Reports the energy of the network x.
 //
-// df ( VecDoub_I &x, VecDoub_O &deriv)
+// df ( double * x, double * dx )
 // ------------------------------------
 //
-// Calculates the gradient of the network's energy.
+// Calculates the gradient of the network's energy, and stores the results in
+// dx.
 
 #ifndef FUNCD_H_
 #define FUNCD_H_
 
-#include <vector>
-#include <stdio.h>
-#include "debug.h"
+// For the euclDist function.
 
-#define xadj pos[2 * k] + xshift 
-#define yadj pos[2 * k + 1] + yshift
+#define xadj (pos[2 * k] + xshift)
+#define yadj (pos[2 * k + 1] + yshift)
 
 using namespace std;
-
-const double RESTLEN = 1;
-const double DEL = 1e-11;
-
-// isiMax, isjMax and isjMin are true whenever i = iMax, j = jMax, or j = jMin
-// respectively. Basically, they trigger periodic boundary condition code.
-
-bool isiMax, isiMin, isjMax, isjMin;
-
-// iMax and jMax refer to the total number of nodes in a single column or in a
-// single row, respectively.
-
-int iMax, jMax;
 
 extern int netSize;
 extern double strain;
 
-// The Funcd struct.
+// The restlength of the springs.
+const double RESTLEN = 1;
 
+// The gradient is calculated numerically, and this is the displacement.
+const double DEL = 1e-11;
+
+// isiMax, isjMax and isjMin are true whenever i = iMax, j = jMax, or j = jMin
+// respectively. Basically, they trigger periodic boundary condition code.
+bool isiMax, isiMin, isjMax, isjMin;
+
+// The Funcd struct.
 struct Funcd {
     
     double *** spr; 
     double *** rlen;
-    int i1, i2, j1, j2;
+    int i1, i2, j1, j2, iMax, jMax;
     
     // Constructor. Taking the correct approach.
 
-    Funcd(double *** ssprstiff, double *** rrestlen) : spr(ssprstiff), rlen(rrestlen) {}
+    Funcd(double *** ssprstiff, double *** rrestlen) : spr(ssprstiff), rlen(rrestlen) {
+    
+        iMax = netSize - 1;
+        jMax = iMax;
+    
+    }
 
     // The () operator (function call) is now used to calculate the energy of
     // a network. This operator must contain the energy function for the
@@ -74,16 +74,7 @@ struct Funcd {
 
     double operator() ( double *x ) {
         
-        #if DEBUGENERGY
-        
-            printf("Energy function called. \n");
-            
-        #endif
-        
         double funcvalue = 0;
-
-        iMax = netSize - 1;
-        jMax = netSize - 1;
 
         for(int i = 0; i <= iMax; i++) {
             for (int j = 0; j <= jMax; j++) {
@@ -126,26 +117,11 @@ struct Funcd {
                         
                 };
                 
-                #if DEBUGENERGY
-                
-                    printf("(%d, %d):\n", j, i);
-                    
-                #endif
-                
                 for (int k = 1; k < 4; k++) {
                     
-                    double temp = 0.5 * spr[i][j][k - 1] / rlen[i][j][k - 1] 
+                    funcvalue = 0.5 * spr[i][j][k - 1] / rlen[i][j][k - 1] 
                                     * deltaLSqrd(pos, i, j, k);
                     
-                    #if DEBUGENERGY
-                    
-                        printf("    %d: (%.2f, %2f), %3f\n", k, pos[2 * k], 
-                                pos[2 * k + 1], temp);
-                        
-                    #endif
-                    
-                    funcvalue += temp;
-                
                 }
                     
             } // Cycling all columns in a row
@@ -160,22 +136,12 @@ struct Funcd {
 
     void df(double *x, double *dx) {
         
-        #if DEBUGGRADIENT
-            
-        printf("Gradient function called.\n");
-        
-        #endif
-        
         // dispdx is the Funcd object used to calculate the energy of the
         // original network pointed by x and the network pointed by dispx.
         // dispx is identical to x in all entries except for one, where it
         // differs by DEL declared at the top of this file. The gradient is then
         // calculated by the change in energy associated with this change in the
         // array.
-
-        iMax = netSize - 1;
-        jMax = iMax;
-        
         
         for (int i = 0; i <= iMax; i++) {
             for (int j = 0; j <= jMax; j++) {
