@@ -59,9 +59,11 @@ inline double SIGN(double a, double b) {
 
 void usageExit() {
     printf("usage:");
-    printf("\n   integrator [-size <network size>] [-str <initial strain>] [-rate <strain rate>]\n");
-    printf("              [-p <bond probability>] [-y <young's modulus for spring>] \n");
-    printf("              [-seed <PRNG seed>] [-step <time step>]\n");
+    printf("\n   integrator [-size <network size> (20)] [-str <initial strain> (0.01)]"
+            " [-rate <strain rate> (1.0)]\n");
+    printf("              [-p <bond probability> (0.8)] [-y <young's modulus for sprin" 
+            "g> (1.0)] \n");
+    printf("              [-seed <PRNG seed> (0)] [-step <number of steps> (100)]\n");
     exit(EXIT_FAILURE);
 }
 

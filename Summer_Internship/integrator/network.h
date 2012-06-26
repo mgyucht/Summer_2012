@@ -7,8 +7,7 @@
 // network.h is the header for network.cpp, which contains the essential methods 
 // for integrate.cpp. It defines the struct Network.
 
-#define xadj (pos[2 * k] + xshift)
-#define yadj (pos[2 * k + 1] + yshift)
+#include <math.h>
  
 extern const double RESTLEN;
 
@@ -30,7 +29,7 @@ struct Network {
     
     bool isiMax, isjMax, isiMin, isjMin;
 
-    Network(double* ppos, double*** espr, double*** vvels, double*** fforces,
+    Network(double* ppos, double*** sspr, double*** vvels, double*** fforces,
         double ttimestep) : 
         pos(ppos), 
         spr(sspr), 
@@ -44,6 +43,20 @@ struct Network {
     }
     
     double operator() ();
+    
+    // getNetForces sets the forces array. For each node at lattice index (i, j),
+    // the forces exerted on the node by the nodes (i, j+1), (i+1, j), and 
+    // (i+1, j-1) are associated with the node (i, j) in forces by the following
+    // table:
+    //
+    // forces[i][j][0] - x component of force with node (i, j+1)
+    // forces[i][j][1] - y component of force with node (i, j+1)
+    // forces[i][j][2] - x component of force with node (i+1, j)
+    // forces[i][j][3] - y component of force with node (i+1, j)
+    // forces[i][j][4] - x component of force with node (i+1, j-1)
+    // forces[i][j][5] - y component of force with node (i+1, j-1)
+    // 
+    // The force is calculated using Hooke's law.
     
     void getNetForces();
     
@@ -64,6 +77,8 @@ struct Network {
     }
 
     double euclDist(const double* /* pos */, const int /* k */);
+    
+    double arctan2(double* pos, const int k);
 
 };
 

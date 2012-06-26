@@ -4,7 +4,6 @@
 // funcs.cpp contains the essential functions for integrate.cpp. These include
 // the force calculator, the stress calculator, and the node mover.
 
-#include <math.h>
 #include "network.h" 
 
 // Network Function Definitions.
@@ -68,13 +67,13 @@ double Network::operator() () {
 
 void Network::getNetForces() {
 
-    for (int i = 0; i < iMax; i++) {
+    for (int i = 0; i <= iMax; i++) {
 
-        for (int j = 0; j < jMax; j++) {
+        for (int j = 0; j <= jMax; j++) {
             
-            isiMin = i == 0;
             isiMax = i == iMax;
             isjMin = j == 0;
+            isjMax = j == jMax;
 
             int j1 = isjMax ? 0 : j + 1;
             int i1 = isiMax ? 0 : i + 1;
@@ -85,7 +84,7 @@ void Network::getNetForces() {
                 pos[(i * netSize + j) * 2], 
                 pos[(i * netSize + j) * 2 + 1], 
                 pos[(i * netSize + j1) * 2],
-                pos[(i * netSize + j1) * 2 + 1],
+                pos[(i * netSize + j1) * 2 + 1] ,
                 pos[(i1 * netSize + j) * 2],
                 pos[(i1 * netSize + j) * 2 + 1],
                 pos[(i1 * netSize + j2) * 2],
@@ -97,12 +96,10 @@ void Network::getNetForces() {
 
             for (int k = 1; k < 4; k++) {
 
-                forces[i][j][2 * k - 2] = spr[i][j][k - 1] 
-                    * cos( atan2( tempPos[2 * k + 1] - tempPos[1], tempPos[2 * k] - tempPos[0] ) )
+                forces[i][j][2 * k - 2] = spr[i][j][k - 1] * cos(Network::arctan2(tempPos, k))
                     * sqrt(deltaLSqrd(tempPos, i, j, k));
 
-                forces[i][j][2 * k - 1] = spr[i][j][k - 1] 
-                    * sin( atan2( tempPos[2 * k + 1] - tempPos[1], tempPos[2 * k] - tempPos[0] ) )
+                forces[i][j][2 * k - 1] = spr[i][j][k - 1] * sin(Network::arctan2(tempPos, k))
                     * sqrt(deltaLSqrd(tempPos, i, j, k));
 
             }
@@ -119,13 +116,13 @@ double Network::calcStress() {
     double prefactor = 1 / (sqrt(3.0) / 2.0 * netSize * netSize);
     double xforce, ydist;
 
-    for (int i = 0; i < iMax; i++) {
+    for (int i = 0; i <= iMax; i++) {
 
-        for (int j = 0; j < jMax; j++) {
+        for (int j = 0; j <= jMax; j++) {
 
-            isiMin = i == 0;
             isiMax = i == iMax;
             isjMin = j == 0;
+            isjMax = j == jMax;
             
             int j1 = isjMax ? 0 : j + 1;
             int i1 = isiMax ? 0 : i + 1;
@@ -168,9 +165,9 @@ void Network::moveNodes() {
 
     double netx, nety;
 
-    for (int i = 0; i < iMax; i++) {
+    for (int i = 0; i <= iMax; i++) {
 
-        for (int j = 0; j < jMax; j++) {
+        for (int j = 0; j <= jMax; j++) {
 
             isiMin = i == 0;
             isiMax = i == iMax;
@@ -199,8 +196,8 @@ void Network::moveNodes() {
 
             };
 
-            netx = fHooke[0] + fHooke[2] + fHooke[4] + fHooke[6] + fHooke[8] + fHooke[10];
-            nety = fHooke[1] + fHooke[3] + fHooke[5] + fHooke[7] + fHooke[9] + fHooke[11];
+            netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
+            nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
 
             pos[(i * netSize + j) * 2] += vels[i][j][0] * timestep;
             pos[(i * netSize + j) * 2 + 1] += vels[i][j][1] * timestep;
@@ -296,5 +293,84 @@ double Network::euclDist(const double* pos, const int k) {
 
     // xadj and yadj refer to the nodes around pos[0/1].
 
-    return sqrt((xadj - pos[0]) * (xadj - pos[0]) + (yadj - pos[1]) * (yadj - pos[1]));
+    double result = sqrt((pos[2 * k] + xshift - pos[0]) * (pos[2 * k] + xshift - pos[0]) 
+            + (pos[2 * k + 1] + yshift - pos[1]) * (pos[2 * k + 1] + yshift - pos[1]));
+    return result;
+}
+
+double Network::arctan2(double* pos, int k) {
+
+    double xshift = 0.0, yshift = 0.0;
+
+    switch (k) {
+
+        // Case where nPtr[1] is in column 0.
+        case 1: 
+            if (isjMax)
+
+                xshift += (jMax + 1) * RESTLEN;
+
+            break;
+
+            // Case where nPtr[2] is in row 0.
+        case 2: 
+            if (isiMax) {
+
+                xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
+                yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+
+            }
+            break;
+
+            // Case where nPtr[3] is in row 0 and/or column jMax.
+        case 3:
+            if (isiMax) {
+
+                xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
+                yshift += (iMax + 1)* RESTLEN * sqrt(3.0) / 2.0;
+
+            }
+            if (isjMin)
+
+                xshift -= (jMax + 1) * RESTLEN;
+
+            break;
+
+            // Case where nPtr[4] is in column jMax.
+        case 4:
+            if (isjMin) {
+
+                xshift -= (jMax + 1) * RESTLEN;
+
+            }
+            break;
+
+            // Case where nPtr[5] is in row iMax.
+        case 5: 
+            if (isiMin) {
+
+                yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+                xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
+
+            }
+            break;
+
+            // Case where nPtr[6] is in row iMax and/or column 0.
+        case 6:
+            if (isiMin) {
+
+                yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+                xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
+
+            }
+            if (isjMax)
+
+                xshift += (jMax + 1) * RESTLEN;
+
+            break;
+    }
+
+    double result = atan2(pos[2 * k + 1] + yshift - pos[1], pos[2 * k] + xshift - pos[0]);
+    return result;
+
 }

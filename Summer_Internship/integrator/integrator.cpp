@@ -18,11 +18,10 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
-#include <fstream>
 #include "utils.h"
 #include "network.h"
-#include "debug.h"
 #include "nonaffinity.h"
+#include "print.h"
 
 using namespace std;
 
@@ -38,7 +37,7 @@ int main (int argc, char *argv[]) {
 
     int prngseed = 0, nTimeSteps = 100;
     double pBond = 0.8, strRate = 1.0, youngMod = 1.0, currentTime = 0.0, 
-           timeStep = 0.001, initStrain = 0.01;
+           timeStep = 0.01, initStrain = 0.01;
     
     netSize = 20;
      
@@ -88,7 +87,7 @@ int main (int argc, char *argv[]) {
     }
     
     // Initialize PRNG.
-    if (!prngseed) 
+    if (prngseed == 0) 
 
         srand( time(NULL) );
     
@@ -115,7 +114,7 @@ int main (int argc, char *argv[]) {
             // x-coordinate
             position[(i * netSize + j) * 2] = RESTLEN * (i / 2.0 + j);
             // predicts initial position from strain
-            position[(i * netSize + j) * 2] += i * strain * sqrt(3.0) / 2.0;
+            position[(i * netSize + j) * 2] += i * initStrain * sqrt(3.0) / 2.0;
 
             // y-coordinate
             position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
@@ -149,78 +148,24 @@ int main (int argc, char *argv[]) {
         
     }
 
-    printf("E = %f\n", myNetwork());
+    double newEnergy = myNetwork();
+    printf("E = %f\n", newEnergy);
     
     // Print out position vector to "position_data.txt" in the following format:
     // row,column,xval,yval, sprstiffs, restlens.
 
-    #if PRINTPOS
-
+    Printer myPrinter(myNetwork, youngMod, pBond);
     string posFileName = "position_data.txt";
-    ofstream posFile(posFileName.c_str(), ios::trunc);
-
-    if (posFile.is_open()) {
- 
-        posFile << "Network Size,Strain,Young's Modulus,Probability" << endl;
-        posFile << netSize << "," << strain << "," << youngMod << ","
-            << pBond << endl;
-
-        for (int i = 0; i < netSize; i++) {
-
-            for (int j = 0; j < netSize; j++) {
-
-                // Print row, col, position, sprstiff, rlen information to file.
-
-                posFile << i << "," << j << "," << position[(i * netSize + j) * 2]
-                    << "," << position[(i * netSize + j) * 2 + 1];
-
-                for (int k = 0; k < 3; k++) 
-                    posFile << "," << sprstiff[i][j][k];
-
-                posFile << endl;
-            }
-
-        }
-
-    }
-
-    posFile.close();
-    
-    #if PRINTNONAFFINITY
+    myPrinter.printPos(posFileName);
     
     string nonaffFileName = "nonaff_data.txt";
-    ofstream nonaffFile(nonaffFileName.c_str(), ios::app);
-
-    if (nonaffFile.is_open()) {
-        
-        double nonaff = nonAffinity(posFileName.c_str());
-        printf("Γ = %f\n", nonaff);
-        nonaffFile << netSize << "," << strain << "," << pBond << "," 
-            << nonaff << endl;
+    myPrinter.printNonAff(nonaffFileName);
     
-    }
+    string stressFileName = "stress_data.txt";
+    myPrinter.printStress(stressFileName, stress, nTimeSteps);
     
-    nonaffFile.close();
-
-    #endif //PRINTNONAFFINITY
-    
-    #endif //PRINTPOS
-    
-    #if PRINTENERGY
-
-    // Print out energy and p for the experiment
-
-    ofstream engFile("energy_data.txt", ios::app);
-
-    if (engFile.is_open()) {
-
-        engFile << newEnergy << "," << pBond << "," << strain << endl;
-
-    }
-
-    engFile.close();
-
-    #endif
+    string energyFileName = "energy_data.txt";
+    myPrinter.printEnergy(energyFileName, newEnergy);
 
     // Cleanup
 
