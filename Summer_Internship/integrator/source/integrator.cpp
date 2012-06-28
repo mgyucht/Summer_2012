@@ -42,7 +42,7 @@ int main (int argc, char *argv[]) {
     double pBond = 0.8, strRate = 1.0, youngMod = 1.0, currentTime = 0.0, 
            timeStep = 0.001, initStrain = 0.01;
     
-    string output_path = "../output/";
+    string output_path = "output/";
     string energyFileName = "energy_data";
     string posFileName = "position_data";
     string nonaffFileName = "nonaff_data";
@@ -187,23 +187,17 @@ int main (int argc, char *argv[]) {
         stress_array[i] = myNetwork.calcStress();
         myNetwork.moveNodes();
         
-        ostringstream conversion;
-        conversion << i;
-        char* tempPath = (char *) (output_path + posFileName + conversion.str() + extension).c_str();
-        myPrinter.printPos(tempPath);
-        
         currentTime += timeStep;
         
     }
 
     double newEnergy = myNetwork();
-    printf("E = %f\n", newEnergy);
     
     // Print out position vector to "position_data.txt" in the following format:
     // row,column,xval,yval, sprstiffs, restlens.
 
-    //char* posFileFull = (char *) (output_path + posFileName + extension).c_str();
-    //myPrinter.printPos(posFileFull);
+    char* posFileFull = (char *) (output_path + posFileName + extension).c_str();
+    myPrinter.printPos(posFileFull);
     
     char* nonaffFileFull = (char *) (output_path + nonaffFileName + extension).c_str();
     myPrinter.printNonAff(nonaffFileFull);
