@@ -18,6 +18,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+#include <sstream>
 #include "utils.h"
 #include "network.h"
 #include "nonaffinity.h"
@@ -27,6 +28,8 @@ using namespace std;
 
 // Rest length for springs.
 const double RESTLEN = 1.0;
+// Mass of a node.
+const double MASS = 1e-1;
 
 int netSize;
 double strain;
@@ -37,7 +40,14 @@ int main (int argc, char *argv[]) {
 
     int prngseed = 0, nTimeSteps = 100;
     double pBond = 0.8, strRate = 1.0, youngMod = 1.0, currentTime = 0.0, 
-           timeStep = 0.01, initStrain = 0.01;
+           timeStep = 0.001, initStrain = 0.01;
+    
+    string output_path = "../output/";
+    string energyFileName = "energy_data";
+    string posFileName = "position_data";
+    string nonaffFileName = "nonaff_data";
+    string stressFileName = "stress_data";
+    string extension = ".txt";
     
     netSize = 20;
      
@@ -70,10 +80,30 @@ int main (int argc, char *argv[]) {
             
             prngseed = atoi(argv[i + 1]);
             
-        } else if (!str.compare("-step")) {
+        } else if (!str.compare("-n")) {
 
             nTimeSteps = atoi(argv[i + 1]);
+            
+        } else if (!str.compare("-step")) {
 
+            timeStep = atof(argv[i + 1]);
+            
+        } else if (!str.compare("-energy-fn")) {
+            
+            energyFileName = argv[i + 1];
+            
+        } else if (!str.compare("-position-fn")) {
+            
+            posFileName = argv[i + 1];
+            
+        } else if (!str.compare("-nonaff-fn")) {
+            
+            nonaffFileName = argv[i + 1];
+            
+        } else if (!str.compare("-stress-fn")) {
+            
+            stressFileName = argv[i + 1];
+            
         } else if (!str.compare("-help") || !str.compare("help")) {
             
             usageExit();
@@ -96,9 +126,12 @@ int main (int argc, char *argv[]) {
         srand( prngseed );
 
     // Now that those are parsed, we can start to generate our network.
+     
+    double network_height = sqrt(3.0) / 2.0 * netSize * netSize;
+    double strain_dist = initStrain * network_height;
 
     double* position = new double [2 * netSize * netSize];
-    double* stress = new double [nTimeSteps];
+    double* stress_array = new double [nTimeSteps];
     double*** sprstiff = new double** [netSize];
     double*** velocities = new double** [netSize];
     double*** netForces = new double** [netSize];
@@ -114,7 +147,8 @@ int main (int argc, char *argv[]) {
             // x-coordinate
             position[(i * netSize + j) * 2] = RESTLEN * (i / 2.0 + j);
             // predicts initial position from strain
-            position[(i * netSize + j) * 2] += i * initStrain * sqrt(3.0) / 2.0;
+            position[(i * netSize + j) * 2] += i * strain_dist / network_height 
+                * RESTLEN;
 
             // y-coordinate
             position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
@@ -124,6 +158,14 @@ int main (int argc, char *argv[]) {
             netForces[i][j] = new double[6];
             
         }
+    }
+    
+    double strain_array[nTimeSteps];
+    
+    for (int i = 0; i < nTimeSteps; i++) {
+    
+        strain_array[i] = initStrain * sin(strRate * i * timeStep);
+    
     }
 
     // Integrate motion over the nodes.
@@ -135,14 +177,20 @@ int main (int argc, char *argv[]) {
     // number that is output by calcStress.
     
     Network myNetwork(position, sprstiff, velocities, netForces, timeStep);
+    Printer myPrinter(myNetwork, youngMod, pBond, nTimeSteps);
     
     for (int i = 0; i < nTimeSteps; i++) {
     
-        strain = initStrain * cos(strRate * currentTime);
+        strain = strain_array[i];
         
         myNetwork.getNetForces();
-        stress[i] = myNetwork.calcStress();
+        stress_array[i] = myNetwork.calcStress();
         myNetwork.moveNodes();
+        
+        ostringstream conversion;
+        conversion << i;
+        char* tempPath = (char *) (output_path + posFileName + conversion.str() + extension).c_str();
+        myPrinter.printPos(tempPath);
         
         currentTime += timeStep;
         
@@ -154,23 +202,22 @@ int main (int argc, char *argv[]) {
     // Print out position vector to "position_data.txt" in the following format:
     // row,column,xval,yval, sprstiffs, restlens.
 
-    Printer myPrinter(myNetwork, youngMod, pBond);
-    string posFileName = "position_data.txt";
-    myPrinter.printPos(posFileName);
+    //char* posFileFull = (char *) (output_path + posFileName + extension).c_str();
+    //myPrinter.printPos(posFileFull);
     
-    string nonaffFileName = "nonaff_data.txt";
-    myPrinter.printNonAff(nonaffFileName);
+    char* nonaffFileFull = (char *) (output_path + nonaffFileName + extension).c_str();
+    myPrinter.printNonAff(nonaffFileFull);
     
-    string stressFileName = "stress_data.txt";
-    myPrinter.printStress(stressFileName, stress, nTimeSteps);
+    char* stressFileFull = (char *) (output_path + stressFileName + extension).c_str();
+    myPrinter.printStress(stressFileFull, stress_array, strain_array);
     
-    string energyFileName = "energy_data.txt";
-    myPrinter.printEnergy(energyFileName, newEnergy);
+    char* energyFileFull = (char *) (output_path + energyFileName + extension).c_str();
+    myPrinter.printEnergy(energyFileFull, newEnergy);
 
     // Cleanup
 
     delete[] position;
-    delete[] stress;
+    delete[] stress_array;
 
     for (int i = 0; i < netSize; i++) {
         for (int j = 0; j < netSize; j++) {

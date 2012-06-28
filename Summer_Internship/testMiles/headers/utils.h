@@ -1,10 +1,11 @@
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef UTILS_H_
+#define UTILS_H_
 
 // utils.h
 // Simple utilities for energy minimizing code.
 
 #include <stdio.h>
+#include <stdlib.h>
 
 // Utility function used in this structure or others derived from it.
 inline void shft2(double &a, double &b, const double c)
@@ -57,7 +58,7 @@ inline double SIGN(double a, double b) {
 //usageExit sends an error message about the usage of main and exits the
 //program.
 
-void usageExit() {
+inline void usageExit() {
     printf("usage:");
     printf("\n   program [-str <strain>] [-size <network size>] [-p <bond ");
     printf("probability>] [-y <young's modulus for spring>]\n");
@@ -65,7 +66,7 @@ void usageExit() {
 }
 
 //randDouble returns a random number in the range [low, high).
-double randDouble(int low, int high) {
+inline double randDouble(int low, int high) {
 
     double x = low + (high - low) * ((double) rand() / ((double) RAND_MAX + 1));
     return x;
@@ -75,7 +76,7 @@ double randDouble(int low, int high) {
 //stiffVecGen returns a vector containing three numbers, corresponding to the
 //spring constants for the node. These numbers may be either yMod or 0.
 
-double *stiffVecGen(double prob, double yMod, int numSprings) {
+inline double *stiffVecGen(double prob, double yMod, int numSprings) {
 
     double *ret = new double[numSprings];
 
@@ -86,4 +87,4 @@ double *stiffVecGen(double prob, double yMod, int numSprings) {
 
 }
 
-#endif /*_UTILS_H_*/
+#endif /*UTILS_H_*/

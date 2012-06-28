@@ -36,6 +36,20 @@ for i = 1 : length(p)
 
 end
 
+%% Calculate the complex shear modulus
+
+a0 = [0.005 2 1.571];
+[stress_params, resnorm] = lsqcurvefit(@sine_fit, a0, time, stress);
+[strain_params, resnorm] = lsqcurvefit(@sine_fit, a0, time, strain);
+
+stress_amplitude = stress_params(1);
+strain_amplitude = strain_params(1);
+
+phase_shift = stress_params(3) - strain_params(3);
+
+G_elastic = stress_amplitude / strain_amplitude * cos(phase_shift)
+G_loss    = stress_amplitude / strain_amplitude * sin(phase_shift)
+
 %%
 
 % Generate the figure to display the plot.

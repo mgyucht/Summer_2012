@@ -1,7 +1,8 @@
 %% plotStress.m
 % Imports the stress vector and plots it against time steps.
 
-cd /home/miles/Summer_2012/Summer_Internship/integrator/
+cd /home/miles/Summer_2012/Summer_Internship/integrator/output
+
 matStress = importdata('stress_data.txt',',');
 
 figure(3)
@@ -9,11 +10,12 @@ clf
 
 hold on
 
-x = 0:999;
-y = 0.1 * sin(10 * x * 0.01);
+stress_vector = matStress(:, 1);
+strain_vector = matStress(:, 2);
+time_vector = matStress(:, 3);
 
-plot(matStress(:, 2), matStress(:, 1), 'ro')
-plot(x, y)
+plot(time_vector, stress_vector, 'ro')
+plot(time_vector, strain_vector, 'b-')
 
 set(gca, ...
     'Box', 'on', ...
@@ -22,5 +24,5 @@ set(gca, ...
 
 title('Shear stress \sigma_{xy} against time steps (\delta t = 0.01)')
 
-xlabel('Time Steps')
+xlabel('Time')
 ylabel('Stress')

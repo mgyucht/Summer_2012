@@ -5,55 +5,48 @@
 // This header file is designed to be used for the conjugate gradient method
 // of minimizing the value of a multidimensional function.
 //
-// operator() ( double * x )
+// operator() ( VecNode2D &x )
 // ---------------------------
 //
 // Reports the energy of the network x.
 //
-// df ( double * x, double * dx )
+// df ( VecDoub_I &x, VecDoub_O &deriv)
 // ------------------------------------
 //
-// Calculates the gradient of the network's energy, and stores the results in
-// dx.
+// Calculates the gradient of the network's energy.
 
 #ifndef FUNCD_H_
 #define FUNCD_H_
 
-// For the euclDist function.
+#include <vector>
+#include <stdio.h>
+#include "utils.h"
 
-#define xadj (pos[2 * k] + xshift)
-#define yadj (pos[2 * k + 1] + yshift)
+extern const double RESTLEN;
 
-using namespace std;
+// isiMax, isjMax and isjMin are true whenever i = iMax, j = jMax, or j = jMin
+// respectively. Basically, they trigger periodic boundary condition code.
+
+bool isiMax, isiMin, isjMax, isjMin;
+
+// iMax and jMax refer to the total number of nodes in a single column or in a
+// single row, respectively.
+
+int iMax, jMax;
 
 extern int netSize;
 extern double strain;
 
-// The restlength of the springs.
-const double RESTLEN = 1;
-
-// The gradient is calculated numerically, and this is the displacement.
-const double DEL = 1e-11;
-
-// isiMax, isjMax and isjMin are true whenever i = iMax, j = jMax, or j = jMin
-// respectively. Basically, they trigger periodic boundary condition code.
-bool isiMax, isiMin, isjMax, isjMin;
-
 // The Funcd struct.
+
 struct Funcd {
     
     double *** spr; 
-    double *** rlen;
-    int i1, i2, j1, j2, iMax, jMax;
+    int i1, i2, j1, j2;
     
     // Constructor. Taking the correct approach.
 
-    Funcd(double *** ssprstiff, double *** rrestlen) : spr(ssprstiff), rlen(rrestlen) {
-    
-        iMax = netSize - 1;
-        jMax = iMax;
-    
-    }
+    Funcd(double *** ssprstiff) : spr(ssprstiff) {}
 
     // The () operator (function call) is now used to calculate the energy of
     // a network. This operator must contain the energy function for the
@@ -75,6 +68,9 @@ struct Funcd {
     double operator() ( double *x ) {
         
         double funcvalue = 0;
+
+        iMax = netSize - 1;
+        jMax = netSize - 1;
 
         for(int i = 0; i <= iMax; i++) {
             for (int j = 0; j <= jMax; j++) {
@@ -119,9 +115,10 @@ struct Funcd {
                 
                 for (int k = 1; k < 4; k++) {
                     
-                    funcvalue = 0.5 * spr[i][j][k - 1] / rlen[i][j][k - 1] 
-                                    * deltaLSqrd(pos, i, j, k);
-                    
+                    double delta = deltaL(pos, k);
+                    double temp = 0.5 * spr[i][j][k - 1] * delta * delta;
+                    funcvalue += temp;
+                
                 }
                     
             } // Cycling all columns in a row
@@ -133,19 +130,16 @@ struct Funcd {
     // df(double *x, double *dx) is the gradient function for the
     // network. This determines the gradient function for a point in the
     // network.
-
-    void df(double *x, double *dx) {
-        
-        // dispdx is the Funcd object used to calculate the energy of the
-        // original network pointed by x and the network pointed by dispx.
-        // dispx is identical to x in all entries except for one, where it
-        // differs by DEL declared at the top of this file. The gradient is then
-        // calculated by the change in energy associated with this change in the
-        // array.
+    
+    void df(double* x, double* dx) {
+    
+        iMax = netSize - 1;
+        jMax = netSize - 1;
         
         for (int i = 0; i <= iMax; i++) {
             for (int j = 0; j <= jMax; j++) {
                 
+                double gradient_x = 0.0, gradient_y = 0.0;
                 double current, dxtemp, dytemp;
                 current = dxtemp = dytemp = 0.0;
                 
@@ -177,7 +171,7 @@ struct Funcd {
                     x[(i2 * netSize + j1) * 2 + 1],
                 
                 };
-                
+
                 double springs[6] = {
                     
                     spr[i][j][0],
@@ -190,50 +184,32 @@ struct Funcd {
                 };
                 
                 for (int k = 1; k < 7; k++) {
-                
-                    double prefactor = 0.5 * springs[k - 1] / RESTLEN;
-                    current += prefactor * deltaLSqrd(position, i, j, k);
-                    position[0] += DEL;
-                    dxtemp += prefactor * deltaLSqrd(position, i, j, k);
-                    position[0] -= DEL;
-                    position[1] += DEL;
-                    dytemp += prefactor * deltaLSqrd(position, i, j, k);
-                    position[1] -= DEL;
+                    
+                    double temp_pos_x = position[2 * k] + xshift(k);
+                    double temp_pos_y = position[2 * k + 1] + yshift(k);
+                    
+                    gradient_x += -springs[k - 1] * deltaL(position, k) 
+                        / euclDist(position, k) * (temp_pos_x - position[0]);
+                    
+                    gradient_y += -springs[k - 1] * deltaL(position, k) 
+                        / euclDist(position, k) * (temp_pos_y - position[1]);
                 }
                 
-                dx[(i * netSize + j) * 2] = (dxtemp - current) / DEL;
-                dx[(i * netSize + j) * 2 + 1] = (dytemp - current) / DEL;
-
-            }   
+                dx[(i * netSize + j) * 2] = gradient_x;
+                dx[(i * netSize + j) * 2 + 1] = gradient_y;
+                
+            }
         }
         
-    } // End of df();
+    }
     
     private:
     
-    // deltaLSqrd returns the square change in the length of the spring.
+    // deltaL returns the change in the length of the spring.
     
-    double deltaLSqrd(double * pos, const int row, const int col, const int k) {
+    double deltaL(double * pos, const int k) {
         
-        double lijk = euclDist(pos, k);
-        double l0;
-        
-        switch (k) {
-            case 1: case 2: case 3:
-                l0 = rlen[row][col][k - 1];
-                break;
-            case 4: 
-                l0 = rlen[row][j2][0];
-                break;
-            case 5:
-                l0 = rlen[i2][col][1];
-                break;
-            case 6:
-                l0 = rlen[i2][j1][2];
-                break;
-        }
-        
-        return (lijk - l0) * (lijk - l0);
+        return euclDist(pos, k) - RESTLEN;
         
     }
     
@@ -241,86 +217,122 @@ struct Funcd {
     // pointer nPtr declared in operator(). It takes into account the periodic
     // boundary condition for the system. This is the function that incorporates
     // strain into the network.
-    // 
-    // Note that we use jMax + 1 and iMax + 1 in these expressions because they
-    // are equivalent to the size of the network netSize. 
     
     double euclDist(const double * pos, const int k) {
         
-        double xshift = 0.0, yshift = 0.0;
+        double xadj = pos[2 * k] + xshift(k); 
+        double yadj = pos[2 * k + 1] + yshift(k);
         
+        return sqrt((xadj - pos[0]) * (xadj - pos[0]) + (yadj - pos[1]) 
+                * (yadj - pos[1]));
+        
+    }
+
+    double xshift(const int &k) {
+
+        double xshift = 0.0;
+
         switch (k) {
-            
+
             // Case where nPtr[1] is in column 0.
             case 1: 
                 if (isjMax)
-                    
+
                     xshift += (jMax + 1) * RESTLEN;
-                
+
                 break;
-                
-            // Case where nPtr[2] is in row 0.
+
+                // Case where nPtr[2] is in row 0.
             case 2: 
                 if (isiMax) {
-                
-                    xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                    yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                    
+
+                    xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+
                 }
                 break;
-                
-            // Case where nPtr[3] is in row 0 and/or column jMax.
+
+                // Case where nPtr[3] is in row 0 and/or column jMax.
             case 3:
                 if (isiMax) {
-                
-                    xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                    yshift += (iMax + 1)* RESTLEN * sqrt(3.0) / 2.0;
-                    
+
+                    xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+
                 }
                 if (isjMin)
-                    
+
                     xshift -= (jMax + 1) * RESTLEN;
 
                 break;
-                
-            // Case where nPtr[4] is in column jMax.
+
+                // Case where nPtr[4] is in column jMax.
             case 4:
                 if (isjMin) {
-                    
+
                     xshift -= (jMax + 1) * RESTLEN;
-                    
-                }
-                break;
-                
-            // Case where nPtr[5] is in row iMax.
-            case 5: 
-                if (isiMin) {
-                    
-                    yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                    xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                    
+
                 }
                 break;
 
-            // Case where nPtr[6] is in row iMax and/or column 0.
+                // Case where nPtr[5] is in row iMax.
+            case 5: 
+                if (isiMin) {
+
+                    xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
+
+                }
+                break;
+
+                // Case where nPtr[6] is in row iMax and/or column 0.
             case 6:
                 if (isiMin) {
-                
-                    yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                    xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                    
+
+                    xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
+
                 }
                 if (isjMax)
 
                     xshift += (jMax + 1) * RESTLEN;
-                
+
                 break;
         }
-        
-        // xadj and yadj refer to the nodes around pos[0/1].
-        
-        return sqrt((xadj - pos[0]) * (xadj - pos[0]) + (yadj - pos[1]) * (yadj - pos[1]));
+
+        return xshift;
     }
+
+    double yshift(const int &k) {
+
+        double yshift = 0.0;
+
+        switch (k) {
+
+            case 2: 
+            case 3:
+                if (isiMax) {
+
+                    yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+
+                }
+                break;
+
+
+                // Case where nPtr[5] is in row iMax.
+            case 5: 
+            case 6:
+                if (isiMin) {
+
+                    yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+
+                }
+                break;
+
+            default: 
+                yshift = 0.0;
+                break;
+        }
+
+        return yshift;
+    }
+
 };
 
 #endif /*FUNCD_H_*/

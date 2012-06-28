@@ -3,10 +3,6 @@
 // print.cpp contains the class Printer to convert a set of ints, doubles and arrays
 // into text files, specifically for integrator.cpp.
 
-#include <string>
-#include <cstring>
-#include <fstream>
-#include "nonaffinity.h"
 #include "print.h"
 
 void Printer::printPos(std::string posFileName) {
@@ -15,9 +11,9 @@ void Printer::printPos(std::string posFileName) {
 
     if (posFile.is_open()) {
  
-        posFile << "Network Size,Strain,Young's Modulus,Probability" << std::endl;
+        posFile << "Network Size,Strain,Young's Modulus,Probability,Spr1,Spr2,Spr3" << std::endl;
         posFile << netSize << "," << strain << "," << yMod << ","
-            << p << std::endl;
+            << p << ",1,1,1" << std::endl;
 
         for (int i = 0; i < netSize; i++) {
 

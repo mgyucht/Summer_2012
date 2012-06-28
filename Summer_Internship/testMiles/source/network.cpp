@@ -53,8 +53,9 @@ double Network::operator() () {
             };
 
             for (int k = 1; k < 4; k++) {
-
-                funcvalue = 0.5 * spr[i][j][k - 1] / RESTLEN * deltaLSqrd(tempPos, i, j, k);
+                
+                double delta = deltaL(tempPos, k);
+                funcvalue = 0.5 * spr[i][j][k - 1] / RESTLEN * delta * delta;
 
             }
 
@@ -95,13 +96,16 @@ void Network::getNetForces() {
             // Calculate the net x and y force on each node. Similar to gradient function.
 
             for (int k = 1; k < 4; k++) {
+                
+                double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
+                double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
 
-                forces[i][j][2 * k - 2] = spr[i][j][k - 1] * cos(Network::arctan2(tempPos, k))
-                    * sqrt(deltaLSqrd(tempPos, i, j, k));
-
-                forces[i][j][2 * k - 1] = spr[i][j][k - 1] * sin(Network::arctan2(tempPos, k))
-                    * sqrt(deltaLSqrd(tempPos, i, j, k));
-
+                forces[i][j][2 * k - 2] = spr[i][j][k - 1] * deltaL(tempPos, k) 
+                    / euclDist(tempPos, k) * (x_displacement);
+                
+                forces[i][j][2 * k - 1] = spr[i][j][k - 1] * deltaL(tempPos, k) 
+                    / euclDist(tempPos, k) * (y_displacement);
+                
             }
 
         }
@@ -147,7 +151,7 @@ double Network::calcStress() {
                 xforce = forces[i][j][2 * k - 2];
 
                 // Get the y-distance between nodes.
-                ydist = tempPos[2 * k + 1] - tempPos[1];
+                ydist = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
 
                 stress += xforce * ydist;
 
@@ -211,166 +215,107 @@ void Network::moveNodes() {
 
 }
 
-// euclDistSqrd is a Euclidean distance calculator that works with the
-// pointer nPtr declared in operator(). It takes into account the periodic
-// boundary condition for the system. This is the function that incorporates
-// strain into the network.
-// 
-// Note that we use jMax + 1 and iMax + 1 in these expressions because they
-// are equivalent to the size of the network netSize. 
-
-double Network::euclDist(const double* pos, const int k) {
-
-    double xshift = 0.0, yshift = 0.0;
+double Network::xshift(const int &k) {
+    
+    double xshift = 0.0;
 
     switch (k) {
-
+        
         // Case where nPtr[1] is in column 0.
         case 1: 
             if (isjMax)
-
+                
                 xshift += (jMax + 1) * RESTLEN;
-
+            
             break;
-
-            // Case where nPtr[2] is in row 0.
+            
+        // Case where nPtr[2] is in row 0.
         case 2: 
             if (isiMax) {
-
-                xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-
+            
+                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                
             }
             break;
-
-            // Case where nPtr[3] is in row 0 and/or column jMax.
+            
+        // Case where nPtr[3] is in row 0 and/or column jMax.
         case 3:
             if (isiMax) {
-
-                xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                yshift += (iMax + 1)* RESTLEN * sqrt(3.0) / 2.0;
-
+            
+                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                
             }
             if (isjMin)
-
+                
                 xshift -= (jMax + 1) * RESTLEN;
 
             break;
-
-            // Case where nPtr[4] is in column jMax.
+            
+        // Case where nPtr[4] is in column jMax.
         case 4:
             if (isjMin) {
-
+                
                 xshift -= (jMax + 1) * RESTLEN;
-
+                
             }
             break;
-
-            // Case where nPtr[5] is in row iMax.
+            
+        // Case where nPtr[5] is in row iMax.
         case 5: 
             if (isiMin) {
-
-                yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-
+                
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
+                
             }
             break;
 
-            // Case where nPtr[6] is in row iMax and/or column 0.
+        // Case where nPtr[6] is in row iMax and/or column 0.
         case 6:
             if (isiMin) {
-
-                yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-
+            
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
+                
             }
             if (isjMax)
 
                 xshift += (jMax + 1) * RESTLEN;
-
+            
             break;
     }
-
-    // xadj and yadj refer to the nodes around pos[0/1].
-
-    double result = sqrt((pos[2 * k] + xshift - pos[0]) * (pos[2 * k] + xshift - pos[0]) 
-            + (pos[2 * k + 1] + yshift - pos[1]) * (pos[2 * k + 1] + yshift - pos[1]));
-    return result;
+    
+    return xshift;
 }
 
-double Network::arctan2(double* pos, int k) {
-
-    double xshift = 0.0, yshift = 0.0;
+double Network::yshift(const int &k) {
+    
+    double yshift = 0.0;
 
     switch (k) {
-
-        // Case where nPtr[1] is in column 0.
-        case 1: 
-            if (isjMax)
-
-                xshift += (jMax + 1) * RESTLEN;
-
-            break;
-
-            // Case where nPtr[2] is in row 0.
+            
         case 2: 
-            if (isiMax) {
-
-                xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-
-            }
-            break;
-
-            // Case where nPtr[3] is in row 0 and/or column jMax.
         case 3:
             if (isiMax) {
-
-                xshift += (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-                yshift += (iMax + 1)* RESTLEN * sqrt(3.0) / 2.0;
-
-            }
-            if (isjMin)
-
-                xshift -= (jMax + 1) * RESTLEN;
-
-            break;
-
-            // Case where nPtr[4] is in column jMax.
-        case 4:
-            if (isjMin) {
-
-                xshift -= (jMax + 1) * RESTLEN;
-
+            
+                yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+                
             }
             break;
-
-            // Case where nPtr[5] is in row iMax.
+            
+            
+        // Case where nPtr[5] is in row iMax.
         case 5: 
-            if (isiMin) {
-
-                yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-
-            }
-            break;
-
-            // Case where nPtr[6] is in row iMax and/or column 0.
         case 6:
             if (isiMin) {
-
+                
                 yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                xshift -= (jMax + 1) * RESTLEN / 2.0 * (1 + strain * sqrt(3.0));
-
+                
             }
-            if (isjMax)
+            break;
 
-                xshift += (jMax + 1) * RESTLEN;
-
+        default: 
+            yshift = 0.0;
             break;
     }
-
-    double result = atan2(pos[2 * k + 1] + yshift - pos[1], pos[2 * k] + xshift - pos[0]);
-    return result;
-
+    
+    return yshift;
 }

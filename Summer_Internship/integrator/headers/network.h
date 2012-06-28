@@ -8,14 +8,13 @@
 // for integrate.cpp. It defines the struct Network.
 
 #include <math.h>
- 
+#include "utils.h"
+
 extern const double RESTLEN;
+extern const double MASS;
 
 extern int netSize;
 extern double strain;
-
-const double DEL = 1E-11;
-const double MASS = 1;
 
 struct Network {
     
@@ -68,18 +67,33 @@ struct Network {
     
     // deltaLSqrd returns the square change in the length of the spring.
 
-    inline double deltaLSqrd(double* pos, const int row, const int col, const int k) {
+    inline double deltaL(double* pos, const int k) {
 
-        double lijk = euclDist(pos, k);
-
-        return (lijk - RESTLEN) * (lijk - RESTLEN);
+        return euclDist(pos, k) - RESTLEN;
 
     }
 
-    double euclDist(const double* /* pos */, const int /* k */);
-    
-    double arctan2(double* pos, const int k);
+    // euclDist is a Euclidean distance calculator that works with the
+    // pointer nPtr declared in operator(). It takes into account the periodic
+    // boundary condition for the system. This is the function that incorporates
+    // strain into the network.
+    // 
+    // Note that we use jMax + 1 and iMax + 1 in these expressions because they
+    // are equivalent to the size of the network netSize. 
 
+    inline double euclDist(const double* pos, const int k) {
+
+        double x = (pos[2 * k] + xshift(k) - pos[0]);
+        double y = (pos[2 * k + 1] + yshift(k) - pos[1]);
+        
+        return sqrt(x * x + y * y);
+        
+    }
+    
+    double xshift(const int &k);
+    
+    double yshift(const int &k);
+    
 };
 
 #endif /*NETWORK_H_*/

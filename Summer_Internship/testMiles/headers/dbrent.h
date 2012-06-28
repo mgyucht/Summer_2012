@@ -27,7 +27,7 @@ struct Dbrent : Bracketmethod {
     template <class T>
         double minimize(T &funcd) {
 
-            const int ITMAX = 100;
+            const int ITMAX = 1000;
             const double ZEPS = std::numeric_limits<double>::epsilon()*1.0e-3;
 
             //Will be used as flags for whether pro-posed steps are acceptable or not.

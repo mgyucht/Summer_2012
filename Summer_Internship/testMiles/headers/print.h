@@ -1,10 +1,15 @@
 #ifndef PRINT_H_
 #define PRINT_H_
+
 // print.h
 // -------
 // Header file for print.cpp. Includes function prototypes for printing array
 // values and other information to text files.
 
+#include <string>
+#include <cstring>
+#include <fstream>
+#include "nonaffinity.h"
 #include "network.h"
 
 extern int netSize;

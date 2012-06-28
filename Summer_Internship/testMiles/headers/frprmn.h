@@ -96,12 +96,6 @@ struct Frprmn : Dlinemethod<T> {
                 delete[] h;
                 delete[] xi;
                 
-                #if DEBUGFRPRMN
-                    
-                    printf("First return. Count is %d\n", its);
-                    
-                #endif
-                
                 return p;
 
             }
