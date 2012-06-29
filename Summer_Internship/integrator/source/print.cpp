@@ -12,7 +12,7 @@ void Printer::printPos(std::string posFileName) {
     if (posFile.is_open()) {
  
         posFile << "Network Size,Strain,Young's Modulus,Probability,Spr1,Spr2,Spr3" << std::endl;
-        posFile << netSize << "," << strain << "," << yMod << ","
+        posFile << netSize << "," << strain << "," << YOUNGMOD << ","
             << p << ",1,1,1" << std::endl;
 
         for (int i = 0; i < netSize; i++) {
@@ -77,7 +77,7 @@ void Printer::printStress(std::string stressFileName, const double *stress_array
         for (int i = 0; i < n_time_steps; i++) {
 
             std::ostringstream int_to_str(std::ostringstream::out);
-            int_to_str << i * time_step_size;
+            int_to_str << i * TIMESTEP;
             
             stressFile << stress_array[i] << "," << strain_array[i] << ",";
             stressFile << int_to_str.str() << std::endl;

@@ -10,8 +10,12 @@
 #include <math.h>
 #include "utils.h"
 
+#define PI 3.141592653
+
 extern const double RESTLEN;
-extern const double MASS;
+extern const double ETA;
+extern const double RADIUS;
+extern const double TIMESTEP;
 
 extern int netSize;
 extern double strain;
@@ -19,22 +23,19 @@ extern double strain;
 struct Network {
     
     double* pos;
-    double*** spr;
+    double*** spring;
     double*** vels;
     double*** forces;
-    double timestep;
     
     int iMax, jMax;
     
     bool isiMax, isjMax, isiMin, isjMin;
 
-    Network(double* ppos, double*** sspr, double*** vvels, double*** fforces,
-        double ttimestep) : 
+    Network(double* ppos, double*** sspring, double*** vvels, double*** fforces) : 
         pos(ppos), 
-        spr(sspr), 
+        spring(sspring), 
         vels(vvels), 
-        forces(fforces),
-        timestep(ttimestep) {
+        forces(fforces) {
             
         iMax = netSize - 1;
         jMax = netSize - 1;
@@ -61,7 +62,7 @@ struct Network {
     
     double calcStress();
     
-    void moveNodes();
+    void moveNodes(double shear_rate);
     
     private:
     

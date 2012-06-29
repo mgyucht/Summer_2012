@@ -55,7 +55,7 @@ double Network::operator() () {
             for (int k = 1; k < 4; k++) {
                 
                 double delta = deltaL(tempPos, k);
-                funcvalue = 0.5 * spr[i][j][k - 1] / RESTLEN * delta * delta;
+                funcvalue = 0.5 * spring[i][j][k - 1] / RESTLEN * delta * delta;
 
             }
 
@@ -101,11 +101,11 @@ void Network::getNetForces() {
                 double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
                 double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
 
-                forces[i][j][2 * k - 2] = spr[i][j][k - 1] * deltaL(tempPos, k) 
-                    / euclDist(tempPos, k) * (x_displacement);
+                forces[i][j][2 * k - 2] = spring[i][j][k - 1] * deltaL(tempPos, k) 
+                    / euclDist(tempPos, k) * (x_displacement) / RESTLEN;
                 
-                forces[i][j][2 * k - 1] = spr[i][j][k - 1] * deltaL(tempPos, k) 
-                    / euclDist(tempPos, k) * (y_displacement);
+                forces[i][j][2 * k - 1] = spring[i][j][k - 1] * deltaL(tempPos, k) 
+                    / euclDist(tempPos, k) * (y_displacement) / RESTLEN;
                 
             }
 
@@ -166,9 +166,9 @@ double Network::calcStress() {
 
 }
 
-void Network::moveNodes() {
+void Network::moveNodes(double shear_rate) {
 
-    double netx, nety;
+    double netx, nety, vel_fluid, gamma;
 
     for (int i = 0; i <= iMax; i++) {
 
@@ -204,11 +204,12 @@ void Network::moveNodes() {
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
 
-            pos[(i * netSize + j) * 2] += vels[i][j][0] * timestep;
-            pos[(i * netSize + j) * 2 + 1] += vels[i][j][1] * timestep;
+            vel_fluid = pos[(i * netSize + j) * 2 + 1] * shear_rate;
+            
+            gamma = 6 * PI * ETA * RADIUS;
 
-            vels[i][j][0] += netx / MASS * timestep;
-            vels[i][j][1] += nety / MASS * timestep;
+            pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid);
+            pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma);
 
         }
 

@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern const double YOUNGMOD;
+
 // Utility function used in this structure or others derived from it.
 inline void shft2(double &a, double &b, const double c)
 {
@@ -66,7 +68,6 @@ inline void usageExit() {
     printf("  -str <arg> \t\t Adjust the strain (default: 0.01)\n");
     printf("  -size <arg> \t\t Set the network size (default: 20)\n");
     printf("  -p <arg> \t\t Set the bond probability (default: 0.8)\n");
-    printf("  -y <arg> \t\t Set Young's modulus (default: 1.0)\n");
     printf("  -n <arg> \t\t Set the number of time steps (default: 100)\n");
     printf("  -step <arg> \t\t Set the size of a time step (default: 0.01)\n");
     printf("  -rate <arg> \t\t Set the rate of oscillations (defautl: 1.0)\n");
@@ -92,12 +93,12 @@ inline double randDouble(int low, int high) {
 //stiffVecGen returns a vector containing three numbers, corresponding to the
 //spring constants for the node. These numbers may be either yMod or 0.
 
-inline double *stiffVecGen(double prob, double yMod, int numSprings) {
+inline double *stiffVecGen(double prob, int numSprings) {
 
     double *ret = new double[numSprings];
 
     for (int i = 0; i < numSprings; i++)
-        ret[i] = randDouble(0, 1) > prob ? 0 : yMod;
+        ret[i] = randDouble(0, 1) > prob ? 0 : YOUNGMOD;
 
     return ret;
 

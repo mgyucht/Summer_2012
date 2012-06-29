@@ -15,25 +15,22 @@
 
 extern int netSize;
 extern double strain;
+extern const double YOUNGMOD;
+extern const double TIMESTEP;
 
 struct Printer {
     
-    double yMod;
     double p;
     double n_time_steps;
-    double time_step_size;
     double* pos;
     double*** spr;
     
-    Printer(const Network &net, const double &yyMod, const double &pp, 
-            const double &nts) : 
-        yMod(yyMod), 
+    Printer(const Network &net, const double &pp, const double &nts) : 
         p(pp), 
         n_time_steps(nts) {
         
         this->pos = net.pos;
-        this->spr = net.spr;
-        time_step_size = net.timestep;
+        this->spr = net.spring;
         
     }
 

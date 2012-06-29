@@ -1,16 +1,13 @@
 /* integrate.cpp
  * --------
  *
- * integrate.cpp is the client file in simulating the spring networks. This 
+ * integrator.cpp is the client file in simulating the spring networks. This 
  * program works by integrating the equations of motion over all of the nodes
  * in the network. It also takes into account the viscous force from the 
  * shearing of a liquid.
- * 
- * Usage: integrate -str <strain> -size <network size> -p <bond probability> -y \
- * <young's modulus for springs>
  *
  * Author: Miles Yucht
- * Date: Mon June 11 2012
+ * Date: Mon June 29 2012
  */
 
 #include <string>
@@ -28,8 +25,17 @@ using namespace std;
 
 // Rest length for springs.
 const double RESTLEN = 1.0;
-// Mass of a node.
-const double MASS = 1e-1;
+// Viscosity of the fluid.
+const double ETA = 1;
+// Radius for Stokes' drag.
+const double RADIUS = 0.1;
+// Young's modulus for springs.
+const double YOUNGMOD = 1.0;
+// Time step for the simulation.
+const double TIMESTEP = 1e-4;
+
+// NOTE: One unit of time in this simulation is equivalent to 10^-5 seconds in
+// reality: 1 s^* = 10^-5 s.
 
 int netSize;
 double strain;
@@ -39,8 +45,9 @@ int main (int argc, char *argv[]) {
     // Default values.
 
     int prngseed = 0, nTimeSteps = 100;
-    double pBond = 0.8, strRate = 1.0, youngMod = 1.0, currentTime = 0.0, 
-           timeStep = 0.001, initStrain = 0.01;
+    double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
+    
+    netSize = 20;
     
     string output_path = "output/";
     string energyFileName = "energy_data";
@@ -48,8 +55,6 @@ int main (int argc, char *argv[]) {
     string nonaffFileName = "nonaff_data";
     string stressFileName = "stress_data";
     string extension = ".txt";
-    
-    netSize = 20;
      
     // If there are any, parse the command line parameters.
 
@@ -68,10 +73,6 @@ int main (int argc, char *argv[]) {
             
             pBond = atof(argv[i + 1]);
             
-        } else if (!str.compare("-y")) {
-            
-            youngMod = atof(argv[i + 1]);
-            
         } else if (!str.compare("-rate")) {
             
             strRate = atof(argv[i + 1]);
@@ -83,10 +84,6 @@ int main (int argc, char *argv[]) {
         } else if (!str.compare("-n")) {
 
             nTimeSteps = atoi(argv[i + 1]);
-            
-        } else if (!str.compare("-step")) {
-
-            timeStep = atof(argv[i + 1]);
             
         } else if (!str.compare("-energy-fn")) {
             
@@ -153,7 +150,7 @@ int main (int argc, char *argv[]) {
             // y-coordinate
             position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
 
-            sprstiff[i][j] = stiffVecGen(pBond, youngMod, 3);
+            sprstiff[i][j] = stiffVecGen(pBond, 3);
             velocities[i][j] = new double[2];
             netForces[i][j] = new double[6];
             
@@ -161,10 +158,12 @@ int main (int argc, char *argv[]) {
     }
     
     double strain_array[nTimeSteps];
+    double strain_rate[nTimeSteps];
     
     for (int i = 0; i < nTimeSteps; i++) {
     
-        strain_array[i] = initStrain * sin(strRate * i * timeStep);
+        strain_array[i] = initStrain * sin(strRate * i * TIMESTEP);
+        strain_rate[i]   = initStrain * strRate * TIMESTEP * cos(strRate * i * TIMESTEP);
     
     }
 
@@ -176,18 +175,17 @@ int main (int argc, char *argv[]) {
     // is only one real term of interest, because σ_xy = σ_yx. This is the 
     // number that is output by calcStress.
     
-    Network myNetwork(position, sprstiff, velocities, netForces, timeStep);
-    Printer myPrinter(myNetwork, youngMod, pBond, nTimeSteps);
+    Network myNetwork(position, sprstiff, velocities, netForces);
+    Printer myPrinter(myNetwork, pBond, nTimeSteps);
     
     for (int i = 0; i < nTimeSteps; i++) {
     
+        currentTime += TIMESTEP;
         strain = strain_array[i];
         
         myNetwork.getNetForces();
         stress_array[i] = myNetwork.calcStress();
-        myNetwork.moveNodes();
-        
-        currentTime += timeStep;
+        myNetwork.moveNodes(strain_rate[i]);
         
     }
 
