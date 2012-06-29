@@ -1,0 +1,23 @@
+# Ignore all swap files from vim
+*.swo
+*.swp
+*.swm
+
+# Ignore all temporary files from compilation
+._*
+
+# Ignore MATLAB temporary files and .fig files
+*~
+*.fig
+
+# Ignore object files
+*.o
+
+# Ignore text file output
+*.txt
+
+# Ignore feh temporary files
+feh*
+
+# Ignore my .xoj files
+*.xoj
