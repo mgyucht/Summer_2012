@@ -73,7 +73,9 @@ end
 
 %% Plot one time step
 
-frame = 2000
+posName = 'position_data';
+frame = '';
+extension = '.txt';
 figure(5)
 fileName = strcat(posName, num2str(frame), extension);
 matPos = importdata(fileName,',');

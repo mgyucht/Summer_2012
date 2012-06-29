@@ -37,10 +37,11 @@ for i = 1 : length(p)
 end
 
 %% Calculate the complex shear modulus
+% Do this after plotting stress.
 
 a0 = [0.005 2 1.571];
-[stress_params, resnorm] = lsqcurvefit(@sine_fit, a0, time, stress);
-[strain_params, resnorm] = lsqcurvefit(@sine_fit, a0, time, strain);
+[stress_params, resnorm] = lsqcurvefit(@sine_fit, a0, time_vector, stress_vector);
+[strain_params, resnorm] = lsqcurvefit(@sine_fit, a0, time_vector, strain_vector);
 
 stress_amplitude = stress_params(1);
 strain_amplitude = strain_params(1);
