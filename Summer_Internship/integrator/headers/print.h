@@ -16,16 +16,16 @@
 extern int netSize;
 extern double strain;
 extern const double YOUNGMOD;
-extern const double TIMESTEP;
+extern double TIMESTEP;
 
 struct Printer {
     
     double p;
-    double n_time_steps;
+    int n_time_steps;
     double* pos;
     double*** spr;
     
-    Printer(const Network &net, const double &pp, const double &nts) : 
+    Printer(const Network &net, const double &pp, const int &nts) : 
         p(pp), 
         n_time_steps(nts) {
         

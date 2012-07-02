@@ -15,7 +15,7 @@
 extern const double RESTLEN;
 extern const double ETA;
 extern const double RADIUS;
-extern const double TIMESTEP;
+extern double TIMESTEP;
 
 extern int netSize;
 extern double strain;

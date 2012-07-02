@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sstream>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "utils.h"
 #include "network.h"
 #include "nonaffinity.h"
@@ -32,7 +34,7 @@ const double RADIUS = 0.1;
 // Young's modulus for springs.
 const double YOUNGMOD = 1.0;
 // Time step for the simulation.
-const double TIMESTEP = 1e-4;
+double TIMESTEP = 1e-4;
 
 // NOTE: One unit of time in this simulation is equivalent to 10^-5 seconds in
 // reality: 1 s^* = 10^-5 s.
@@ -49,7 +51,7 @@ int main (int argc, char *argv[]) {
     
     netSize = 20;
     
-    string output_path = "output/";
+    string output_path = "/scratch/gpfs/myucht/";
     string energyFileName = "energy_data";
     string posFileName = "position_data";
     string nonaffFileName = "nonaff_data";
@@ -80,6 +82,10 @@ int main (int argc, char *argv[]) {
         } else if (!str.compare("-seed")) {
             
             prngseed = atoi(argv[i + 1]);
+            
+        } else if (!str.compare("-step")) {
+            
+            TIMESTEP = atof(argv[i + 1]);
             
         } else if (!str.compare("-n")) {
 
@@ -113,6 +119,28 @@ int main (int argc, char *argv[]) {
         }
     }
     
+    // Get filenames ready.
+    
+    ostringstream convert;
+    string div = "/";
+    convert << pBond << div << strRate << div;
+    
+    string specific_path = convert.str();
+    
+    string root_path = output_path + specific_path;
+    
+    string posFilePath    = root_path + posFileName + extension;
+    string nonaffFilePath = root_path + nonaffFileName + extension;
+    string stressFilePath = root_path + stressFileName + extension;
+    string energyFilePath = root_path + energyFileName + extension;
+    
+    printf("%s\n", (char *) posFilePath.c_str());
+
+    char* posFileFull    = (char *) (posFilePath).c_str();
+    char* nonaffFileFull = (char *) (nonaffFilePath).c_str();
+    char* stressFileFull = (char *) (stressFilePath).c_str();
+    char* energyFileFull = (char *) (energyFilePath).c_str();
+    
     // Initialize PRNG.
     if (prngseed == 0) 
 
@@ -124,9 +152,6 @@ int main (int argc, char *argv[]) {
 
     // Now that those are parsed, we can start to generate our network.
      
-    double network_height = sqrt(3.0) / 2.0 * netSize * netSize;
-    double strain_dist = initStrain * network_height;
-
     double* position = new double [2 * netSize * netSize];
     double* stress_array = new double [nTimeSteps];
     double*** sprstiff = new double** [netSize];
@@ -143,9 +168,6 @@ int main (int argc, char *argv[]) {
 
             // x-coordinate
             position[(i * netSize + j) * 2] = RESTLEN * (i / 2.0 + j);
-            // predicts initial position from strain
-            position[(i * netSize + j) * 2] += i * strain_dist / network_height 
-                * RESTLEN;
 
             // y-coordinate
             position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
@@ -191,19 +213,9 @@ int main (int argc, char *argv[]) {
 
     double newEnergy = myNetwork();
     
-    // Print out position vector to "position_data.txt" in the following format:
-    // row,column,xval,yval, sprstiffs, restlens.
-
-    char* posFileFull = (char *) (output_path + posFileName + extension).c_str();
     myPrinter.printPos(posFileFull);
-    
-    char* nonaffFileFull = (char *) (output_path + nonaffFileName + extension).c_str();
     myPrinter.printNonAff(nonaffFileFull);
-    
-    char* stressFileFull = (char *) (output_path + stressFileName + extension).c_str();
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
-    
-    char* energyFileFull = (char *) (output_path + energyFileName + extension).c_str();
     myPrinter.printEnergy(energyFileFull, newEnergy);
 
     // Cleanup

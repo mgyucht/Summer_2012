@@ -174,12 +174,10 @@ void Network::moveNodes(double shear_rate) {
 
         for (int j = 0; j <= jMax; j++) {
 
-            isiMin = i == 0;
-            isiMax = i == iMax;
-            isjMin = j == 0;
             isjMax = j == jMax;
+            isiMin = i == 0;
+            isjMin = j == 0;
             
-            int i1 = isiMax ? 0 : i + 1;
             int j1 = isjMax ? 0 : j + 1;
             int i2 = isiMin ? iMax : i - 1;
             int j2 = isjMin ? jMax : j - 1;

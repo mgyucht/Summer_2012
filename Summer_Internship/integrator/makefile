@@ -3,11 +3,12 @@
 IDIR = headers
 ODIR = source/objects
 SDIR = source
-OUTDIR = output
 EXECDIR = .
+_OUTDIR = output /scratch/gpfs/myucht
+OUTDIR = $(patsubst %, %/*.txt, $(_OUTDIR))
 
 CPP = g++
-CFLAGS = -g -I $(IDIR)
+CFLAGS = -g -I $(IDIR) -Wall
 LIBS = 
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
@@ -25,4 +26,5 @@ integrator: $(OBJECTS)
 .PHONY: clean
 	
 clean: 
-	-rm -f $(OUTDIR)/*.txt
+	find ~/data/ -type f -name "*.txt" -delete
+	find output -type f -name "*.txt" -delete

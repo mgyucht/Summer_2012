@@ -74,7 +74,15 @@ void Printer::printStress(std::string stressFileName, const double *stress_array
 
     if (stressFile.is_open()) {
         
-        for (int i = 0; i < n_time_steps; i++) {
+        // Only going to print 1000000 data points maximum
+
+        int print_interval = 1;
+        
+        if (n_time_steps > 1000000)
+
+            print_interval = n_time_steps / 1000000;
+
+        for (int i = 0; i < n_time_steps; i += print_interval) {
 
             std::ostringstream int_to_str(std::ostringstream::out);
             int_to_str << i * TIMESTEP;
