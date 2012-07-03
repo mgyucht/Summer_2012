@@ -15,6 +15,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+#include <vector>
 #include <sstream>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -34,7 +35,7 @@ const double RADIUS = 0.1;
 // Young's modulus for springs.
 const double YOUNGMOD = 1.0;
 // Time step for the simulation.
-double TIMESTEP = 1e-4;
+double TIMESTEP;
 
 // NOTE: One unit of time in this simulation is equivalent to 10^-5 seconds in
 // reality: 1 s^* = 10^-5 s.
@@ -119,6 +120,9 @@ int main (int argc, char *argv[]) {
         }
     }
     
+    TIMESTEP = 3.14159 / (10 * strRate);
+    nTimeSteps = 100;
+    
     // Get filenames ready.
     
     ostringstream convert;
@@ -134,8 +138,6 @@ int main (int argc, char *argv[]) {
     string stressFilePath = root_path + stressFileName + extension;
     string energyFilePath = root_path + energyFileName + extension;
     
-    printf("%s\n", (char *) posFilePath.c_str());
-
     char* posFileFull    = (char *) (posFilePath).c_str();
     char* nonaffFileFull = (char *) (nonaffFilePath).c_str();
     char* stressFileFull = (char *) (stressFilePath).c_str();
@@ -179,8 +181,8 @@ int main (int argc, char *argv[]) {
         }
     }
     
-    double strain_array[nTimeSteps];
-    double strain_rate[nTimeSteps];
+    double* strain_array = new double[nTimeSteps];
+    double* strain_rate = new double[nTimeSteps];
     
     for (int i = 0; i < nTimeSteps; i++) {
     
@@ -237,6 +239,8 @@ int main (int argc, char *argv[]) {
     delete[] sprstiff;
     delete[] velocities;
     delete[] netForces;
+    delete[] strain_rate;
+    delete[] strain_array;
 
     return 0;
 }

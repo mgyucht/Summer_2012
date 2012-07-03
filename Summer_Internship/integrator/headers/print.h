@@ -21,11 +21,11 @@ extern double TIMESTEP;
 struct Printer {
     
     double p;
-    int n_time_steps;
+    double n_time_steps;
     double* pos;
     double*** spr;
     
-    Printer(const Network &net, const double &pp, const int &nts) : 
+    Printer(const Network &net, const double &pp, const double &nts) : 
         p(pp), 
         n_time_steps(nts) {
         

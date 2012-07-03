@@ -67,22 +67,14 @@ void Printer::printEnergy(std::string energyFileName, const double &newEnergy) {
     
 }
 
-void Printer::printStress(std::string stressFileName, const double *stress_array, 
+void Printer::printStress(std::string stressFileName, const double* stress_array, 
         const double* strain_array) {
     
     std::ofstream stressFile(stressFileName.c_str(), std::ios::trunc);
 
     if (stressFile.is_open()) {
         
-        // Only going to print 1000000 data points maximum
-
-        int print_interval = 1;
-        
-        if (n_time_steps > 1000000)
-
-            print_interval = n_time_steps / 1000000;
-
-        for (int i = 0; i < n_time_steps; i += print_interval) {
+        for (int i = 0; i < n_time_steps; i++) {
 
             std::ostringstream int_to_str(std::ostringstream::out);
             int_to_str << i * TIMESTEP;

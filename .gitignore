@@ -2,6 +2,7 @@
 *.swo
 *.swp
 *.swm
+*.swn
 
 # Ignore all temporary files from compilation
 ._*

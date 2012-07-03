@@ -168,7 +168,7 @@ double Network::calcStress() {
 
 void Network::moveNodes(double shear_rate) {
 
-    double netx, nety, vel_fluid, gamma;
+    double netx, nety, vel_fluid, gamma, avg_force = 0.0;
 
     for (int i = 0; i <= iMax; i++) {
 
@@ -201,6 +201,8 @@ void Network::moveNodes(double shear_rate) {
 
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
+            
+            avg_force += sqrt(netx * netx + nety * nety);
 
             vel_fluid = pos[(i * netSize + j) * 2 + 1] * shear_rate;
             
@@ -212,6 +214,8 @@ void Network::moveNodes(double shear_rate) {
         }
 
     }
+    
+    printf("%g\n", avg_force / netSize);
 
 }
 
