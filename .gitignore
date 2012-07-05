@@ -30,4 +30,4 @@ feh*
 
 # Ignore the makefile and executable
 makefile
-integrator
+integrator.out
