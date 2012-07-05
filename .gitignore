@@ -7,9 +7,10 @@
 # Ignore all temporary files from compilation
 ._*
 
-# Ignore MATLAB temporary files and .fig files
+# Ignore MATLAB temporary files and .fig files, and also pictures
 *~
 *.fig
+*.png
 
 # Ignore object files
 *.o
@@ -22,3 +23,11 @@ feh*
 
 # Ignore my .xoj files
 *.xoj
+
+# Ignore files from building tex docs
+*.log
+*.aux
+
+# Ignore the makefile and executable
+makefile
+integrator

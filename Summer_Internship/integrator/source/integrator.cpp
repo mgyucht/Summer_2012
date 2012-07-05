@@ -86,10 +86,6 @@ int main (int argc, char *argv[]) {
             
             prngseed = atoi(argv[i + 1]);
             
-        } else if (!str.compare("-step")) {
-            
-            TIMESTEP = atof(argv[i + 1]);
-            
         } else if (!str.compare("-n")) {
 
             nTimeSteps = atoi(argv[i + 1]);
@@ -135,6 +131,8 @@ int main (int argc, char *argv[]) {
     */
     
     string root_path = output_path; // + specific_path; on della
+    
+    // Make the directory if it doesn't exist.
     
     string posFilePath    = root_path + posFileName + extension;
     string nonaffFilePath = root_path + nonaffFileName + extension;
@@ -218,10 +216,10 @@ int main (int argc, char *argv[]) {
 
     double newEnergy = myNetwork();
     
-    myPrinter.printPos(posFileFull);
-    myPrinter.printNonAff(nonaffFileFull);
+    // myPrinter.printPos(posFileFull);
+    // myPrinter.printNonAff(nonaffFileFull);
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
-    myPrinter.printEnergy(energyFileFull, newEnergy);
+    // myPrinter.printEnergy(energyFileFull, newEnergy);
 
     // Cleanup
 
