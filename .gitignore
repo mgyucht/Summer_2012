@@ -31,3 +31,4 @@ feh*
 # Ignore the makefile and executable
 makefile
 integrator.out
+compileinfo.h
