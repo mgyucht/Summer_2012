@@ -18,7 +18,7 @@ INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 $(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE)
 	$(CPP) -c -o $@ $< $(CFLAGS)
 
-integrator: $(OBJECTS)
+integrator.out: $(OBJECTS)
 	$(CPP) -o $(EXECDIR)/$@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
