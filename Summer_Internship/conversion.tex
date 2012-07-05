@@ -1,0 +1,44 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,fullpage}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+
+Here, $ {}^* $ means natural units, as opposed to SI. 
+
+\begin{align}
+    \eta_{H_{2}O} & \approx 1.0 \times 10^{-3} Pa \cdot s = 1.0 \times 10^{-3} \frac{kg}{m \cdot s} \\
+    1 \text{ RESTLEN} & = 1 m^* = 1 \times 10^{-7} m \to \eta_{H_{2}O} \approx 10^{-10} \frac{kg}{m^*\cdot s}\\
+\end{align}
+
+Young's modulus of actin is approximately $ 10^9 Pa $, so
+
+\begin{align}
+    1 Pa^* & = 10^9 Pa \to \eta_{H_{2}O} \approx 10^{-12} Pa^* \cdot s = 10^{-12} \frac{kg^*}{m^* \cdot {s^*}^2} \cdot s\\
+\end{align}
+
+Then, the ratio between both of these values for the viscosity of water should be 1, so
+
+\begin{align}
+    1 & = \frac{\eta_{H_{2}O}}{\eta_{H_{2}O}} = \frac{10^{-12} \frac{kg^*}{m^* \cdot {s^*}^2} \cdot s}{10^{-10} \frac{kg}{m^*\cdot s}} = 10^{-2}
+    \frac{kg^*}{kg} \frac{s^2}{{s^*}^2} \\
+    \to \frac{kg^*}{kg} = 10^2 \frac{{s^*}^2}{s^2}
+\end{align}
+
+At this point, I can't think of a way to separate mass from time. My assumption: \textbf{for now, I am just letting} $ 1 kg^* = 1 kg $. Then,
+
+\begin{align}
+    \frac{s^*}s & = 10 \sqrt{\frac{kg^*}{kg}} = 10 \\
+    \to \eta_{H_{2}O} &= 10^{-13} Pa^* \cdot s^*
+\end{align}
+
+Then, for an order of magnitude calculation, we see that the velocities due to Hookean forces is about
+
+\begin{align}
+    \frac{10^{-3} \text{ forces are generally around this value}}{6 \pi ( 10^{-13} ) ( 10^{-1} )} & \sim 10^{10} \\
+\end{align}
+
+This implies that the time step needs to be less than $ 10^{-10} s^* $ by at least an order of magnitude, but I can't believe this is right, is it?
+
+\end{document}
