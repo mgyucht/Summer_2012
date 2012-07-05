@@ -15,10 +15,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
-#include <vector>
 #include <sstream>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include "compileinfo.h"
 #include "utils.h"
 #include "network.h"
 #include "nonaffinity.h"
@@ -42,6 +40,7 @@ double TIMESTEP;
 
 int netSize;
 double strain;
+extern const string output_path;
 
 int main (int argc, char *argv[]) {
 
@@ -51,9 +50,6 @@ int main (int argc, char *argv[]) {
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
     
     netSize = 20;
-    
-    //string output_path = "/scratch/gpfs/myucht/"; // Uncomment this on della3
-    string output_path = "output/"; // Uncomment this on Lenovo
     
     string energyFileName = "energy_data";
     string posFileName = "position_data";
@@ -210,16 +206,24 @@ int main (int argc, char *argv[]) {
         
         myNetwork.getNetForces();
         stress_array[i] = myNetwork.calcStress();
+        
+        string iter = static_cast<ostringstream*>( &(ostringstream() << i) )->str();
+        string pFilePath    = root_path + posFileName + "_" + iter + extension;
+        char* pFileFull    = (char *) (pFilePath).c_str();
+        // Print out the positions of the nodes at each time step.
+        myPrinter.printPos(pFileFull);
         myNetwork.moveNodes(strain_rate[i]);
         
     }
 
     double newEnergy = myNetwork();
     
-    // myPrinter.printPos(posFileFull);
-    // myPrinter.printNonAff(nonaffFileFull);
+    // Uncomment whichever ones you want to have printed out.
+    
+    // myPrinter.printPos(posFileFull);             // Position
+    // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
-    // myPrinter.printEnergy(energyFileFull, newEnergy);
+    // myPrinter.printEnergy(energyFileFull, newEnergy); // Energy
 
     // Cleanup
 
