@@ -215,8 +215,6 @@ void Network::moveNodes(double shear_rate) {
 
     }
     
-    printf("%g\n", avg_force / netSize);
-
 }
 
 double Network::xshift(const int &k) {

@@ -47,7 +47,7 @@ int main (int argc, char *argv[]) {
 
     // Default values.
 
-    int prngseed = 0, nTimeSteps = 100;
+    int prngseed = 0, nTimeSteps = 20000;
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
     
     netSize = 20;
@@ -84,10 +84,6 @@ int main (int argc, char *argv[]) {
             
             prngseed = atoi(argv[i + 1]);
             
-        } else if (!str.compare("-step")) {
-            
-            TIMESTEP = atof(argv[i + 1]);
-            
         } else if (!str.compare("-n")) {
 
             nTimeSteps = atoi(argv[i + 1]);
@@ -120,8 +116,7 @@ int main (int argc, char *argv[]) {
         }
     }
     
-    TIMESTEP = 3.14159 / (10 * strRate);
-    nTimeSteps = 100;
+    TIMESTEP = 1 / (1000 * strRate);
     
     // Get filenames ready.
     
@@ -132,6 +127,8 @@ int main (int argc, char *argv[]) {
     string specific_path = convert.str();
     
     string root_path = output_path + specific_path;
+    
+    // Make the directory if it doesn't exist.
     
     string posFilePath    = root_path + posFileName + extension;
     string nonaffFilePath = root_path + nonaffFileName + extension;
@@ -215,10 +212,10 @@ int main (int argc, char *argv[]) {
 
     double newEnergy = myNetwork();
     
-    myPrinter.printPos(posFileFull);
-    myPrinter.printNonAff(nonaffFileFull);
+    // myPrinter.printPos(posFileFull);
+    // myPrinter.printNonAff(nonaffFileFull);
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
-    myPrinter.printEnergy(energyFileFull, newEnergy);
+    // myPrinter.printEnergy(energyFileFull, newEnergy);
 
     // Cleanup
 

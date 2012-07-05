@@ -26,5 +26,6 @@ integrator: $(OBJECTS)
 .PHONY: clean
 	
 clean: 
-	find ~/data/ -type f -name "*.txt" -delete
-	find output -type f -name "*.txt" -delete
+	rm -rf ~/data/*
+	find ../scripts -type f -name "*.log" -delete
+	find ../scripts -type f -name "*.log-*" -delete
