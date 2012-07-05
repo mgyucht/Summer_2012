@@ -47,12 +47,14 @@ int main (int argc, char *argv[]) {
 
     // Default values.
 
-    int prngseed = 0, nTimeSteps = 100;
+    int prngseed = 0, nTimeSteps = 20000;
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
     
     netSize = 20;
     
-    string output_path = "/scratch/gpfs/myucht/";
+    //string output_path = "/scratch/gpfs/myucht/"; // Uncomment this on della3
+    string output_path = "output/"; // Uncomment this on Lenovo
+    
     string energyFileName = "energy_data";
     string posFileName = "position_data";
     string nonaffFileName = "nonaff_data";
@@ -120,18 +122,19 @@ int main (int argc, char *argv[]) {
         }
     }
     
-    TIMESTEP = 3.14159 / (10 * strRate);
-    nTimeSteps = 100;
+    TIMESTEP = 1 / (1000 * strRate);
     
     // Get filenames ready.
     
+    /*
     ostringstream convert;
     string div = "/";
     convert << pBond << div << strRate << div;
     
     string specific_path = convert.str();
+    */
     
-    string root_path = output_path + specific_path;
+    string root_path = output_path; // + specific_path; on della
     
     string posFilePath    = root_path + posFileName + extension;
     string nonaffFilePath = root_path + nonaffFileName + extension;

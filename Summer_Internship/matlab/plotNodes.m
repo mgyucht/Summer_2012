@@ -1,7 +1,7 @@
 %% plotNodes.m
 % Plot the nodes by their positions
 
-cd /home/miles/Summer_2012/Summer_Internship/integrator/output/
+cd /mnt/h/output/0.65/0.08/
 posName = 'position_data';
 extension = '.txt';
 
