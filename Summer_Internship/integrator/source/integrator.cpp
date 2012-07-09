@@ -27,7 +27,7 @@ using namespace std;
 // Rest length for springs.
 const double RESTLEN = 1.0;
 // Viscosity of the fluid.
-const double ETA = 1;
+const double ETA = 0.1;
 // Radius for Stokes' drag.
 const double RADIUS = 0.1;
 // Young's modulus for springs.
@@ -118,15 +118,7 @@ int main (int argc, char *argv[]) {
     
     // Get filenames ready.
     
-    /*
-    ostringstream convert;
-    string div = "/";
-    convert << pBond << div << strRate << div;
-    
-    string specific_path = convert.str();
-    */
-    
-    string root_path = output_path; // + specific_path; on della
+    string root_path = output_path; // + specific_path; // on della
     
     // Make the directory if it doesn't exist.
     
@@ -215,7 +207,7 @@ int main (int argc, char *argv[]) {
         myNetwork.moveNodes(strain_rate[i]);
         
     }
-
+    
     double newEnergy = myNetwork();
     
     // Uncomment whichever ones you want to have printed out.

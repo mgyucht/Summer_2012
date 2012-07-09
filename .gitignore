@@ -7,10 +7,11 @@
 # Ignore all temporary files from compilation
 ._*
 
-# Ignore MATLAB temporary files and .fig files, and also pictures
-*~
-*.fig
-*.png
+# Ignore everything matlab
+matlab
+
+# Ignore output directory
+output
 
 # Ignore object files
 *.o
@@ -28,7 +29,7 @@ feh*
 *.log
 *.aux
 
-# Ignore the makefile and executable
+# Ignore the makefile, executable, and the compileinfo header
 makefile
 integrator.out
 compileinfo.h

@@ -27,7 +27,7 @@ void Printer::printPos(std::string posFileName) {
                 for (int k = 0; k < 3; k++) 
                     posFile << "," << spr[i][j][k];
 
-                posFile << std::endl;
+                posFile << "\n";
             }
 
         }

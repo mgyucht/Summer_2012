@@ -7,6 +7,6 @@
 
 #include <string>
 
-const std::string output_path = "/media/sdb1/Summer_2012/Summer_Internship/integrator/output";
+const std::string output_path = "/media/sdc1/Summer_2012/Summer_Internship/integrator/output/";
 
 #endif /*COMPILEINFO_H_*/
