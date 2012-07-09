@@ -207,11 +207,11 @@ int main (int argc, char *argv[]) {
         myNetwork.getNetForces();
         stress_array[i] = myNetwork.calcStress();
         
-        string iter = static_cast<ostringstream*>( &(ostringstream() << i) )->str();
-        string pFilePath    = root_path + posFileName + "_" + iter + extension;
-        char* pFileFull    = (char *) (pFilePath).c_str();
+        //string iter = static_cast<ostringstream*>( &(ostringstream() << i) )->str();
+        //string pFilePath    = root_path + posFileName + "_" + iter + extension;
+        //char* pFileFull    = (char *) (pFilePath).c_str();
         // Print out the positions of the nodes at each time step.
-        myPrinter.printPos(pFileFull);
+        //myPrinter.printPos(pFileFull);
         myNetwork.moveNodes(strain_rate[i]);
         
     }
