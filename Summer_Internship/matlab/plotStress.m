@@ -1,18 +1,36 @@
 %% plotStress.m
-% Imports the stress vector and plots it against time steps.
+% Imports the many stress vectors and calculates shear moduli.
 
-cd /mnt/h/output/
-j = 0;
-clear G_array;
+cd /media/sdc1/Summer_2012/Summer_Internship/integrator/output/
 
-for prob = 0.45:0.05:0.8
-    j = j + 1;
-    i = 0;
-    for rate = 0.02:0.02:0.2
-        pr_array=zeros(10,2);
-        for k = 1:10
-            i = i + 1;
-            file = strcat(num2str(prob), '/', num2str(rate), '/stress_data_', num2str(k), '.txt');
+clear all;
+
+p_dir = dir;
+for i = 3:length(p_dir)
+    x = str2num(p_dir(i).name);
+    p_val(i-2) = x;
+end
+
+for j = 1:length(p_val)
+    prob = p_val(j);
+    clear w_val;
+    clear w_dir;
+    cd(p_dir(j + 2).name)
+    w_dir = dir;
+    for i = 3:length(w_dir)
+        w_val(i-2) = str2num(w_dir(i).name);
+    end
+    
+    for i = 1:length(w_val)
+        rate = w_val(i);
+        cd(w_dir(i + 2).name)
+        str_files = dir;
+        nFiles = length(str_files) - 2;
+        pr_array=zeros(nFiles, 2);
+        
+        for k = 1:nFiles
+
+            file = strcat('stress_data_', num2str(k), '.txt');
             matStress = importdata(file,',');
 
         %     figure(3)
@@ -56,7 +74,9 @@ for prob = 0.45:0.05:0.8
         mean_data = mean(pr_array, 1);
         G_array(i, j, 1:4) = [prob rate mean_data];
         [i j prob rate mean_data]
+        cd ..
     end
+    cd ..
 end
 
 G_array
