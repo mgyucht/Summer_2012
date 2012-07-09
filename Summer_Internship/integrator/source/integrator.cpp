@@ -210,7 +210,7 @@ int main (int argc, char *argv[]) {
         myNetwork.moveNodes(strain_rate[i]);
         
     }
-
+    
     double newEnergy = myNetwork();
     
     // myPrinter.printPos(posFileFull);
