@@ -10,6 +10,7 @@
  * Date: Mon June 29 2012
  */
 
+#include <iomanip>
 #include <string>
 #include <ctime>
 #include <time.h>
@@ -24,14 +25,16 @@
 
 using namespace std;
 
+extern const string output_path;
+
 // Rest length for springs.
-const double RESTLEN = 1.0;
+extern const double RESTLEN;
 // Viscosity of the fluid.
-const double ETA = 1;
+extern const double ETA;
 // Radius for Stokes' drag.
-const double RADIUS = 0.1;
+extern const double RADIUS;
 // Young's modulus for springs.
-const double YOUNGMOD = 1.0;
+extern const double YOUNGMOD;
 // Time step for the simulation.
 double TIMESTEP;
 
@@ -40,13 +43,12 @@ double TIMESTEP;
 
 int netSize;
 double strain;
-extern const string output_path;
 
 int main (int argc, char *argv[]) {
 
     // Default values.
 
-    int prngseed = 0, nTimeSteps = 20000;
+    int prngseed = 0, nTimeSteps = 20000, job;
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
     
     netSize = 20;
@@ -69,6 +71,10 @@ int main (int argc, char *argv[]) {
         } else if (!str.compare("-size")) {
             
             netSize = atoi(argv[i + 1]);
+            
+        } else if (!str.compare("-j")) {
+            
+            job = atoi(argv[i + 1]);
             
         } else if (!str.compare("-p")) {
             
@@ -118,15 +124,10 @@ int main (int argc, char *argv[]) {
     
     // Get filenames ready.
     
-    /*
     ostringstream convert;
-    string div = "/";
-    convert << pBond << div << strRate << div;
+    convert << job << "/";
     
-    string specific_path = convert.str();
-    */
-    
-    string root_path = output_path; // + specific_path; on della
+    string root_path = output_path + convert.str();
     
     // Make the directory if it doesn't exist.
     
@@ -206,24 +207,16 @@ int main (int argc, char *argv[]) {
         
         myNetwork.getNetForces();
         stress_array[i] = myNetwork.calcStress();
-        
-        //string iter = static_cast<ostringstream*>( &(ostringstream() << i) )->str();
-        //string pFilePath    = root_path + posFileName + "_" + iter + extension;
-        //char* pFileFull    = (char *) (pFilePath).c_str();
-        // Print out the positions of the nodes at each time step.
-        //myPrinter.printPos(pFileFull);
         myNetwork.moveNodes(strain_rate[i]);
         
     }
 
     double newEnergy = myNetwork();
     
-    // Uncomment whichever ones you want to have printed out.
-    
-    // myPrinter.printPos(posFileFull);             // Position
-    // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
+    // myPrinter.printPos(posFileFull);
+    // myPrinter.printNonAff(nonaffFileFull);
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
-    // myPrinter.printEnergy(energyFileFull, newEnergy); // Energy
+    // myPrinter.printEnergy(energyFileFull, newEnergy);
 
     // Cleanup
 

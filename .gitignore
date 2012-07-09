@@ -7,10 +7,11 @@
 # Ignore all temporary files from compilation
 ._*
 
-# Ignore MATLAB temporary files and .fig files, and also pictures
-*~
-*.fig
-*.png
+# Directories to ignore
+scripts
+matlab
+output
+objects
 
 # Ignore object files
 *.o
