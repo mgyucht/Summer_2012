@@ -12,7 +12,6 @@
 
 #include <string>
 #include <ctime>
-#include <iostream>
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
@@ -213,7 +212,7 @@ int main (int argc, char *argv[]) {
     
     // Uncomment whichever ones you want to have printed out.
     
-    //myPrinter.printPos(posFileFull);             // Position
+    // myPrinter.printPos(posFileFull);             // Position
     // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
     // myPrinter.printEnergy(energyFileFull, newEnergy); // Energy

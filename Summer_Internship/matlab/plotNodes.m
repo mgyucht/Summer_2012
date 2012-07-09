@@ -1,21 +1,18 @@
 %% plotNodes.m
 % Plot the nodes by their positions
 
-cd /mnt/h/output/0.65/0.08/
-posName = 'position_data';
+cd /media/sdb1/Summer_2012/Summer_Internship/integrator/output/
+posName = 'pos_data_aff';
 extension = '.txt';
 
 command = ['ls | grep ', posName, ' | wc -l'];
 [dummy, numFiles] = unix(command);
 numFiles = str2num(numFiles);
+clear('M');
+index = 1;
+for frame = 1:150:numFiles
 
-M = moviein(numFiles);
-
-figure(4)
-
-for frame = 1:numFiles
-
-        fileName = strcat(posName, num2str(frame), extension);
+    fileName = strcat(posName, '_', num2str(frame), extension);
     matPos = importdata(fileName,',');
 
     netSize = matPos.data(1,1);
@@ -40,35 +37,36 @@ for frame = 1:numFiles
         for j = 1:netSize
             if springs(i, j, 1) == 1
                 if j == netSize
-                    plot([position(i, j, 1), position(i, 1, 1) + netSize], [position(i, j, 2), position(i, 1, 2)], 'b-')
+                    plot([position(i, j, 1), position(i, 1, 1) + netSize], [position(i, j, 2), position(i, 1, 2)], 'b.-', 'MarkerSize', 1)
                 else
-                    plot([position(i, j, 1), position(i, j+1, 1)], [position(i, j, 2), position(i, j+1, 2)], 'b-')
+                    plot([position(i, j, 1), position(i, j+1, 1)], [position(i, j, 2), position(i, j+1, 2)], 'b.-', 'MarkerSize', 1)
                 end
             end
             if springs(i, j, 2) == 1
                 if i == netSize
-                    plot([position(i, j, 1), position(1, j, 1) + netSize / 2.0 + shear], [position(i, j, 2), position(1, j, 2) + netSize * sqrt(3.0)/2.0], 'b-')
+                    plot([position(i, j, 1), position(1, j, 1) + netSize / 2.0 + shear], [position(i, j, 2), position(1, j, 2) + netSize * sqrt(3.0)/2.0], 'b.-', 'MarkerSize', 1)
                 else
-                    plot([position(i, j, 1), position(i+1, j, 1)], [position(i, j, 2), position(i+1, j, 2)], 'b-')
+                    plot([position(i, j, 1), position(i+1, j, 1)], [position(i, j, 2), position(i+1, j, 2)], 'b.-', 'MarkerSize', 1)
                 end
             end
             if springs(i, j, 3) == 1
                 if j == 1 && i ~= netSize
-                    plot([position(i, j, 1), position(i+1, netSize, 1) - netSize], [position(i, j, 2), position(i+1, netSize, 2)], 'b-')
+                    plot([position(i, j, 1), position(i+1, netSize, 1) - netSize], [position(i, j, 2), position(i+1, netSize, 2)], 'b.-', 'MarkerSize', 1)
                 elseif i == netSize && j ~= 1
-                    plot([position(i, j, 1), position(1, j-1, 1) + netSize / 2.0 + shear], [position(i, j, 2), position(1, j-1, 2) + netSize * sqrt(3.0)/2.0], 'b-')
+                    plot([position(i, j, 1), position(1, j-1, 1) + netSize / 2.0 + shear], [position(i, j, 2), position(1, j-1, 2) + netSize * sqrt(3.0)/2.0], 'b.-', 'MarkerSize', 1)
                 elseif i == netSize && j == 1
-                    plot([position(i, j, 1), position(1, netSize, 1) - netSize / 2.0 + shear], [position(i, j+1, 2), position(1, netSize-1, 2) + netSize * sqrt(3.0)/2.0], 'b-')
+                    plot([position(i, j, 1), position(1, netSize, 1) - netSize / 2.0 + shear], [position(i, j+1, 2), position(1, netSize-1, 2) + netSize * sqrt(3.0)/2.0], 'b.-', 'MarkerSize', 1)
                 else
-                    plot([position(i, j, 1), position(i+1, j-1, 1)], [position(i, j, 2), position(i+1, j-1, 2)], 'b-')
+                    plot([position(i, j, 1), position(i+1, j-1, 1)], [position(i, j, 2), position(i+1, j-1, 2)], 'b.-', 'MarkerSize', 1)
                 end
             end
         end
     end
-    axis equal
+    axis([-2 60 -2 37])
     title(['Frame ', num2str(frame)])
-
-    M(:, frame) = getframe(gcf);
+    
+    M(index) = getframe(gca);
+    index = index + 1;
 end
 
 %% Plot one time step
