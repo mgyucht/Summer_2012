@@ -12,6 +12,7 @@
 
 #include <string>
 #include <ctime>
+#include <iostream>
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
@@ -27,7 +28,7 @@ using namespace std;
 // Rest length for springs.
 const double RESTLEN = 1.0;
 // Viscosity of the fluid.
-const double ETA = 1;
+const double ETA = 0.1;
 // Radius for Stokes' drag.
 const double RADIUS = 0.1;
 // Young's modulus for springs.
@@ -118,15 +119,7 @@ int main (int argc, char *argv[]) {
     
     // Get filenames ready.
     
-    /*
-    ostringstream convert;
-    string div = "/";
-    convert << pBond << div << strRate << div;
-    
-    string specific_path = convert.str();
-    */
-    
-    string root_path = output_path; // + specific_path; on della
+    string root_path = output_path; // + specific_path; // on della
     
     // Make the directory if it doesn't exist.
     
@@ -207,20 +200,20 @@ int main (int argc, char *argv[]) {
         myNetwork.getNetForces();
         stress_array[i] = myNetwork.calcStress();
         
-        string iter = static_cast<ostringstream*>( &(ostringstream() << i) )->str();
-        string pFilePath    = root_path + posFileName + "_" + iter + extension;
-        char* pFileFull    = (char *) (pFilePath).c_str();
+        //string iter = static_cast<ostringstream*>( &(ostringstream() << i) )->str();
+        //string pFilePath    = root_path + posFileName + "_" + iter + extension;
+        //char* pFileFull    = (char *) (pFilePath).c_str();
         // Print out the positions of the nodes at each time step.
-        myPrinter.printPos(pFileFull);
+        //myPrinter.printPos(pFileFull);
         myNetwork.moveNodes(strain_rate[i]);
         
     }
-
+    
     double newEnergy = myNetwork();
     
     // Uncomment whichever ones you want to have printed out.
     
-    // myPrinter.printPos(posFileFull);             // Position
+    //myPrinter.printPos(posFileFull);             // Position
     // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
     // myPrinter.printEnergy(energyFileFull, newEnergy); // Energy
