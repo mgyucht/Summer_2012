@@ -7,7 +7,7 @@
  * shearing of a liquid.
  *
  * Author: Miles Yucht
- * Date: Mon June 29 2012
+ * Date: Mon July 07 2012
  */
 
 #include <iomanip>
@@ -25,17 +25,13 @@
 
 using namespace std;
 
+// These constants are determined at compile time. They are stored in 
+// compileinfo.h.
 extern const string output_path;
-
-// Rest length for springs.
 extern const double RESTLEN;
-// Viscosity of the fluid.
 extern const double ETA;
-// Radius for Stokes' drag.
 extern const double RADIUS;
-// Young's modulus for springs.
 extern const double YOUNGMOD;
-// Time step for the simulation.
 double TIMESTEP;
 
 // NOTE: One unit of time in this simulation is equivalent to 10^-5 seconds in
@@ -46,11 +42,10 @@ double strain;
 
 int main (int argc, char *argv[]) {
 
-    // Default values.
-
+    // Initialization and default values. The `job' variable is specifically
+    // for della.
     int prngseed = 0, nTimeSteps = 20000, job;
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
-    
     netSize = 20;
     
     string energyFileName = "energy_data";
@@ -120,16 +115,15 @@ int main (int argc, char *argv[]) {
         }
     }
     
+    // Set the timestep. This needs to change for slow strain frequencies
+    // (omega < 0.01)
     TIMESTEP = 1 / (1000 * strRate);
     
     // Get filenames ready.
-    
     ostringstream convert;
     convert << job << "/";
     
     string root_path = output_path + convert.str();
-    
-    // Make the directory if it doesn't exist.
     
     string posFilePath    = root_path + posFileName + extension;
     string nonaffFilePath = root_path + nonaffFileName + extension;
@@ -151,7 +145,6 @@ int main (int argc, char *argv[]) {
         srand( prngseed );
 
     // Now that those are parsed, we can start to generate our network.
-     
     double* position = new double [2 * netSize * netSize];
     double* stress_array = new double [nTimeSteps];
     double*** sprstiff = new double** [netSize];
@@ -189,6 +182,9 @@ int main (int argc, char *argv[]) {
     
     }
 
+    Network myNetwork(position, sprstiff, velocities, netForces);
+    Printer myPrinter(myNetwork, pBond, nTimeSteps);
+    
     // Integrate motion over the nodes.
     // 
     // Technical note: Stress is a rank 2 tensor. However, because our interest
@@ -197,29 +193,30 @@ int main (int argc, char *argv[]) {
     // is only one real term of interest, because σ_xy = σ_yx. This is the 
     // number that is output by calcStress.
     
-    Network myNetwork(position, sprstiff, velocities, netForces);
-    Printer myPrinter(myNetwork, pBond, nTimeSteps);
-    
     for (int i = 0; i < nTimeSteps; i++) {
     
         currentTime += TIMESTEP;
         strain = strain_array[i];
         
+        // Calculate the net forces in the network.
         myNetwork.getNetForces();
+        // Calculate the stress of the network.
         stress_array[i] = myNetwork.calcStress();
+        // Simulate the movement for this time step.
         myNetwork.moveNodes(strain_rate[i]);
         
     }
     
-    double newEnergy = myNetwork();
+    // Get the resultant energy of the network (not important for dynamic simulation)
+    // double newEnergy = myNetwork();
     
+    // Uncomment whatever you would like to have printed.
     // myPrinter.printPos(posFileFull);
     // myPrinter.printNonAff(nonaffFileFull);
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
     // myPrinter.printEnergy(energyFileFull, newEnergy);
 
     // Cleanup
-
     delete[] position;
     delete[] stress_array;
 
