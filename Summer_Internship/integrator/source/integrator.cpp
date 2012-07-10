@@ -1,4 +1,4 @@
-/* integrate.cpp
+/* integrator.cpp
  * --------
  *
  * integrator.cpp is the client file in simulating the spring networks. This 
@@ -16,7 +16,11 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+
+#ifdef DELLA
 #include <sstream>
+#endif
+
 #include "compileinfo.h"
 #include "utils.h"
 #include "network.h"
@@ -39,6 +43,17 @@ double TIMESTEP;
 
 int netSize;
 double strain;
+<<<<<<< HEAD
+=======
+#if defined(DELLA)
+const string output_path = "/scratch/gfps/myucht/";
+#elif defined(HOME_COMPUTER)
+const string output_path = "/home/miles/Summer_2012/Summer_Internship/"
+                           "integrator/output/";
+#else
+#error Only either DELLA or HOME_COMPUTER can be defined
+#endif
+>>>>>>> 12e3732cd00f1179ce1b453938bd727475759ada
 
 int main (int argc, char *argv[]) {
 
@@ -119,11 +134,20 @@ int main (int argc, char *argv[]) {
     // (omega < 0.01)
     TIMESTEP = 1 / (1000 * strRate);
     
+#if defined(DELLA)
     // Get filenames ready.
     ostringstream convert;
     convert << job << "/";
     
     string root_path = output_path + convert.str();
+<<<<<<< HEAD
+=======
+#elif defined(HOME_COMPUTER)
+    string root_path = output_path; 
+#endif
+    
+    // Make the directory if it doesn't exist.
+>>>>>>> 12e3732cd00f1179ce1b453938bd727475759ada
     
     string posFilePath    = root_path + posFileName + extension;
     string nonaffFilePath = root_path + nonaffFileName + extension;
@@ -207,12 +231,13 @@ int main (int argc, char *argv[]) {
         
     }
     
-    // Get the resultant energy of the network (not important for dynamic simulation)
+    // Calculate the energy of the network. Not important for dynamic simulation.
     // double newEnergy = myNetwork();
     
-    // Uncomment whatever you would like to have printed.
-    // myPrinter.printPos(posFileFull);
-    // myPrinter.printNonAff(nonaffFileFull);
+    // Uncomment whichever data you want to have printed out.
+    
+    // myPrinter.printPos(posFileFull);             // Position
+    // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
     // myPrinter.printEnergy(energyFileFull, newEnergy);
 

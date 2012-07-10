@@ -40,6 +40,7 @@ struct Printer {
     
     void printEnergy(std::string /*fileName*/, const double & /*newEnergy*/);
     
+    // Prints the stress of the network for every tenth time point.
     void printStress(std::string /*fileName*/, const double* stress, const double* strain);
     
 };

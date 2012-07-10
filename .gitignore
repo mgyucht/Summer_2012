@@ -1,35 +1,39 @@
+# Summer_2012 .gitignore file
+# ---------------------------
+#
+
+# Filetypes to ignore
+# -------------------
 # Ignore all swap files from vim
 *.swo
 *.swp
 *.swm
 *.swn
-
 # Ignore all temporary files from compilation
 ._*
-
-# Directories to ignore
-scripts
-matlab
-output
-objects
-
 # Ignore object files
 *.o
-
 # Ignore text file output
 *.txt
-
 # Ignore feh temporary files
 feh*
-
 # Ignore my .xoj files
 *.xoj
-
 # Ignore files from building tex docs
 *.log
 *.aux
-
 # Ignore the makefile, executable, and the compileinfo header
 makefile
 integrator.out
 compileinfo.h
+
+# Directories to ignore
+# ---------------------
+# Ignore everything matlab
+matlab
+# Ignore output directory
+output
+# Ignore papers directory
+papers
+# Ignore presentations
+presentations

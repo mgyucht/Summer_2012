@@ -2,21 +2,11 @@
 #define COMPILEINFO_H_
 // compileinfo.h
 // -------------
-// compileinfo.h contains information specific to the computer the program is 
-// being compiled on. This controls output path information primarily.
+// Not to be distributed with source. This contains system-specific information
+// for path determination at compilation.
 
-#include <string>
-
-// Output path for della version.
-const std::string output_path = "/scratch/gpfs/myucht/";
-
-// Rest length for springs.
-extern const double RESTLEN = 1;
-// Viscosity of the fluid.
-extern const double ETA = 1;
-// Radius for Stokes' drag.
-extern const double RADIUS = 0.1;
-// Young's modulus for springs.
-extern const double YOUNGMOD = 1;
+// Uncomment the appropriate line. Only one can be uncommented.
+// #define HOME_COMPUTER 1
+#define DELLA 0
 
 #endif /*COMPILEINFO_H_*/

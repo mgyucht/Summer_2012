@@ -74,7 +74,7 @@ void Printer::printStress(std::string stressFileName, const double* stress_array
 
     if (stressFile.is_open()) {
         
-        for (int i = 0; i < n_time_steps; i++) {
+        for (int i = 0; i < n_time_steps; i += 10) {
 
             std::ostringstream int_to_str(std::ostringstream::out);
             int_to_str << i * TIMESTEP;
