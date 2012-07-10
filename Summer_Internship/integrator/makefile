@@ -6,7 +6,7 @@ SDIR = source
 EXECDIR = .
 
 CPP = g++
-CFLAGS = -g -I $(IDIR) -Wall
+CFLAGS = -O2 -I $(IDIR) -Wall
 LIBS = 
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
