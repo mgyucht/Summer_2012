@@ -1,4 +1,4 @@
-/* integrate.cpp
+/* integrator.cpp
  * --------
  *
  * integrator.cpp is the client file in simulating the spring networks. This 
@@ -15,7 +15,11 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+
+#ifdef DELLA
 #include <sstream>
+#endif
+
 #include "compileinfo.h"
 #include "utils.h"
 #include "network.h"
@@ -40,7 +44,14 @@ double TIMESTEP;
 
 int netSize;
 double strain;
-extern const string output_path;
+#if defined(DELLA)
+const string output_path = "/scratch/gfps/myucht/";
+#elif defined(HOME_COMPUTER)
+const string output_path = "/home/miles/Summer_2012/Summer_Internship/"
+                           "integrator/output/";
+#else
+#error Only either DELLA or HOME_COMPUTER can be defined
+#endif
 
 int main (int argc, char *argv[]) {
 
@@ -116,9 +127,15 @@ int main (int argc, char *argv[]) {
     
     TIMESTEP = 1 / (1000 * strRate);
     
+#if defined(DELLA)
     // Get filenames ready.
+    ostringstream convert;
+    convert << job << "/";
     
-    string root_path = output_path; // + specific_path; // on della
+    string root_path = output_path + convert.str();
+#elif defined(HOME_COMPUTER)
+    string root_path = output_path; 
+#endif
     
     // Make the directory if it doesn't exist.
     
@@ -208,9 +225,10 @@ int main (int argc, char *argv[]) {
         
     }
     
-    double newEnergy = myNetwork();
+    // Calculate the energy of the network. Not important for dynamic simulation.
+    // double newEnergy = myNetwork();
     
-    // Uncomment whichever ones you want to have printed out.
+    // Uncomment whichever data you want to have printed out.
     
     // myPrinter.printPos(posFileFull);             // Position
     // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity

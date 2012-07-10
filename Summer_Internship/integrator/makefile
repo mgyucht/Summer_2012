@@ -12,7 +12,7 @@ LIBS =
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
 OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
 
-_INCLUDE = network.h print.h nonaffinity.h utils.h
+_INCLUDE = network.h print.h nonaffinity.h utils.h compileinfo.h
 INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 
 $(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE)
@@ -24,4 +24,4 @@ integrator.out: $(OBJECTS)
 .PHONY: clean
 	
 clean: 
-	rm -rf ~/data/*
+	rm -rf output/*
