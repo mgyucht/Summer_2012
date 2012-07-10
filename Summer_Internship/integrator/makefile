@@ -16,6 +16,7 @@ _INCLUDE = network.h print.h nonaffinity.h utils.h compileinfo.h
 INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 
 $(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE)
+	@mkdir -p $(ODIR)
 	$(CPP) -c -o $@ $< $(CFLAGS)
 
 integrator.out: $(OBJECTS)
@@ -23,6 +24,4 @@ integrator.out: $(OBJECTS)
 
 .PHONY: clean
 	
-clean: 
-	rm -rf ~/data/*
-	rm ~/Summer_2012/Summer_Internship/scripts/*\.log*
+include clean.mk
