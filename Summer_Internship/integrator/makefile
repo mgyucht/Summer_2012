@@ -16,6 +16,7 @@ _INCLUDE = network.h print.h nonaffinity.h utils.h compileinfo.h
 INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 
 $(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE)
+	@mkdir -p $(ODIR)
 	$(CPP) -c -o $@ $< $(CFLAGS)
 
 integrator.out: $(OBJECTS)
