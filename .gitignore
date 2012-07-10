@@ -22,9 +22,8 @@ feh*
 # Ignore files from building tex docs
 *.log
 *.aux
-# Ignore the executable and clean.mk
+# Ignore the makefile, executable, and the compileinfo header
 integrator.out
-.gitattributes
 
 # Directories to ignore
 # ---------------------
