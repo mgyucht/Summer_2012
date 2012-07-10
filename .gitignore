@@ -35,3 +35,5 @@ matlab
 output
 # Ignore papers directory
 papers
+# Ignore presentations
+presentations
