@@ -1,5 +1,5 @@
-Summer_2012.git
----------------
+Summer\_2012.git
+================
 
 Primary Author: Miles Yucht
 ---------------------------
@@ -13,7 +13,7 @@ cytoskeletons.
 
 There are two simulations set up: first, the static simulation, where the
 strain is unchanging during the simulation, is in the subdirectory
-Summer_Internship/testMiles. program uses the conjugate gradient algorithm to
+Summer\_Internship/testMiles. program uses the conjugate gradient algorithm to
 minimize the energy of the spring network, which it can then use to calculate
 the shear modulus of the network. The main file is located in program.cpp and
 is compiled by the following command:
@@ -32,7 +32,7 @@ The help file will tell you the correct usage to set the parameters for the
 simulation. 
 
 The second simulation is a dynamic simulation, where the strain applied to the
-system is sinusoidal. This is located in the Summer_Internship/integrator
+system is sinusoidal. This is located in the Summer\_Internship/integrator
 subdirectory. For each node in the network, the net force is calculated which
 corresponds to the node's motion. To compile:
 
