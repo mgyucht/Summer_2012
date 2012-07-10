@@ -24,7 +24,6 @@ feh*
 *.aux
 # Ignore the makefile, executable, and the compileinfo header
 integrator.out
-clean.mk
 
 # Directories to ignore
 # ---------------------
