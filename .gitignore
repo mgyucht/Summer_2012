@@ -23,9 +23,9 @@ feh*
 *.log
 *.aux
 # Ignore the makefile, executable, and the compileinfo header
-makefile
 integrator.out
 compileinfo.h
+clean.mk
 
 # Directories to ignore
 # ---------------------
