@@ -10,7 +10,6 @@
  * Date: Mon July 07 2012
  */
 
-#include <iomanip>
 #include <string>
 #include <ctime>
 #include <time.h>
@@ -18,6 +17,7 @@
 #include <math.h>
 
 #ifdef DELLA
+#include <iomanip>
 #include <sstream>
 #endif
 
@@ -29,13 +29,15 @@
 
 using namespace std;
 
-// These constants are determined at compile time. They are stored in 
-// compileinfo.h.
-extern const string output_path;
-extern const double RESTLEN;
-extern const double ETA;
-extern const double RADIUS;
-extern const double YOUNGMOD;
+// Rest length for springs.
+const double RESTLEN = 1.0;
+// Viscosity of the fluid.
+const double ETA = 0.1;
+// Radius for Stokes' drag.
+const double RADIUS = 0.1;
+// Young's modulus for springs.
+const double YOUNGMOD = 1.0;
+// Time step for the simulation.
 double TIMESTEP;
 
 // NOTE: One unit of time in this simulation is equivalent to 10^-5 seconds in
@@ -43,8 +45,6 @@ double TIMESTEP;
 
 int netSize;
 double strain;
-<<<<<<< HEAD
-=======
 #if defined(DELLA)
 const string output_path = "/scratch/gfps/myucht/";
 #elif defined(HOME_COMPUTER)
@@ -53,15 +53,18 @@ const string output_path = "/home/miles/Summer_2012/Summer_Internship/"
 #else
 #error Only either DELLA or HOME_COMPUTER can be defined
 #endif
->>>>>>> 12e3732cd00f1179ce1b453938bd727475759ada
 
 int main (int argc, char *argv[]) {
 
     // Initialization and default values. The `job' variable is specifically
     // for della.
-    int prngseed = 0, nTimeSteps = 20000, job;
+    int prngseed = 0, nTimeSteps = 20000;
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
     netSize = 20;
+    
+#ifdef DELLA
+    int job;
+#endif
     
     string energyFileName = "energy_data";
     string posFileName = "position_data";
@@ -81,11 +84,11 @@ int main (int argc, char *argv[]) {
         } else if (!str.compare("-size")) {
             
             netSize = atoi(argv[i + 1]);
-            
+#ifdef DELLA
         } else if (!str.compare("-j")) {
             
             job = atoi(argv[i + 1]);
-            
+#endif 
         } else if (!str.compare("-p")) {
             
             pBond = atof(argv[i + 1]);
@@ -140,14 +143,11 @@ int main (int argc, char *argv[]) {
     convert << job << "/";
     
     string root_path = output_path + convert.str();
-<<<<<<< HEAD
-=======
 #elif defined(HOME_COMPUTER)
     string root_path = output_path; 
 #endif
     
     // Make the directory if it doesn't exist.
->>>>>>> 12e3732cd00f1179ce1b453938bd727475759ada
     
     string posFilePath    = root_path + posFileName + extension;
     string nonaffFilePath = root_path + nonaffFileName + extension;
