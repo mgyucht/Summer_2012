@@ -23,6 +23,4 @@ integrator.out: $(OBJECTS)
 
 .PHONY: clean
 	
-clean: 
-	rm -rf ~/data/*
-	rm ~/Summer_2012/Summer_Internship/scripts/*\.log*
+include clean.mk
