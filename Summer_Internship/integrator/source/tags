@@ -1,0 +1,25 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.6	//
+ETA	integrator.cpp	/^const double ETA = 1;$/;"	v
+RADIUS	integrator.cpp	/^const double RADIUS = 0.1;$/;"	v
+RESTLEN	integrator.cpp	/^const double RESTLEN = 1.0;$/;"	v
+TIMESTEP	integrator.cpp	/^const double TIMESTEP = 1e-1;$/;"	v
+YOUNGMOD	integrator.cpp	/^const double YOUNGMOD = 1.0;$/;"	v
+calcStress	network.cpp	/^double Network::calcStress() {$/;"	f	class:Network
+getNetForces	network.cpp	/^void Network::getNetForces() {$/;"	f	class:Network
+main	integrator.cpp	/^int main (int argc, char *argv[]) {$/;"	f
+moveNodes	network.cpp	/^void Network::moveNodes(double shear_rate) {$/;"	f	class:Network
+netSize	integrator.cpp	/^int netSize;$/;"	v
+nonAffinity	nonaffinity.cpp	/^double nonAffinity(const char * argv) {$/;"	f
+operator ()	network.cpp	/^double Network::operator() () {$/;"	f	class:Network
+printEnergy	print.cpp	/^void Printer::printEnergy(std::string energyFileName, const double &newEnergy) {$/;"	f	class:Printer
+printNonAff	print.cpp	/^void Printer::printNonAff(std::string nonaffFileName) {$/;"	f	class:Printer
+printPos	print.cpp	/^void Printer::printPos(std::string posFileName) {$/;"	f	class:Printer
+printStress	print.cpp	/^void Printer::printStress(std::string stressFileName, const double *stress_array, $/;"	f	class:Printer
+strain	integrator.cpp	/^double strain;$/;"	v
+xshift	network.cpp	/^double Network::xshift(const int &k) {$/;"	f	class:Network
+yshift	network.cpp	/^double Network::yshift(const int &k) {$/;"	f	class:Network

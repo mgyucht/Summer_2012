@@ -7,7 +7,7 @@
  * shearing of a liquid.
  *
  * Author: Miles Yucht
- * Date: Mon June 29 2012
+ * Date: Mon July 07 2012
  */
 
 #include <string>
@@ -17,6 +17,7 @@
 #include <math.h>
 
 #ifdef DELLA
+#include <iomanip>
 #include <sstream>
 #endif
 
@@ -55,12 +56,15 @@ const string output_path = "/home/miles/Summer_2012/Summer_Internship/"
 
 int main (int argc, char *argv[]) {
 
-    // Default values.
-
+    // Initialization and default values. The `job' variable is specifically
+    // for della.
     int prngseed = 0, nTimeSteps = 20000;
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
-    
     netSize = 20;
+    
+#ifdef DELLA
+    int job;
+#endif
     
     string energyFileName = "energy_data";
     string posFileName = "position_data";
@@ -80,7 +84,11 @@ int main (int argc, char *argv[]) {
         } else if (!str.compare("-size")) {
             
             netSize = atoi(argv[i + 1]);
+#ifdef DELLA
+        } else if (!str.compare("-j")) {
             
+            job = atoi(argv[i + 1]);
+#endif 
         } else if (!str.compare("-p")) {
             
             pBond = atof(argv[i + 1]);
@@ -125,6 +133,8 @@ int main (int argc, char *argv[]) {
         }
     }
     
+    // Set the timestep. This needs to change for slow strain frequencies
+    // (omega < 0.01)
     TIMESTEP = 1 / (1000 * strRate);
     
 #if defined(DELLA)
@@ -159,7 +169,6 @@ int main (int argc, char *argv[]) {
         srand( prngseed );
 
     // Now that those are parsed, we can start to generate our network.
-     
     double* position = new double [2 * netSize * netSize];
     double* stress_array = new double [nTimeSteps];
     double*** sprstiff = new double** [netSize];
@@ -197,6 +206,9 @@ int main (int argc, char *argv[]) {
     
     }
 
+    Network myNetwork(position, sprstiff, velocities, netForces);
+    Printer myPrinter(myNetwork, pBond, nTimeSteps);
+    
     // Integrate motion over the nodes.
     // 
     // Technical note: Stress is a rank 2 tensor. However, because our interest
@@ -205,22 +217,16 @@ int main (int argc, char *argv[]) {
     // is only one real term of interest, because σ_xy = σ_yx. This is the 
     // number that is output by calcStress.
     
-    Network myNetwork(position, sprstiff, velocities, netForces);
-    Printer myPrinter(myNetwork, pBond, nTimeSteps);
-    
     for (int i = 0; i < nTimeSteps; i++) {
     
         currentTime += TIMESTEP;
         strain = strain_array[i];
         
+        // Calculate the net forces in the network.
         myNetwork.getNetForces();
+        // Calculate the stress of the network.
         stress_array[i] = myNetwork.calcStress();
-        
-        //string iter = static_cast<ostringstream*>( &(ostringstream() << i) )->str();
-        //string pFilePath    = root_path + posFileName + "_" + iter + extension;
-        //char* pFileFull    = (char *) (pFilePath).c_str();
-        // Print out the positions of the nodes at each time step.
-        //myPrinter.printPos(pFileFull);
+        // Simulate the movement for this time step.
         myNetwork.moveNodes(strain_rate[i]);
         
     }
@@ -233,10 +239,9 @@ int main (int argc, char *argv[]) {
     // myPrinter.printPos(posFileFull);             // Position
     // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
     myPrinter.printStress(stressFileFull, stress_array, strain_array);
-    // myPrinter.printEnergy(energyFileFull, newEnergy); // Energy
+    // myPrinter.printEnergy(energyFileFull, newEnergy);
 
     // Cleanup
-
     delete[] position;
     delete[] stress_array;
 

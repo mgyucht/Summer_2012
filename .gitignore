@@ -35,3 +35,5 @@ output
 papers
 # Ignore presentations
 presentations
+# Ignore scripts subdirectory
+scripts
