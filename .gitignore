@@ -22,6 +22,8 @@ feh*
 # Ignore files from building tex docs
 *.log
 *.aux
+# Ignore the executable and clean.mk
+integrator.out
 
 # Directories to ignore
 # ---------------------
