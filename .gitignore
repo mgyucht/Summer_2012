@@ -24,6 +24,7 @@ feh*
 *.aux
 # Ignore the executable and clean.mk
 integrator.out
+.gitattributes
 
 # Directories to ignore
 # ---------------------
