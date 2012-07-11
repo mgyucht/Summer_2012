@@ -44,7 +44,7 @@ To run:
 
 See the options with 
 
-    $ ./integrator.out help
+    $ ./integrator.out -help
     
 Looking through my code, you might believe that it was written by an
 unexperienced, amateur coder, and you'd be exactly right. This project has
