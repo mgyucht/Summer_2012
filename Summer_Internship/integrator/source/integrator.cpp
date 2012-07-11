@@ -10,22 +10,17 @@
  * Date: Mon July 07 2012
  */
 
-#if (DELLA == 1 && HOME_COMPUTER == 1) || (DELLA == 0 && HOME_COMPUTER == 0)
-#error Only either DELLA or HOME_COMPUTER may be defined
-#endif
-
 #include <string>
 #include <ctime>
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
-
-#if DELLA == 1
 #include <iomanip>
 #include <sstream>
-#endif
+#include <boost/program_options.hpp>
 
-#include "compileinfo.h"
+namespace po = boost::program_options;
+
 #include "utils.h"
 #include "network.h"
 #include "nonaffinity.h"
@@ -49,105 +44,118 @@ double TIMESTEP;
 
 int netSize;
 double strain;
-#if DELLA == 1
-const string output_path = "/scratch/gfps/myucht/";
-#elif HOME_COMPUTER == 1
-const string output_path = "/home/miles/Summer_2012/Summer_Internship/"
-                           "integrator/output/";
-#endif
+
+template<class T>
+ostream& operator<< (ostream& os, const vector<T> &v) 
+{
+    copy(v.begin(), v.end(), ostream_iterator<T>(cout, " "));
+    return os;
+}
 
 int main (int argc, char *argv[]) {
 
     // Initialization and default values. The `job' variable is specifically
     // for della.
-    int prngseed = 0, nTimeSteps = 20000;
-    double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
-    netSize = 20;
-    
-#if DELLA == 1
-    int job;
-#endif
-    
-    string energyFileName = "energy_data";
-    string posFileName = "position_data";
-    string nonaffFileName = "nonaff_data";
-    string stressFileName = "stress_data";
-    string extension = ".txt";
+    int prngseed, nTimeSteps, job;
+    double pBond, strRate, currentTime = 0.0, initStrain;
+    string energyFileName, posFileName, nonaffFileName, stressFileName,
+           output_path, config_file, extension = ".txt";
      
-    // If there are any, parse the command line parameters.
-
-    for (int i = 1; i < argc; i += 2) {
-        string str = argv[i];
+    po::options_description general("General options");
+    general.add_options() 
+        ("help,h", "show this help text")
+        ("config,c", po::value<string>(&config_file)->default_value(".integratorconf"),
+             "set the config file")
+        ("netsize,z", po::value<int>(&netSize)->default_value(20),
+             "set network dimensions")
+        ("time,n", po::value<int>(&nTimeSteps)->default_value(20000), 
+             "set number of time steps")
+        ("probability,p", po::value<double>(&pBond)->default_value(0.8), 
+             "set bond probability")
+        ("rate,r", po::value<double>(&strRate)->default_value(1.0), 
+             "set oscillation frequency")
+        ("strain,e", po::value<double>(&initStrain)->default_value(0.01), 
+             "set initial strain")
+        ("prng", po::value<int>(&prngseed)->default_value(0), 
+             "set PRNG seed")
+        ("job,j", po::value<int>(&job)->default_value(0), "set job number")
+        ;
+    
+    po::options_description filename("Filename options");
+    filename.add_options()
+        ("en-fn", po::value<string>(&energyFileName)->default_value("energy_data"),
+             "set energy data file name")
+        ("aff-fn", po::value<string>(&nonaffFileName)->default_value("nonaff_data"),
+             "set non-affinity data file name")
+        ("pos-fn", po::value<string>(&posFileName)->default_value("position_data"),
+             "set position data file name")
+        ("st-fn", po::value<string>(&stressFileName)->default_value("stress_data"),
+             "set stress data file name")
+        ;
+    
+    po::options_description config("Configuration");
+    config.add_options()
+        ("output", po::value<string>(&output_path)->default_value(""), "set output path")
+        ;
+    
+    po::options_description cmdline_options;
+    cmdline_options.add(general).add(filename);
+    
+    po::options_description config_file_options;
+    config_file_options.add(filename).add(config);
+    
+    po::variables_map vm;
+    store(po::parse_command_line(argc, argv, cmdline_options), vm);
+    notify(vm);
+    
+    if (vm.count("help")) {
         
-        if (!str.compare("-str")) {
-            
-            initStrain = atof(argv[i + 1]);
-            
-        } else if (!str.compare("-size")) {
-            
-            netSize = atoi(argv[i + 1]);
-#if DELLA == 1
-        } else if (!str.compare("-j")) {
-            
-            job = atoi(argv[i + 1]);
-#endif 
-        } else if (!str.compare("-p")) {
-            
-            pBond = atof(argv[i + 1]);
-            
-        } else if (!str.compare("-rate")) {
-            
-            strRate = atof(argv[i + 1]);
-            
-        } else if (!str.compare("-seed")) {
-            
-            prngseed = atoi(argv[i + 1]);
-            
-        } else if (!str.compare("-n")) {
-
-            nTimeSteps = atoi(argv[i + 1]);
-            
-        } else if (!str.compare("-energy-fn")) {
-            
-            energyFileName = argv[i + 1];
-            
-        } else if (!str.compare("-position-fn")) {
-            
-            posFileName = argv[i + 1];
-            
-        } else if (!str.compare("-nonaff-fn")) {
-            
-            nonaffFileName = argv[i + 1];
-            
-        } else if (!str.compare("-stress-fn")) {
-            
-            stressFileName = argv[i + 1];
-            
-        } else if (!str.compare("-help") || !str.compare("help")) {
-            
-            usageExit();
-            
-        } else {
-            
-            printf("%s is an illegal argument.\n", argv[i]);
-            usageExit();
-            
-        }
+        cout << cmdline_options << endl;
+        return 0;
+    
+    }
+    
+    ifstream ifs(config_file.c_str());
+    
+    if (!ifs) {
+        
+        cout << "Couldn't open config file. Please create one and store the" 
+            << " output information in it.\n";
+        return 1;
+        
+    } else {
+        
+        store(parse_config_file(ifs, config_file_options), vm);
+        notify(vm);
+        
+    }
+    
+    if (output_path.empty()) {
+        
+        cout << "You must specify an output path in .integratorconf.\n";
+        return 1;
+        
     }
     
     // Set the timestep. This needs to change for slow strain frequencies
     // (omega < 0.01)
     TIMESTEP = 1 / (1000 * strRate);
     
-#if DELLA == 1
-    // Get filenames ready.
-    ostringstream convert;
-    convert << job << "/";
+    string root_path;
     
-    string root_path = output_path + convert.str();
-#elif HOME_COMUTER == 1
-    string root_path = output_path; 
-#endif
+    if (job > 0) {
+        
+        // Get filenames ready.
+        ostringstream convert;
+        convert << job << "/";
+        
+        root_path = output_path + convert.str();
+        
+    } else {
+        
+        root_path = output_path; 
+        
+    }
     
     // Make the directory if it doesn't exist.
     
