@@ -10,13 +10,17 @@
  * Date: Mon July 07 2012
  */
 
+#if (DELLA == 1 && HOME_COMPUTER == 1) || (DELLA == 0 && HOME_COMPUTER == 0)
+#error Only either DELLA or HOME_COMPUTER may be defined
+#endif
+
 #include <string>
 #include <ctime>
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef DELLA
+#if DELLA == 1
 #include <iomanip>
 #include <sstream>
 #endif
@@ -45,13 +49,11 @@ double TIMESTEP;
 
 int netSize;
 double strain;
-#if defined(DELLA)
+#if DELLA == 1
 const string output_path = "/scratch/gfps/myucht/";
-#elif defined(HOME_COMPUTER)
+#elif HOME_COMPUTER == 1
 const string output_path = "/home/miles/Summer_2012/Summer_Internship/"
                            "integrator/output/";
-#else
-#error Only either DELLA or HOME_COMPUTER can be defined
 #endif
 
 int main (int argc, char *argv[]) {
@@ -62,7 +64,7 @@ int main (int argc, char *argv[]) {
     double pBond = 0.8, strRate = 1.0, currentTime = 0.0, initStrain = 0.01;
     netSize = 20;
     
-#ifdef DELLA
+#if DELLA == 1
     int job;
 #endif
     
@@ -84,7 +86,7 @@ int main (int argc, char *argv[]) {
         } else if (!str.compare("-size")) {
             
             netSize = atoi(argv[i + 1]);
-#ifdef DELLA
+#if DELLA == 1
         } else if (!str.compare("-j")) {
             
             job = atoi(argv[i + 1]);
@@ -137,13 +139,13 @@ int main (int argc, char *argv[]) {
     // (omega < 0.01)
     TIMESTEP = 1 / (1000 * strRate);
     
-#if defined(DELLA)
+#if DELLA == 1
     // Get filenames ready.
     ostringstream convert;
     convert << job << "/";
     
     string root_path = output_path + convert.str();
-#elif defined(HOME_COMPUTER)
+#elif HOME_COMUTER == 1
     string root_path = output_path; 
 #endif
     
