@@ -5,9 +5,17 @@ ODIR = source/objects
 SDIR = source
 EXECDIR = .
 
+HOSTNAME = $(shell hostname)
+
+LIBS = 
 CPP = g++
 CFLAGS = -O2 -I $(IDIR) -Wall
-LIBS = 
+ifeq ($(HOSTNAME), miles)
+CFLAGS += -D DELLA=0 -D HOME_COMPUTER=1
+else 
+CFLAGS += -D DELLA=1 -D HOME_COMPUTER=0
+endif
+
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
 OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
@@ -24,4 +32,10 @@ integrator.out: $(OBJECTS)
 
 .PHONY: clean
 	
-include clean.mk
+clean:
+ifeq ($(HOSTNAME), miles)
+	rm -rf output/*
+else
+	rm -rf ~/data/*
+	rm ~/Summer_2012/Summer_Internship/scripts/*\.log*
+endif
