@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <boost/program_options.hpp>
 
@@ -44,13 +45,6 @@ double TIMESTEP;
 
 int netSize;
 double strain;
-
-template<class T>
-ostream& operator<< (ostream& os, const vector<T> &v) 
-{
-    copy(v.begin(), v.end(), ostream_iterator<T>(cout, " "));
-    return os;
-}
 
 int main (int argc, char *argv[]) {
 
