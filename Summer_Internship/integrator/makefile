@@ -7,20 +7,14 @@ EXECDIR = .
 
 HOSTNAME = $(shell hostname)
 
-LIBS = 
+LIBS = -lboost_program_options
 CPP = g++
-CFLAGS = -O2 -I $(IDIR) -Wall
-ifeq ($(HOSTNAME), miles)
-CFLAGS += -D DELLA=0 -D HOME_COMPUTER=1
-else 
-CFLAGS += -D DELLA=1 -D HOME_COMPUTER=0
-endif
-
+CFLAGS = -g -O2 -I $(IDIR) -Wall
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
 OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
 
-_INCLUDE = network.h print.h nonaffinity.h utils.h compileinfo.h
+_INCLUDE = network.h print.h nonaffinity.h utils.h
 INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 
 $(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE)
@@ -33,9 +27,9 @@ integrator.out: $(OBJECTS)
 .PHONY: clean
 	
 clean:
-ifeq ($(HOSTNAME), miles)
-	rm -rf output/*
-else
+ifeq ($(HOSTNAME), della3)
 	rm -rf ~/data/*
 	rm ~/Summer_2012/Summer_Internship/scripts/*\.log*
+else
+	rm -rf output/*
 endif
