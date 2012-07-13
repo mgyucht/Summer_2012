@@ -60,7 +60,7 @@ struct Network {
     
     void getNetForces();
     
-    double calcStress();
+    double calcStress(double strain_rate);
     
     void moveNodes(double shear_rate);
     
