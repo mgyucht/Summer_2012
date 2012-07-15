@@ -12,9 +12,8 @@
 
 #include <string>
 #include <ctime>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <boost/program_options.hpp>
@@ -31,7 +30,7 @@ using namespace std;
 // Rest length for springs.
 const double RESTLEN = 1.0;
 // Viscosity of the fluid.
-const double ETA = 0.1;
+const double ETA = 1.0;
 // Radius for Stokes' drag.
 const double RADIUS = 0.1;
 // Young's modulus for springs.
@@ -45,31 +44,38 @@ double TIMESTEP;
 int netSize;
 double strain;
 
-template<class T>
-ostream& operator<< (ostream& os, const vector<T> &v) 
+int main (int argc, char *argv[]) 
 {
-    copy(v.begin(), v.end(), ostream_iterator<T>(cout, " "));
-    return os;
-}
-
-int main (int argc, char *argv[]) {
-
-    // Initialization and default values. The `job' variable is specifically
-    // for della.
-    int prngseed, nTimeSteps, job;
-    double pBond, strRate, currentTime = 0.0, initStrain;
-    string energyFileName, posFileName, nonaffFileName, stressFileName,
-           output_path, config_file, extension = ".txt";
+    int prngseed,    // Random number generator seed for springs (0)
+        nTimeSteps,  // Number of time steps to simulate (200000)
+        steps_per_oscillation = 1000, // Exactly what you think it is 
+        out_per_oscillation = 30, // How many times to output per oscillation
+        frame_sep,   // steps_per_oscillation/out_per_oscillation
+        job;         // Job (only used on della) (0)
+    
+    double pBond,             // Bond probability (0.8)
+           strRate,           // Strain rate (1.0 Hz*)
+           initStrain;        // Magnitude of strain (0.01)
+    
+    string energyFileName, // Energy file name
+           posFileName,    // Position file name 
+           nonaffFileName, // Nonaffinity file name
+           stressFileName, // Stress file name
+           output_path,    // Output path for simulation
+           config_file,    // Name and location of config file
+           extension = ".txt"; // File extension
+    
+    frame_sep = steps_per_oscillation / out_per_oscillation;
      
+    // Set up command-line parameters and config information.
+
     po::options_description general("General options");
     general.add_options() 
         ("help,h", "show this help text")
-        ("config,c", po::value<string>(&config_file)->default_value(".integratorconf"),
-             "set the config file")
+        ("config,c", po::value<string>(&config_file)->default_value(
+                            ".integratorconf"), "set the config file")
         ("netsize,z", po::value<int>(&netSize)->default_value(20),
              "set network dimensions")
-        ("time,n", po::value<int>(&nTimeSteps)->default_value(20000), 
-             "set number of time steps")
         ("probability,p", po::value<double>(&pBond)->default_value(0.8), 
              "set bond probability")
         ("rate,r", po::value<double>(&strRate)->default_value(1.0), 
@@ -83,19 +89,20 @@ int main (int argc, char *argv[]) {
     
     po::options_description filename("Filename options");
     filename.add_options()
-        ("en-fn", po::value<string>(&energyFileName)->default_value("energy_data"),
+        ("en-fn", po::value<string>(&energyFileName)->default_value(""),
              "set energy data file name")
-        ("aff-fn", po::value<string>(&nonaffFileName)->default_value("nonaff_data"),
+        ("aff-fn", po::value<string>(&nonaffFileName)->default_value(""),
              "set non-affinity data file name")
-        ("pos-fn", po::value<string>(&posFileName)->default_value("position_data"),
+        ("pos-fn", po::value<string>(&posFileName)->default_value(""),
              "set position data file name")
-        ("st-fn", po::value<string>(&stressFileName)->default_value("stress_data"),
+        ("st-fn", po::value<string>(&stressFileName)->default_value(""),
              "set stress data file name")
         ;
     
     po::options_description config("Configuration");
     config.add_options()
-        ("output", po::value<string>(&output_path)->default_value(""), "set output path")
+        ("output", po::value<string>(&output_path)->default_value(""), 
+                             "set output path")
         ;
     
     po::options_description cmdline_options;
@@ -104,74 +111,81 @@ int main (int argc, char *argv[]) {
     po::options_description config_file_options;
     config_file_options.add(filename).add(config);
     
+    // Make the variables_map object.
     po::variables_map vm;
+    
+    // Read parameters from the command line.
+    
     store(po::parse_command_line(argc, argv, cmdline_options), vm);
     notify(vm);
     
-    if (vm.count("help")) {
-        
+    if (vm.count("help")) 
+    {
         cout << cmdline_options << endl;
         return 0;
-    
     }
+    
+    // Read parameters from the config file.
     
     ifstream ifs(config_file.c_str());
     
-    if (!ifs) {
-        
+    if (!ifs) 
+    {
         cout << "Couldn't open config file. Please create one and store the" 
             << " output information in it.\n";
         return 1;
-        
-    } else {
-        
+    } else 
+    {
         store(parse_config_file(ifs, config_file_options), vm);
         notify(vm);
-        
     }
     
-    if (output_path.empty()) {
-        
-        cout << "You must specify an output path in .integratorconf.\n";
+    // Requires an output_path to be assigned in config file.
+    
+    if (output_path.empty()) 
+    {
+        cout << "You must specify an output path in the config file.\n";
         return 1;
-        
     }
     
-    // Set the timestep. This needs to change for slow strain frequencies
-    // (omega < 0.01)
-    TIMESTEP = 1 / (1000 * strRate);
+    // Set the time step.
+    
+    TIMESTEP = 2 * PI / (steps_per_oscillation * strRate);
+    nTimeSteps = steps_per_oscillation * 5;
+    
+    // Set the file paths.
     
     string root_path;
     
-    if (job > 0) {
-        
+    if (job > 0) // On della only
+    {
         // Get filenames ready.
         ostringstream convert;
         convert << job << "/";
         
         root_path = output_path + convert.str();
-        
-    } else {
-        
+    } else // On home computer only
+    {
         root_path = output_path; 
-        
     }
     
-    // Make the directory if it doesn't exist.
+    bool printP = static_cast<bool>(posFileName.compare(""));
+    bool printN = static_cast<bool>(nonaffFileName.compare(""));
+    bool printS = static_cast<bool>(stressFileName.compare(""));
+    bool printE = static_cast<bool>(energyFileName.compare(""));
     
-    string posFilePath    = root_path + posFileName + extension;
     string nonaffFilePath = root_path + nonaffFileName + extension;
     string stressFilePath = root_path + stressFileName + extension;
     string energyFilePath = root_path + energyFileName + extension;
     
-    char* posFileFull    = (char *) (posFilePath).c_str();
-    char* nonaffFileFull = (char *) (nonaffFilePath).c_str();
-    char* stressFileFull = (char *) (stressFilePath).c_str();
-    char* energyFileFull = (char *) (energyFilePath).c_str();
+    char* nonaffFileFull = (char *) nonaffFilePath.c_str();
+    char* stressFileFull = (char *) stressFilePath.c_str();
+    char* energyFileFull = (char *) energyFilePath.c_str();
     
     // Initialize PRNG.
+    
     if (prngseed == 0) 
-
+        
         srand( time(NULL) );
     
     else 
@@ -179,20 +193,21 @@ int main (int argc, char *argv[]) {
         srand( prngseed );
 
     // Now that those are parsed, we can start to generate our network.
+    
     double* position = new double [2 * netSize * netSize];
     double* stress_array = new double [nTimeSteps];
     double*** sprstiff = new double** [netSize];
     double*** velocities = new double** [netSize];
     double*** netForces = new double** [netSize];
 
-    for (int i = 0; i < netSize; i++) {
-
+    for (int i = 0; i < netSize; i++) 
+    {
         sprstiff[i] = new double* [netSize];
         velocities[i] = new double* [netSize];
         netForces[i] = new double* [netSize];
 
-        for (int j = 0; j < netSize; j++) {
-
+        for (int j = 0; j < netSize; j++) 
+        {
             // x-coordinate
             position[(i * netSize + j) * 2] = RESTLEN * (i / 2.0 + j);
 
@@ -202,18 +217,23 @@ int main (int argc, char *argv[]) {
             sprstiff[i][j] = stiffVecGen(pBond, 3);
             velocities[i][j] = new double[2];
             netForces[i][j] = new double[6];
-            
         }
     }
     
     double* strain_array = new double[nTimeSteps];
     double* strain_rate = new double[nTimeSteps];
     
-    for (int i = 0; i < nTimeSteps; i++) {
+    // If the strain magnitude is gamma * network_height, the actual strain on
+    // the network is 2 * gamma. Therefore, we halve gamma before making the
+    // strain array so that requesting a simulation with a certain strain 
+    // results in the network with that strain and not double that strain.
     
+    initStrain /= 2;
+    
+    for (int i = 0; i < nTimeSteps; i++) 
+    {
         strain_array[i] = initStrain * sin(strRate * i * TIMESTEP);
-        strain_rate[i]   = initStrain * strRate * TIMESTEP * cos(strRate * i * TIMESTEP);
-    
+        strain_rate[i]  = initStrain * strRate * cos(strRate * i * TIMESTEP);
     }
 
     Network myNetwork(position, sprstiff, velocities, netForces);
@@ -227,29 +247,42 @@ int main (int argc, char *argv[]) {
     // is only one real term of interest, because σ_xy = σ_yx. This is the 
     // number that is output by calcStress.
     
-    for (int i = 0; i < nTimeSteps; i++) {
-    
-        currentTime += TIMESTEP;
+    for (int i = 0; i < nTimeSteps; i++) 
+    {
         strain = strain_array[i];
         
         // Calculate the net forces in the network.
-        myNetwork.getNetForces();
-        // Calculate the stress of the network.
-        stress_array[i] = myNetwork.calcStress();
-        // Simulate the movement for this time step.
-        myNetwork.moveNodes(strain_rate[i]);
         
+        myNetwork.getNetForces();
+        
+        // Calculate the stress of the network.
+        
+        stress_array[i] = myNetwork.calcStress(strain_rate[i]);
+        
+        // If a filename is specified, print the positions of the nodes.
+        
+        if (printP && i % frame_sep == 0) 
+        {
+            string iter = boost::lexical_cast<string>(i);
+            string posFilePath   = root_path + posFileName + "_" + iter + extension;
+            char* posFileFull    = (char *) (posFilePath).c_str();
+            myPrinter.printPos(posFileFull);
+        }
+        
+        // Simulate the movement for this time step.
+        
+        myNetwork.moveNodes(strain_rate[i]);
     }
     
-    // Calculate the energy of the network. Not important for dynamic simulation.
-    // double newEnergy = myNetwork();
+    // The boolean variables defined above determine whether or not to print 
+    // this information.
     
-    // Uncomment whichever data you want to have printed out.
+    if (printN) myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
     
-    // myPrinter.printPos(posFileFull);             // Position
-    // myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
-    myPrinter.printStress(stressFileFull, stress_array, strain_array);
-    // myPrinter.printEnergy(energyFileFull, newEnergy);
+    if (printS) myPrinter.printStress(stressFileFull, stress_array, 
+            strain_array);
+    
+    if (printE) myPrinter.printEnergy(energyFileFull, myNetwork()); // Energy
 
     // Cleanup
     delete[] position;

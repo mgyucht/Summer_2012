@@ -25,13 +25,16 @@ feh*
 # Ignore the makefile, executable, and the compileinfo header
 integrator.out
 .integratorconf
+# Ignore the .gitignore also
+.gitignore
 
 # Directories to ignore
 # ---------------------
 # Ignore everything matlab
 matlab
-# Ignore output directory
+# Ignore output and movies directory
 output
+movies
 # Ignore papers directory
 papers
 # Ignore presentations

@@ -9,7 +9,7 @@ HOSTNAME = $(shell hostname)
 
 LIBS = -lboost_program_options
 CPP = g++
-CFLAGS = -g -O2 -I $(IDIR) -Wall
+CFLAGS = -g -I $(IDIR) -Wall
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
 OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
@@ -17,7 +17,7 @@ OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
 _INCLUDE = network.h print.h nonaffinity.h utils.h
 INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 
-$(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE)
+$(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE) makefile
 	@mkdir -p $(ODIR)
 	$(CPP) -c -o $@ $< $(CFLAGS)
 
@@ -31,5 +31,6 @@ ifeq ($(HOSTNAME), della3)
 	rm -rf ~/data/*
 	rm ~/Summer_2012/Summer_Internship/scripts/*\.log*
 else
-	rm -rf output/*
+	find output/ -type f -name "*.txt" -exec rm {} \;
+	find output/ -type f -name "*.png" -exec rm {} \;
 endif

@@ -100,12 +100,13 @@ void Network::getNetForces() {
                 
                 double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
                 double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
-
-                forces[i][j][2 * k - 2] = spring[i][j][k - 1] * deltaL(tempPos, k) 
-                    / euclDist(tempPos, k) * (x_displacement) / RESTLEN;
                 
-                forces[i][j][2 * k - 1] = spring[i][j][k - 1] * deltaL(tempPos, k) 
-                    / euclDist(tempPos, k) * (y_displacement) / RESTLEN;
+                double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
+                    / euclDist(tempPos, k) / RESTLEN;
+
+                forces[i][j][2 * k - 2] = temp * x_displacement;
+                
+                forces[i][j][2 * k - 1] = temp * y_displacement;
                 
             }
 
@@ -115,7 +116,7 @@ void Network::getNetForces() {
 
 }
 
-double Network::calcStress() {
+double Network::calcStress(double strain_rate) {
 
     double stress = 0.0;
     double prefactor = 1 / (sqrt(3.0) / 2.0 * netSize * netSize);
@@ -161,14 +162,18 @@ double Network::calcStress() {
         }
 
     }
-
+    
+    // Add in viscous network deformation strain.
+    
+    stress += ETA * strain_rate; 
+    
     return stress * prefactor;
 
 }
 
 void Network::moveNodes(double shear_rate) {
 
-    double netx, nety, vel_fluid, gamma, avg_force = 0.0;
+    double netx, nety, vel_fluid, gamma;
 
     for (int i = 0; i <= iMax; i++) {
 
@@ -202,9 +207,9 @@ void Network::moveNodes(double shear_rate) {
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
             
-            avg_force += sqrt(netx * netx + nety * nety);
-
-            vel_fluid = pos[(i * netSize + j) * 2 + 1] * shear_rate;
+            double ypos = pos[(i * netSize + j) * 2 + 1];
+            
+            vel_fluid = (ypos * netSize / (netSize - 1) - netSize * sqrt(3) / 4) * shear_rate;
             
             gamma = 6 * PI * ETA * RADIUS;
 
@@ -235,7 +240,7 @@ double Network::xshift(const int &k) {
         case 2: 
             if (isiMax) {
             
-                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);
                 
             }
             break;
@@ -244,7 +249,7 @@ double Network::xshift(const int &k) {
         case 3:
             if (isiMax) {
             
-                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);
                 
             }
             if (isjMin)
@@ -266,7 +271,7 @@ double Network::xshift(const int &k) {
         case 5: 
             if (isiMin) {
                 
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);                    
                 
             }
             break;
@@ -275,7 +280,7 @@ double Network::xshift(const int &k) {
         case 6:
             if (isiMin) {
             
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);                    
                 
             }
             if (isjMax)
