@@ -11,7 +11,6 @@ void Printer::printPos(std::string posFileName) {
 
     if (posFile.is_open()) {
  
-        posFile << "Network Size,Strain,Young's Modulus,Probability,Spr1,Spr2,Spr3" << std::endl;
         posFile << netSize << "," << strain << "," << YOUNGMOD << ","
             << p << ",1,1,1" << std::endl;
 

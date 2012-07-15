@@ -109,6 +109,17 @@ int main (int argc, char *argv[])
     // Make the variables_map object.
     po::variables_map vm;
     
+    // Read parameters from the command line.
+    
+    store(po::parse_command_line(argc, argv, cmdline_options), vm);
+    notify(vm);
+    
+    if (vm.count("help")) 
+    {
+        cout << cmdline_options << endl;
+        return 0;
+    }
+    
     // Read parameters from the config file.
     
     ifstream ifs(config_file.c_str());
@@ -122,17 +133,6 @@ int main (int argc, char *argv[])
     {
         store(parse_config_file(ifs, config_file_options), vm);
         notify(vm);
-    }
-    
-    // Read parameters from the command line.
-    
-    store(po::parse_command_line(argc, argv, cmdline_options), vm);
-    notify(vm);
-    
-    if (vm.count("help")) 
-    {
-        cout << cmdline_options << endl;
-        return 0;
     }
     
     // Requires an output_path to be assigned in config file.
