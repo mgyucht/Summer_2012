@@ -32,6 +32,7 @@ integrator.out
 matlab
 # Ignore output directory
 output
+movies
 # Ignore papers directory
 papers
 # Ignore presentations
