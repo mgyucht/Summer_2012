@@ -48,6 +48,9 @@ int main (int argc, char *argv[])
 {
     int prngseed,    // Random number generator seed for springs (0)
         nTimeSteps,  // Number of time steps to simulate (200000)
+        steps_per_oscillation = 1000, // Exactly what you think it is 
+        out_per_oscillation = 30, // How many times to output per oscillation
+        frame_sep,   // steps_per_oscillation/out_per_oscillation
         job;         // Job (only used on della) (0)
     
     double pBond,             // Bond probability (0.8)
@@ -61,6 +64,8 @@ int main (int argc, char *argv[])
            output_path,    // Output path for simulation
            config_file,    // Name and location of config file
            extension = ".txt"; // File extension
+    
+    frame_sep = steps_per_oscillation / out_per_oscillation;
      
     // Set up command-line parameters and config information.
 
@@ -145,10 +150,8 @@ int main (int argc, char *argv[])
     
     // Set the time step.
     
-    double factor = 10000;
-    TIMESTEP = 1 / (factor * strRate);
-    
-    nTimeSteps = factor * 20;
+    TIMESTEP = 2 * PI / (steps_per_oscillation * strRate);
+    nTimeSteps = steps_per_oscillation * 5;
     
     // Set the file paths.
     
@@ -258,7 +261,7 @@ int main (int argc, char *argv[])
         
         // If a filename is specified, print the positions of the nodes.
         
-        if (printP && i % 1500 == 0) 
+        if (printP && i % frame_sep == 0) 
         {
             string iter = boost::lexical_cast<string>(i);
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
