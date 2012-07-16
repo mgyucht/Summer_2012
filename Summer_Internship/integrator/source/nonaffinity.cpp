@@ -46,7 +46,7 @@ double nonAffinity(const char * argv)
         getline(iss, token, ',');
         strain = atof(token.c_str());
         
-        if (strain < 1E-15) 
+        if (abs(strain) < 1E-15) 
         {
             return 0.0;
         }

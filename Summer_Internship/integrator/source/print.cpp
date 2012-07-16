@@ -37,14 +37,14 @@ void Printer::printPos(std::string posFileName) {
     posFile.close();
 }
 
-void Printer::printNonAff(std::string nonaffFileName) {
+void Printer::printNonAff(std::string nonaffFileName, std::string posFileName, int i) {
 
     std::ofstream nonaffFile(nonaffFileName.c_str(), std::ios::app);
 
     if (nonaffFile.is_open()) {
         
-        double nonaff = nonAffinity(nonaffFileName.c_str());
-        nonaffFile << netSize << "," << strain << "," << p << "," 
+        double nonaff = nonAffinity(posFileName.c_str());
+        nonaffFile << i * TIMESTEP << "," << strain << "," << p << "," 
             << nonaff << std::endl;
     
     }
