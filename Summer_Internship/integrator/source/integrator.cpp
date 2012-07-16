@@ -267,6 +267,9 @@ int main (int argc, char *argv[])
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
             char* posFileFull    = (char *) (posFilePath).c_str();
             myPrinter.printPos(posFileFull);
+            if (printN && strain_array[i] >= strain_array[i - 1] 
+                    && strain_array[i] >= strain_array[i + 1] && i < steps_per_oscillation)
+                myPrinter.printNonAff(nonaffFileFull, posFileFull, i);
         }
         
         // Simulate the movement for this time step.
@@ -276,8 +279,6 @@ int main (int argc, char *argv[])
     
     // The boolean variables defined above determine whether or not to print 
     // this information.
-    
-    if (printN) myPrinter.printNonAff(nonaffFileFull);       // Non-affinity
     
     if (printS) myPrinter.printStress(stressFileFull, stress_array, 
             strain_array);
