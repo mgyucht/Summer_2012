@@ -29,7 +29,7 @@ integrator.out: $(OBJECTS)
 clean:
 ifeq ($(HOSTNAME), della3)
 	rm -rf ~/data/*
-	rm ~/Summer_2012/Summer_Internship/scripts/*\.log*
+	rm ~/Summer_2012/Summer_Internship/scripts/*log*
 else
 	find output/ -type f -name "*.txt" -exec rm {} \;
 	find output/ -type f -name "*.png" -exec rm {} \;
