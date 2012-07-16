@@ -36,7 +36,7 @@ struct Printer {
 
     void printPos(std::string /*fileName*/);
     
-    void printNonAff(std::string /*fileName*/);
+    void printNonAff(std::string /*nonaffFileName*/, std::string /*posFileName*/, int /* time */);
     
     void printEnergy(std::string /*fileName*/, const double & /*newEnergy*/);
     

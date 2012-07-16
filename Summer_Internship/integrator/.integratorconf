@@ -1,3 +1,2 @@
 output = /home/miles/Summer_2012/Summer_Internship/integrator/output/
-# pos-fn = pos_non_aff
-# st-fn = stress_non_aff_1000
+st-fn = stress_non_aff
