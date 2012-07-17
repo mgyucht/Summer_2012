@@ -152,7 +152,7 @@ int main (int argc, char *argv[])
     
     test_step = 2 * PI / (1000 * strRate);
     TIMESTEP = test_step < max_time_step ? test_step : max_time_step;
-    steps_per_oscillation = 2 * PI / (strRate * TIMESTEP);
+    steps_per_oscillation = (int) (2 * PI / (strRate * TIMESTEP));
     
     nTimeSteps = steps_per_oscillation * 5;
     frame_sep = steps_per_oscillation / out_per_oscillation;
