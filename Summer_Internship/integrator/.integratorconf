@@ -1,3 +1,4 @@
 output = /home/miles/Summer_2012/Summer_Internship/integrator/output/
-st-fn = stress_non_aff
-aff-fn = nonaff_measure
+pos-fn = position_data
+# st-fn = stress_non_aff
+# aff-fn = nonaff_measure
