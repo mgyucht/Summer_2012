@@ -41,7 +41,7 @@ else
     # --- Make the executable
 
     make -C ${PATH_TO_INTEGRATOR}
-    # make clean -C ${PATH_TO_INTEGRATOR}
+    make clean -C ${PATH_TO_INTEGRATOR}
     
     if [[ $? == "0" ]]
     then
@@ -50,25 +50,25 @@ else
 
         # --- Run integrator script with specified parameters
 
-        # ${PATH_TO_INTEGRATOR}${INTEGRATOR_CMD} -p $P -e $E -r $R -z $Z
+        ${PATH_TO_INTEGRATOR}${INTEGRATOR_CMD} -p $P -e $E -r $R -z $Z
 
         cd ${PATH_TO_OUTPUT}
 
         # --- Generate images with matlab and make into movie
 
         ${MATLAB_CMD} < ${PATH_TO_SCRIPT}plotNodes.m
-        ls | grep .png | sort -n > movie.txt
-        mencoder mf://@movie.txt -ovc raw -of avi -vf scale=1024:768 -mf type=png -o ${PATH_TO_MOVIES}temp.avi
+        ls | grep .tiff | sort -n > movie.txt
+        mencoder mf://@movie.txt -ovc raw -of avi -vf scale=1024:768 -mf type=tiff -o ${PATH_TO_MOVIES}temp.avi
         mencoder ${PATH_TO_MOVIES}temp.avi -ovc x264 -vf scale=1024:768 -o ${PATH_TO_MOVIES}network_movie_z${Z/./_}p${P/./_}e${E/./_}r${R/./_}.avi
 
         ${MATLAB_CMD} < ${PATH_TO_SCRIPT}plotNonAffine.m
-        ls | grep .png | sort -n > movie.txt
-        mencoder mf://@movie.txt -ovc raw -of avi -vf scale=1024:768 -mf type=png -o ${PATH_TO_MOVIES}temp.avi
+        ls | grep .tiff | sort -n > movie.txt
+        mencoder mf://@movie.txt -ovc raw -of avi -vf scale=1024:768 -mf type=tiff -o ${PATH_TO_MOVIES}temp.avi
         mencoder ${PATH_TO_MOVIES}temp.avi -ovc x264 -vf scale=1024:768 -o ${PATH_TO_MOVIES}nonaff_motion_z${Z/./_}p${P/./_}e${E/./_}r${R/./_}.avi
         
         ${MATLAB_CMD} < ${PATH_TO_SCRIPT}affine_and_nonaff.m
-        ls | grep .png | sort -n > movie.txt
-        mencoder mf://@movie.txt -ovc raw -of avi -vf scale=1024:768 -mf type=png -o ${PATH_TO_MOVIES}temp.avi
+        ls | grep .tiff | sort -n > movie.txt
+        mencoder mf://@movie.txt -ovc raw -of avi -vf scale=1024:768 -mf type=tiff -o ${PATH_TO_MOVIES}temp.avi
         mencoder ${PATH_TO_MOVIES}temp.avi -ovc x264 -vf scale=1024:768 -o ${PATH_TO_MOVIES}nonaff_vs_affine_z${Z/./_}p${P/./_}e${E/./_}r${R/./_}.avi        
         rm ${PATH_TO_MOVIES}temp.avi
         
