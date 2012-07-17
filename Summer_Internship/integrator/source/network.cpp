@@ -240,7 +240,7 @@ double Network::xshift(const int &k) {
         case 2: 
             if (isiMax) {
             
-                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);
+                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
                 
             }
             break;
@@ -249,7 +249,7 @@ double Network::xshift(const int &k) {
         case 3:
             if (isiMax) {
             
-                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);
+                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
                 
             }
             if (isjMin)
@@ -271,7 +271,7 @@ double Network::xshift(const int &k) {
         case 5: 
             if (isiMin) {
                 
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);                    
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
                 
             }
             break;
@@ -280,7 +280,7 @@ double Network::xshift(const int &k) {
         case 6:
             if (isiMin) {
             
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + 2 * sqrt(3.0) * strain);                    
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
                 
             }
             if (isjMax)
