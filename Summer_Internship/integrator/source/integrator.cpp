@@ -49,14 +49,16 @@ int main (int argc, char *argv[])
 {
     int prngseed,    // Random number generator seed for springs (0)
         nTimeSteps,  // Number of time steps to simulate (200000)
-        steps_per_oscillation = 1000, // Exactly what you think it is 
+        steps_per_oscillation, // Exactly what you think it is 
         out_per_oscillation = 30, // How many times to output per oscillation
         frame_sep,   // steps_per_oscillation/out_per_oscillation
         job;         // Job (only used on della) (0)
     
     double pBond,             // Bond probability (0.8)
            strRate,           // Strain rate (1.0 Hz*)
-           initStrain;        // Magnitude of strain (0.01)
+           initStrain,        // Magnitude of strain (0.01)
+           test_step,         // Time step candidate from strain rate
+           max_time_step = 0.5; // Maximum time step (0.5 s*) [Constant]
     
     string energyFileName, // Energy file name
            posFileName,    // Position file name 
@@ -66,8 +68,6 @@ int main (int argc, char *argv[])
            config_file,    // Name and location of config file
            extension = ".txt"; // File extension
     
-    frame_sep = steps_per_oscillation / out_per_oscillation;
-     
     // Set up command-line parameters and config information.
 
     po::options_description general("General options");
@@ -151,9 +151,13 @@ int main (int argc, char *argv[])
     
     // Set the time step.
     
-    TIMESTEP = 2 * PI / (steps_per_oscillation * strRate);
-    nTimeSteps = steps_per_oscillation * 5;
+    test_step = 2 * PI / (1000 * strRate);
+    TIMESTEP = test_step < max_time_step ? test_step : max_time_step;
+    steps_per_oscillation = 2 * PI / (strRate * TIMESTEP);
     
+    nTimeSteps = steps_per_oscillation * 5;
+    frame_sep = steps_per_oscillation / out_per_oscillation;
+     
     // Set the file paths.
     
     string root_path;
@@ -260,6 +264,14 @@ int main (int argc, char *argv[])
         
         stress_array[i] = myNetwork.calcStress(strain_rate[i]);
         
+        // Quit if stress_array[i] is nan.
+        
+        if (stress_array[i] != stress_array[i]) 
+        {
+            printf("Stress has gone to NaN.\n");
+            return 2;
+        }
+        
         // If a filename is specified, print the positions of the nodes.
         
         if (printP && i % frame_sep == 0) 
@@ -273,7 +285,6 @@ int main (int argc, char *argv[])
         if (printN && strain_array[i] >= strain_array[i - 1] 
                 && strain_array[i] >= strain_array[i + 1] && i < steps_per_oscillation)
         {
-            printf("%d", i);
             myPrinter.printNonAff(nonaffFileFull, i);
         }
         
