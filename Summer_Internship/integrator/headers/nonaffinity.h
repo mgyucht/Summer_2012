@@ -19,6 +19,6 @@
 // strain on the network, u_i is the displacement of the node in the nonaffine 
 // deformation, and uaff_i the displacement ofthe same node in the affine one.
 
-double nonAffinity(const char * argv);
+double nonAffinity(double* position, int netSize, double strain);
 
 #endif /* _NONAFFINITY_H_ */
