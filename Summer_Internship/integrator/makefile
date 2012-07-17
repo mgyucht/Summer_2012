@@ -9,7 +9,7 @@ HOSTNAME = $(shell hostname)
 
 LIBS = -lboost_program_options
 CPP = g++
-CFLAGS = -g -I $(IDIR) -Wall
+CFLAGS = -g -O2 -I $(IDIR) -Wall
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
 OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
@@ -29,7 +29,7 @@ integrator.out: $(OBJECTS)
 clean:
 ifeq ($(HOSTNAME), della3)
 	rm -rf ~/data/*
-	rm ~/Summer_2012/Summer_Internship/scripts/*\.log*
+	rm ~/Summer_2012/Summer_Internship/scripts/*log*
 else
 	find output/ -type f -name "*.txt" -exec rm {} \;
 	find output/ -type f -name "*.png" -exec rm {} \;
