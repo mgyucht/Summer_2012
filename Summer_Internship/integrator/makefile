@@ -9,7 +9,7 @@ HOSTNAME = $(shell hostname)
 
 LIBS = -lboost_program_options
 CPP = g++
-CFLAGS = -g -I $(IDIR) -Wall
+CFLAGS = -g -O2 -I $(IDIR) -Wall
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o 
 OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))

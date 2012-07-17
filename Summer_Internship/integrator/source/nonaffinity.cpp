@@ -20,71 +20,39 @@
 #include <cmath>
 #include <cstring>
 
+#include "nonaffinity.h"
+
 using namespace std;
 
-double nonAffinity(const char * argv)
+double nonAffinity(double* position, int netSize, double strain)
 {
-    int netSize, row, col, count = 0;
-    double strain, xval, yval, currentx, currenty, prefactor, sqrdisp = 0, 
+    int row, col;
+    double xval, yval, currentx, currenty, prefactor, sqrdisp = 0, 
            nonaffinity = 0;
-    
-    ifstream posFile(argv, ifstream::in);
-    
-    if (posFile.is_open()) 
+
+    if (abs(strain) < 1E-15) 
     {
-        string line;
-        string token;
-        stringstream iss;
-        
-        // Discard the first line of the file.
-        getline(posFile, line);
-        getline(posFile, line);
+        return 0.0;
+    }
     
-        iss << line;
-        getline(iss, token, ',');
-        netSize = atoi(token.c_str());
-        getline(iss, token, ',');
-        strain = atof(token.c_str());
-        
-        if (abs(strain) < 1E-15) 
+    prefactor = 1 / (netSize * netSize * strain * strain);
+    
+    for (row = 0; row < netSize; row++)
+    {
+        for (col = 0; col < netSize; col++)
         {
-            return 0.0;
-        }
-        
-        prefactor = 1 / (netSize * netSize * strain * strain);
-        
-        while (count < netSize * netSize) 
-        {
-            // Clear iss and put the next line in it.
-            iss.str("");
-            getline(posFile, line);
-            iss << line;
-            
-            getline(iss, token, ',');
-            istringstream(token) >> row;
-            getline(iss, token, ',');
-            istringstream(token) >> col;
-            getline(iss, token, ',');
-            istringstream(token) >> currentx;
-            getline(iss, token, ',');
-            istringstream(token) >> currenty;
+            currentx = position[(row * netSize + col) * 2];
+            currenty = position[(row * netSize + col) * 2 + 1];
             
             xval = (row / 2.0 + col) + row * sqrt(3.0) * strain / 2.0;
             yval = sqrt(3.0) / 2.0 * row;
             
             sqrdisp += (currentx - xval) * (currentx - xval) + (currenty - yval)
                             * (currenty - yval);
-            ++count;
         }
-        
-        nonaffinity = prefactor * sqrdisp;
-        
-        posFile.close();
-    } else 
-    {
-        printf("Something bad has happened, and your position file could not be read.\n");
-        printf("Are you sure you entered the filename correctly?");
     }
+    
+    nonaffinity = prefactor * sqrdisp;
     
     return nonaffinity;
     
