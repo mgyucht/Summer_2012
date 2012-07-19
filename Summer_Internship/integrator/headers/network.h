@@ -9,13 +9,14 @@
 
 #include <math.h>
 #include "utils.h"
+#include "motors.h"
 
 #define PI 3.141592653
 
+extern double TIMESTEP;
 extern const double RESTLEN;
 extern const double ETA;
 extern const double RADIUS;
-extern double TIMESTEP;
 
 extern int netSize;
 extern double strain;
@@ -58,7 +59,7 @@ struct Network {
     // 
     // The force is calculated using Hooke's law.
     
-    void getNetForces();
+    void getNetForces(Motors /* Motors object */);
     
     double calcStress(double strain_rate);
     

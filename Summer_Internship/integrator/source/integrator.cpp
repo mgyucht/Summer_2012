@@ -152,7 +152,7 @@ int main (int argc, char *argv[])
     
     test_step = 2 * PI / (1000 * strRate);
     TIMESTEP = test_step < max_time_step ? test_step : max_time_step;
-    steps_per_oscillation = (int) (2 * PI / (strRate * TIMESTEP));
+    steps_per_oscillation = (int) strRate > 1e-15 ? (2 * PI / (strRate * TIMESTEP)) : 1000;
     
     nTimeSteps = steps_per_oscillation * 5;
     frame_sep = steps_per_oscillation / out_per_oscillation;
@@ -242,6 +242,7 @@ int main (int argc, char *argv[])
 
     Network myNetwork(position, sprstiff, velocities, netForces);
     Printer myPrinter(myNetwork, pBond, nTimeSteps);
+    Motors myMotors(sprstiff);
     
     // Integrate motion over the nodes.
     // 
@@ -257,7 +258,7 @@ int main (int argc, char *argv[])
         
         // Calculate the net forces in the network.
         
-        myNetwork.getNetForces();
+        myNetwork.getNetForces(myMotors);
         
         // Calculate the stress of the network.
         

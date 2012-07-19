@@ -66,7 +66,9 @@ double Network::operator() () {
 
 }
 
-void Network::getNetForces() {
+void Network::getNetForces(Motors motorarray) {
+    
+    motorarray.step_motors();
 
     for (int i = 0; i <= iMax; i++) {
 
@@ -101,12 +103,18 @@ void Network::getNetForces() {
                 double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
                 double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
                 
-                double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
-                    / euclDist(tempPos, k) / RESTLEN;
-
-                forces[i][j][2 * k - 2] = temp * x_displacement;
+                double dist = euclDist(tempPos, k);
                 
-                forces[i][j][2 * k - 1] = temp * y_displacement;
+                double cosx = x_displacement / dist;
+                double sinx = y_displacement / dist;
+                
+                double motorforce = motorarray.getforce(i, j, k);
+                double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
+                    / RESTLEN + motorforce;
+
+                forces[i][j][2 * k - 2] = temp * cosx;
+                
+                forces[i][j][2 * k - 1] = temp * sinx;
                 
             }
 
