@@ -51,10 +51,12 @@ int main (int argc, char *argv[])
         steps_per_oscillation, // Exactly what you think it is 
         out_per_oscillation = 30, // How many times to output per oscillation
         frame_sep,   // steps_per_oscillation/out_per_oscillation
-        job;         // Job (only used on della) (0)
+        job,         // Job (only used on della) (0)
+        motors;      // Use motors (1)
     
     double pBond,             // Bond probability (0.8)
            strRate,           // Strain rate (1.0 Hz*)
+           temp,              // Temperature of the system
            initStrain,        // Magnitude of strain (0.01)
            test_step,         // Time step candidate from strain rate
            max_time_step = 0.5; // Maximum time step (0.5 s*) [Constant]
@@ -82,9 +84,12 @@ int main (int argc, char *argv[])
              "set oscillation frequency")
         ("strain,e", po::value<double>(&initStrain)->default_value(0.01), 
              "set initial strain")
+        ("temp,t", po::value<double>(&temp)->default_value(0.1), 
+             "set temperature")
         ("prng", po::value<int>(&prngseed)->default_value(0), 
              "set PRNG seed")
         ("job,j", po::value<int>(&job)->default_value(0), "set job number")
+        ("motors,m", po::value<int>(&motors)->default_value(1), "enable motors")
         ;
     
     po::options_description filename("Filename options");
@@ -201,13 +206,11 @@ int main (int argc, char *argv[])
     double* position = new double [2 * netSize * netSize];
     double* stress_array = new double [nTimeSteps];
     double*** sprstiff = new double** [netSize];
-    double*** velocities = new double** [netSize];
     double*** netForces = new double** [netSize];
 
     for (int i = 0; i < netSize; i++) 
     {
         sprstiff[i] = new double* [netSize];
-        velocities[i] = new double* [netSize];
         netForces[i] = new double* [netSize];
 
         for (int j = 0; j < netSize; j++) 
@@ -219,7 +222,6 @@ int main (int argc, char *argv[])
             position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
 
             sprstiff[i][j] = stiffVecGen(pBond, 3);
-            velocities[i][j] = new double[2];
             netForces[i][j] = new double[6];
         }
     }
@@ -240,7 +242,7 @@ int main (int argc, char *argv[])
         strain_rate[i]  = initStrain * strRate * cos(strRate * i * TIMESTEP);
     }
 
-    Network myNetwork(position, sprstiff, velocities, netForces);
+    Network myNetwork(position, sprstiff, netForces);
     Printer myPrinter(myNetwork, pBond, nTimeSteps);
     Motors myMotors(sprstiff);
     
@@ -258,7 +260,10 @@ int main (int argc, char *argv[])
         
         // Calculate the net forces in the network.
         
-        myNetwork.getNetForces(myMotors);
+        if (motors != 0)
+            myNetwork.getNetForces(myMotors);
+        else
+            myNetwork.getNetForces();
         
         // Calculate the stress of the network.
         
@@ -290,7 +295,7 @@ int main (int argc, char *argv[])
         
         // Simulate the movement for this time step.
         
-        myNetwork.moveNodes(strain_rate[i]);
+        myNetwork.moveNodes(strain_rate[i], temp);
     }
     
     // The boolean variables defined above determine whether or not to print 

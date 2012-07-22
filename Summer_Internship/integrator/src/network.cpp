@@ -112,10 +112,74 @@ void Network::getNetForces(Motors motorarray) {
                 double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
                     / RESTLEN + motorforce;
 
-                forces[i][j][2 * k - 2] = temp * cosx;
+                if (dist > RADIUS) 
+                {
+                    forces[i][j][2 * k - 2] = temp * cosx;
+                    forces[i][j][2 * k - 1] = temp * sinx;
+                } else {
+                    forces[i][j][2 * k - 2] = 0;
+                    forces[i][j][2 * k - 1] = 0;
+                }
                 
-                forces[i][j][2 * k - 1] = temp * sinx;
+            }
+
+        }
+
+    }
+
+}
+
+void Network::getNetForces() {
+    
+    for (int i = 0; i <= iMax; i++) {
+
+        for (int j = 0; j <= jMax; j++) {
+            
+            isiMin = i == 0;
+            isiMax = i == iMax;
+            isjMin = j == 0;
+            isjMax = j == jMax;
+
+            int j1 = isjMax ? 0 : j + 1;
+            int i1 = isiMax ? 0 : i + 1;
+            int j2 = isjMin ? jMax : j - 1;
+
+            double tempPos[8] = {
+
+                pos[(i * netSize + j) * 2], 
+                pos[(i * netSize + j) * 2 + 1], 
+                pos[(i * netSize + j1) * 2],
+                pos[(i * netSize + j1) * 2 + 1] ,
+                pos[(i1 * netSize + j) * 2],
+                pos[(i1 * netSize + j) * 2 + 1],
+                pos[(i1 * netSize + j2) * 2],
+                pos[(i1 * netSize + j2) * 2 + 1]
+
+            };
+
+            // Calculate the net x and y force on each node. Similar to gradient function.
+
+            for (int k = 1; k < 4; k++) {
                 
+                double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
+                double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
+                
+                double dist = euclDist(tempPos, k);
+                
+                double cosx = x_displacement / dist;
+                double sinx = y_displacement / dist;
+                
+                double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
+                    / RESTLEN;
+
+                if (dist > RADIUS) 
+                {
+                    forces[i][j][2 * k - 2] = temp * cosx;
+                    forces[i][j][2 * k - 1] = temp * sinx;
+                } else {
+                    forces[i][j][2 * k - 2] = 0;
+                    forces[i][j][2 * k - 1] = 0;
+                }
             }
 
         }
@@ -179,9 +243,11 @@ double Network::calcStress(double strain_rate) {
 
 }
 
-void Network::moveNodes(double shear_rate) {
+void Network::moveNodes(double shear_rate, double temp) {
 
     double netx, nety, vel_fluid, gamma;
+    double d = KB * temp / (6 * PI * ETA * RADIUS);
+    double sigma = sqrt(2 * d * TIMESTEP);
 
     for (int i = 0; i <= iMax; i++) {
 
@@ -220,9 +286,17 @@ void Network::moveNodes(double shear_rate) {
             vel_fluid = (ypos * netSize / (netSize - 1) - netSize * sqrt(3) / 4) * shear_rate;
             
             gamma = 6 * PI * ETA * RADIUS;
+            
+            double theta = 2 * PI * randDouble(0, 1);
+            double r = sigma * sqrt(-2 * log(randDouble(0, 1)));
+            
+            double temp_fluct_x = r * cos(theta);
+            double temp_fluct_y = r * sin(theta);
 
-            pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid);
-            pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma);
+            pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid)
+                + temp_fluct_x;
+            pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma)
+                + temp_fluct_y;
 
         }
 

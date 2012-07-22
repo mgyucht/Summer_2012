@@ -1,15 +1,15 @@
 # Makefile for integrator!
 
-IDIR = headers
-ODIR = source/objects
-SDIR = source
+IDIR = src
+ODIR = src/objects
+SDIR = src
 EXECDIR = .
 
 HOSTNAME = $(shell hostname)
 
-LIBS = -lboost_program_options
 CPP = g++
-CFLAGS = -g -I $(IDIR) -Wall
+CPPFLAGS = -g -O1 -I $(IDIR) -Wall
+LIBS = -lboost_program_options
 
 _OBJECTS = network.o nonaffinity.o print.o integrator.o motors.o
 OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
@@ -17,12 +17,12 @@ OBJECTS = $(patsubst %, $(ODIR)/%, $(_OBJECTS))
 _INCLUDE = network.h print.h nonaffinity.h utils.h motors.h
 INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 
-$(ODIR)/%.o: $(SDIR)/%.cpp $(INCLUDE) makefile
+$(ODIR)/%.o: $(SDIR)/%.cpp $(IDIR)/%.h makefile
 	@mkdir -p $(ODIR)
 	$(CPP) -c -o $@ $< $(CFLAGS)
 
-integrator.out: $(OBJECTS)
-	$(CPP) -o $(EXECDIR)/$@ $^ $(CFLAGS) $(LIBS)
+integrator.out: $(OBJECTS) $(INCLUDE)
+	$(CPP) $(CFLAGS) $(LIBS) -o $(EXECDIR)/$@ $^
 
 .PHONY: clean
 	

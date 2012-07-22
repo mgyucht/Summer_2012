@@ -11,7 +11,8 @@
 #include "utils.h"
 #include "motors.h"
 
-#define PI 3.141592653
+#define PI (3.141592653)
+#define KB (1)
 
 extern double TIMESTEP;
 extern const double RESTLEN;
@@ -60,10 +61,11 @@ struct Network {
     // The force is calculated using Hooke's law.
     
     void getNetForces(Motors /* Motors object */);
+    void getNetForces();
     
     double calcStress(double strain_rate);
     
-    void moveNodes(double shear_rate);
+    void moveNodes(double shear_rate, double temp);
     
     private:
     
