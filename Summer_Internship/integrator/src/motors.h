@@ -13,7 +13,7 @@
 extern int netSize;
 extern double TIMESTEP;
 
-const double MOTORFORCE = 1e-2; // WHAT?
+const double MOTORFORCE = 1e-2; 
 
 class Motors
 {
@@ -22,7 +22,7 @@ class Motors
     
     Motors(double*** sspr) : spr(sspr) 
     {
-        motortimes = new double[6 * netSize * netSize];
+        motortimes = new double[3 * netSize * netSize];
     }
     
     ~Motors() 
