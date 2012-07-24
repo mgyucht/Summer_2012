@@ -26,17 +26,15 @@ struct Network {
     
     double* pos;
     double*** spring;
-    double*** vels;
     double*** forces;
     
     int iMax, jMax;
     
     bool isiMax, isjMax, isiMin, isjMin;
 
-    Network(double* ppos, double*** sspring, double*** vvels, double*** fforces) : 
+    Network(double* ppos, double*** sspring, double*** fforces) : 
         pos(ppos), 
         spring(sspring), 
-        vels(vvels), 
         forces(fforces) {
             
         iMax = netSize - 1;

@@ -157,7 +157,7 @@ int main (int argc, char *argv[])
     
     test_step = 2 * PI / (1000 * strRate);
     TIMESTEP = test_step < max_time_step ? test_step : max_time_step;
-    steps_per_oscillation = (int) strRate > 1e-15 ? (2 * PI / (strRate * TIMESTEP)) : 1000;
+    steps_per_oscillation = (int) (strRate > 1e-15 ? (2 * PI / (strRate * TIMESTEP)) : 1000);
     
     nTimeSteps = steps_per_oscillation * 5;
     frame_sep = steps_per_oscillation / out_per_oscillation;
@@ -178,10 +178,11 @@ int main (int argc, char *argv[])
         root_path = output_path; 
     }
     
-    bool printP = static_cast<bool>(posFileName.compare(""));
-    bool printN = static_cast<bool>(nonaffFileName.compare(""));
-    bool printS = static_cast<bool>(stressFileName.compare(""));
-    bool printE = static_cast<bool>(energyFileName.compare(""));
+    bool print_array[4];
+    print_array[0] = static_cast<bool>(posFileName.compare(""));
+    print_array[1] = static_cast<bool>(nonaffFileName.compare(""));
+    print_array[2] = static_cast<bool>(stressFileName.compare(""));
+    print_array[3] = static_cast<bool>(energyFileName.compare(""));
     
     string nonaffFilePath = root_path + nonaffFileName + extension;
     string stressFilePath = root_path + stressFileName + extension;
@@ -279,7 +280,7 @@ int main (int argc, char *argv[])
         
         // If a filename is specified, print the positions of the nodes.
         
-        if (printP && i % frame_sep == 0) 
+        if (print_array[0] && i % frame_sep == 0) 
         {
             string iter = boost::lexical_cast<string>(i);
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
@@ -287,7 +288,7 @@ int main (int argc, char *argv[])
             myPrinter.printPos(posFileFull);
         }
         
-        if (printN && strain_array[i] >= strain_array[i - 1] 
+        if (print_array[1] && strain_array[i] >= strain_array[i - 1] 
                 && strain_array[i] >= strain_array[i + 1] && i < steps_per_oscillation)
         {
             myPrinter.printNonAff(nonaffFileFull, i);
@@ -301,10 +302,10 @@ int main (int argc, char *argv[])
     // The boolean variables defined above determine whether or not to print 
     // this information.
     
-    if (printS) myPrinter.printStress(stressFileFull, stress_array, 
+    if (print_array[2]) myPrinter.printStress(stressFileFull, stress_array, 
             strain_array);
     
-    if (printE) myPrinter.printEnergy(energyFileFull, myNetwork()); // Energy
+    if (print_array[3]) myPrinter.printEnergy(energyFileFull, myNetwork()); // Energy
 
     // Cleanup
     delete[] position;
@@ -313,16 +314,13 @@ int main (int argc, char *argv[])
     for (int i = 0; i < netSize; i++) {
         for (int j = 0; j < netSize; j++) {
             delete[] sprstiff[i][j];
-            delete[] velocities[i][j];
             delete[] netForces[i][j];
         }
         delete[] sprstiff[i];
-        delete[] velocities[i];
         delete[] netForces[i];
     }
 
     delete[] sprstiff;
-    delete[] velocities;
     delete[] netForces;
     delete[] strain_rate;
     delete[] strain_array;
