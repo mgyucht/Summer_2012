@@ -22,15 +22,13 @@
 
 #include "nonaffinity.h"
 
-using namespace std;
-
 double nonAffinity(double* position, int netSize, double strain)
 {
     int row, col;
     double xval, yval, currentx, currenty, prefactor, sqrdisp = 0, 
            nonaffinity = 0;
 
-    if (abs(strain) < 1E-15) 
+    if (std::abs(strain) < 1E-15) 
     {
         return 0.0;
     }
