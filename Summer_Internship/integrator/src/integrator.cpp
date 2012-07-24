@@ -292,6 +292,10 @@ int main (int argc, char *argv[])
                 && strain_array[i] >= strain_array[i + 1] && i < steps_per_oscillation)
         {
             myPrinter.printNonAff(nonaffFileFull, i);
+            if (!(print_array[0] || print_array[2] || print_array[3])) 
+            {
+                return 0;
+            }
         }
         
         // Simulate the movement for this time step.
