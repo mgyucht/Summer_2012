@@ -27,12 +27,9 @@ struct Printer {
     
     Printer(const Network &net, const double &pp, const double &nts) : 
         p(pp), 
-        n_time_steps(nts) {
-        
-        this->pos = net.pos;
-        this->spr = net.spring;
-        
-    }
+        n_time_steps(nts),
+        pos(net.pos), 
+        spr(net.spring) {}
 
     void printPos(std::string /*fileName*/);
     

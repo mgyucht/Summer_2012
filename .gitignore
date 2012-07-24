@@ -27,6 +27,9 @@ integrator.out
 .integratorconf
 # Ignore the .gitignore also
 .gitignore
+# Ignore ctags and cscope files
+tags
+cscope*
 
 # Directories to ignore
 # ---------------------
