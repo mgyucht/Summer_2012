@@ -1,2 +1,3 @@
 output = /scratch/gpfs/myucht/
 st-fn = stress_data
+aff-fn = nonaff_data
