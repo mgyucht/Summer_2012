@@ -42,7 +42,8 @@ double nonAffinity(double* position, int netSize, double strain)
             currentx = position[(row * netSize + col) * 2];
             currenty = position[(row * netSize + col) * 2 + 1];
             
-            xval = (row / 2.0 + col) + row * sqrt(3.0) * strain / 2.0;
+            xval = col + row / 2.0 + sqrt(3) / 4 * strain * netSize
+                     * (2 * ((double) row - netSize) / (netSize + 1) + 1);
             yval = sqrt(3.0) / 2.0 * row;
             
             sqrdisp += (currentx - xval) * (currentx - xval) + (currenty - yval)

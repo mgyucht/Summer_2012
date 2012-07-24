@@ -35,7 +35,8 @@ struct Network {
     Network(double* ppos, double*** sspring, double*** fforces) : 
         pos(ppos), 
         spring(sspring), 
-        forces(fforces) {
+        forces(fforces),
+        isiMax(false), isjMax(false), isiMin(true), isjMin(true) {
             
         iMax = netSize - 1;
         jMax = netSize - 1;
