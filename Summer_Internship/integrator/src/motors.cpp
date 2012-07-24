@@ -50,12 +50,14 @@ void Motors::step_motors()
 
 double Motors::generate_bound_time()
 {
-    return randDouble(TIMESTEP / 2, 20);
+    double mean = 4.0;
+    return -log(1 - randDouble(0, 1)) / mean;
 }
 
 double Motors::generate_unbound_time()
 {
-    return -1 * randDouble(TIMESTEP / 2, 100);
+    double mean = 20.0;
+    return -log(1 - randDouble(0, 1)) / mean;
 }
 
 double Motors::getforce(int i, int j, int k)
