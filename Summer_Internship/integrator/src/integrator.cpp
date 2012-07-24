@@ -15,7 +15,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <iomanip>
-#include <iostream>
 #include <sstream>
 #include <boost/program_options.hpp>
 
@@ -52,10 +51,12 @@ int main (int argc, char *argv[])
         steps_per_oscillation, // Exactly what you think it is 
         out_per_oscillation = 30, // How many times to output per oscillation
         frame_sep,   // steps_per_oscillation/out_per_oscillation
-        job;         // Job (only used on della) (0)
+        job,         // Job (only used on della) (0)
+        motors;      // Use motors (1)
     
     double pBond,             // Bond probability (0.8)
            strRate,           // Strain rate (1.0 Hz*)
+           temp,              // Temperature of the system
            initStrain,        // Magnitude of strain (0.01)
            test_step,         // Time step candidate from strain rate
            max_time_step = 0.5; // Maximum time step (0.5 s*) [Constant]
@@ -83,9 +84,12 @@ int main (int argc, char *argv[])
              "set oscillation frequency")
         ("strain,e", po::value<double>(&initStrain)->default_value(0.01), 
              "set initial strain")
+        ("temp,t", po::value<double>(&temp)->default_value(0.1), 
+             "set temperature")
         ("prng", po::value<int>(&prngseed)->default_value(0), 
              "set PRNG seed")
         ("job,j", po::value<int>(&job)->default_value(0), "set job number")
+        ("motors,m", po::value<int>(&motors)->default_value(1), "enable motors")
         ;
     
     po::options_description filename("Filename options");
@@ -153,7 +157,7 @@ int main (int argc, char *argv[])
     
     test_step = 2 * PI / (1000 * strRate);
     TIMESTEP = test_step < max_time_step ? test_step : max_time_step;
-    steps_per_oscillation = (int) (2 * PI / (strRate * TIMESTEP));
+    steps_per_oscillation = (int) (strRate > 1e-15 ? (2 * PI / (strRate * TIMESTEP)) : 1000);
     
     nTimeSteps = steps_per_oscillation * 5;
     frame_sep = steps_per_oscillation / out_per_oscillation;
@@ -174,10 +178,11 @@ int main (int argc, char *argv[])
         root_path = output_path; 
     }
     
-    bool printP = static_cast<bool>(posFileName.compare(""));
-    bool printN = static_cast<bool>(nonaffFileName.compare(""));
-    bool printS = static_cast<bool>(stressFileName.compare(""));
-    bool printE = static_cast<bool>(energyFileName.compare(""));
+    bool print_array[4];
+    print_array[0] = static_cast<bool>(posFileName.compare(""));
+    print_array[1] = static_cast<bool>(nonaffFileName.compare(""));
+    print_array[2] = static_cast<bool>(stressFileName.compare(""));
+    print_array[3] = static_cast<bool>(energyFileName.compare(""));
     
     string nonaffFilePath = root_path + nonaffFileName + extension;
     string stressFilePath = root_path + stressFileName + extension;
@@ -202,13 +207,11 @@ int main (int argc, char *argv[])
     double* position = new double [2 * netSize * netSize];
     double* stress_array = new double [nTimeSteps];
     double*** sprstiff = new double** [netSize];
-    double*** velocities = new double** [netSize];
     double*** netForces = new double** [netSize];
 
     for (int i = 0; i < netSize; i++) 
     {
         sprstiff[i] = new double* [netSize];
-        velocities[i] = new double* [netSize];
         netForces[i] = new double* [netSize];
 
         for (int j = 0; j < netSize; j++) 
@@ -220,7 +223,6 @@ int main (int argc, char *argv[])
             position[(i * netSize + j) * 2 + 1] = sqrt(3) / 2 * RESTLEN * i;
 
             sprstiff[i][j] = stiffVecGen(pBond, 3);
-            velocities[i][j] = new double[2];
             netForces[i][j] = new double[6];
         }
     }
@@ -241,8 +243,9 @@ int main (int argc, char *argv[])
         strain_rate[i]  = initStrain * strRate * cos(strRate * i * TIMESTEP);
     }
 
-    Network myNetwork(position, sprstiff, velocities, netForces);
+    Network myNetwork(position, sprstiff, netForces);
     Printer myPrinter(myNetwork, pBond, nTimeSteps);
+    Motors myMotors(sprstiff);
     
     // Integrate motion over the nodes.
     // 
@@ -258,7 +261,10 @@ int main (int argc, char *argv[])
         
         // Calculate the net forces in the network.
         
-        myNetwork.getNetForces();
+        if (motors != 0)
+            myNetwork.getNetForces(myMotors);
+        else
+            myNetwork.getNetForces();
         
         // Calculate the stress of the network.
         
@@ -274,7 +280,7 @@ int main (int argc, char *argv[])
         
         // If a filename is specified, print the positions of the nodes.
         
-        if (printP && i % frame_sep == 0) 
+        if (print_array[0] && i % frame_sep == 0) 
         {
             string iter = boost::lexical_cast<string>(i);
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
@@ -282,7 +288,7 @@ int main (int argc, char *argv[])
             myPrinter.printPos(posFileFull);
         }
         
-        if (printN && strain_array[i] >= strain_array[i - 1] 
+        if (print_array[1] && strain_array[i] >= strain_array[i - 1] 
                 && strain_array[i] >= strain_array[i + 1] && i < steps_per_oscillation)
         {
             myPrinter.printNonAff(nonaffFileFull, i);
@@ -290,16 +296,16 @@ int main (int argc, char *argv[])
         
         // Simulate the movement for this time step.
         
-        myNetwork.moveNodes(strain_rate[i]);
+        myNetwork.moveNodes(strain_rate[i], temp);
     }
     
     // The boolean variables defined above determine whether or not to print 
     // this information.
     
-    if (printS) myPrinter.printStress(stressFileFull, stress_array, 
+    if (print_array[2]) myPrinter.printStress(stressFileFull, stress_array, 
             strain_array);
     
-    if (printE) myPrinter.printEnergy(energyFileFull, myNetwork()); // Energy
+    if (print_array[3]) myPrinter.printEnergy(energyFileFull, myNetwork()); // Energy
 
     // Cleanup
     delete[] position;
@@ -308,16 +314,13 @@ int main (int argc, char *argv[])
     for (int i = 0; i < netSize; i++) {
         for (int j = 0; j < netSize; j++) {
             delete[] sprstiff[i][j];
-            delete[] velocities[i][j];
             delete[] netForces[i][j];
         }
         delete[] sprstiff[i];
-        delete[] velocities[i];
         delete[] netForces[i];
     }
 
     delete[] sprstiff;
-    delete[] velocities;
     delete[] netForces;
     delete[] strain_rate;
     delete[] strain_array;

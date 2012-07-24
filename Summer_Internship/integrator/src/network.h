@@ -9,13 +9,15 @@
 
 #include <math.h>
 #include "utils.h"
+#include "motors.h"
 
-#define PI 3.141592653
+#define PI (3.141592653)
+#define KB (1)
 
+extern double TIMESTEP;
 extern const double RESTLEN;
 extern const double ETA;
 extern const double RADIUS;
-extern double TIMESTEP;
 
 extern int netSize;
 extern double strain;
@@ -24,17 +26,15 @@ struct Network {
     
     double* pos;
     double*** spring;
-    double*** vels;
     double*** forces;
     
     int iMax, jMax;
     
     bool isiMax, isjMax, isiMin, isjMin;
 
-    Network(double* ppos, double*** sspring, double*** vvels, double*** fforces) : 
+    Network(double* ppos, double*** sspring, double*** fforces) : 
         pos(ppos), 
         spring(sspring), 
-        vels(vvels), 
         forces(fforces) {
             
         iMax = netSize - 1;
@@ -58,11 +58,12 @@ struct Network {
     // 
     // The force is calculated using Hooke's law.
     
+    void getNetForces(Motors /* Motors object */);
     void getNetForces();
     
     double calcStress(double strain_rate);
     
-    void moveNodes(double shear_rate);
+    void moveNodes(double shear_rate, double temp);
     
     private:
     

@@ -1,0 +1,70 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DEBUG_H_	debug.h	2;"	d
+ETA	integrator.cpp	/^const double ETA = 1.0;$/;"	v
+INTEGRATOR_H_	integrator.h	2;"	d
+KB	network.h	15;"	d
+MOTORFORCE	motors.h	/^const double MOTORFORCE = 1e-2; \/\/ WHAT?$/;"	v
+MOTORS_H_	motors.h	2;"	d
+Motors	motors.h	/^    Motors(double*** sspr) : spr(sspr) $/;"	f	class:Motors
+Motors	motors.h	/^class Motors$/;"	c
+NETWORK_H_	network.h	2;"	d
+Network	network.h	/^    Network(double* ppos, double*** sspring, double*** vvels, double*** fforces) : $/;"	f	struct:Network
+Network	network.h	/^struct Network {$/;"	s
+PI	network.h	14;"	d
+PRINTENERGY	debug.h	11;"	d
+PRINTNONAFFINITY	debug.h	15;"	d
+PRINTPOS	debug.h	14;"	d
+PRINT_H_	print.h	2;"	d
+Printer	print.h	/^    Printer(const Network &net, const double &pp, const double &nts) : $/;"	f	struct:Printer
+Printer	print.h	/^struct Printer {$/;"	s
+RADIUS	integrator.cpp	/^const double RADIUS = 0.1;$/;"	v
+RESTLEN	integrator.cpp	/^const double RESTLEN = 1.0;$/;"	v
+TIMESTEP	integrator.cpp	/^double TIMESTEP;$/;"	v
+UTILS_H_	utils.h	2;"	d
+YOUNGMOD	integrator.cpp	/^const double YOUNGMOD = 1.0;$/;"	v
+_NONAFFINITY_H_	nonaffinity.h	2;"	d
+calcStress	network.cpp	/^double Network::calcStress(double strain_rate) {$/;"	f	class:Network
+deltaL	network.h	/^    inline double deltaL(double* pos, const int k) {$/;"	f	struct:Network
+euclDist	network.h	/^    inline double euclDist(const double* pos, const int k) {$/;"	f	struct:Network
+forces	network.h	/^    double*** forces;$/;"	m	struct:Network
+generate_bound_time	motors.cpp	/^double Motors::generate_bound_time()$/;"	f	class:Motors
+generate_unbound_time	motors.cpp	/^double Motors::generate_unbound_time()$/;"	f	class:Motors
+getNetForces	network.cpp	/^void Network::getNetForces() {$/;"	f	class:Network
+getNetForces	network.cpp	/^void Network::getNetForces(Motors motorarray) {$/;"	f	class:Network
+getforce	motors.cpp	/^double Motors::getforce(int i, int j, int k)$/;"	f	class:Motors
+iMax	network.h	/^    int iMax, jMax;$/;"	m	struct:Network
+isiMax	network.h	/^    bool isiMax, isjMax, isiMin, isjMin;$/;"	m	struct:Network
+isiMin	network.h	/^    bool isiMax, isjMax, isiMin, isjMin;$/;"	m	struct:Network
+isjMax	network.h	/^    bool isiMax, isjMax, isiMin, isjMin;$/;"	m	struct:Network
+isjMin	network.h	/^    bool isiMax, isjMax, isiMin, isjMin;$/;"	m	struct:Network
+jMax	network.h	/^    int iMax, jMax;$/;"	m	struct:Network
+main	integrator.cpp	/^int main (int argc, char *argv[]) $/;"	f
+motortimes	motors.h	/^    double* motortimes;$/;"	m	class:Motors
+moveNodes	network.cpp	/^void Network::moveNodes(double shear_rate, double temp) {$/;"	f	class:Network
+n_time_steps	print.h	/^    double n_time_steps;$/;"	m	struct:Printer
+netSize	integrator.cpp	/^int netSize;$/;"	v
+nonAffinity	nonaffinity.cpp	/^double nonAffinity(double* position, int netSize, double strain)$/;"	f
+operator ()	network.cpp	/^double Network::operator() () {$/;"	f	class:Network
+p	print.h	/^    double p;$/;"	m	struct:Printer
+pos	network.h	/^    double* pos;$/;"	m	struct:Network
+pos	print.h	/^    double* pos;$/;"	m	struct:Printer
+printEnergy	print.cpp	/^void Printer::printEnergy(std::string energyFileName, const double &newEnergy) {$/;"	f	class:Printer
+printNonAff	print.cpp	/^void Printer::printNonAff(std::string nonaffFileName, int i) {$/;"	f	class:Printer
+printPos	print.cpp	/^void Printer::printPos(std::string posFileName) {$/;"	f	class:Printer
+printStress	print.cpp	/^void Printer::printStress(std::string stressFileName, const double* stress_array, $/;"	f	class:Printer
+randDouble	utils.h	/^inline double randDouble(int low, int high) {$/;"	f
+spr	motors.h	/^    double*** spr;$/;"	m	class:Motors
+spr	print.h	/^    double*** spr;$/;"	m	struct:Printer
+spring	network.h	/^    double*** spring;$/;"	m	struct:Network
+step_motors	motors.cpp	/^void Motors::step_motors()$/;"	f	class:Motors
+stiffVecGen	utils.h	/^inline double *stiffVecGen(double prob, int numSprings) {$/;"	f
+strain	integrator.cpp	/^double strain;$/;"	v
+vels	network.h	/^    double*** vels;$/;"	m	struct:Network
+xshift	network.cpp	/^double Network::xshift(const int &k) {$/;"	f	class:Network
+yshift	network.cpp	/^double Network::yshift(const int &k) {$/;"	f	class:Network
+~Motors	motors.h	/^    ~Motors() $/;"	f	class:Motors
