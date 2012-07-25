@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <boost/program_options.hpp>
 
@@ -59,7 +60,7 @@ int main (int argc, char *argv[])
            temp,              // Temperature of the system
            initStrain,        // Magnitude of strain (0.01)
            test_step,         // Time step candidate from strain rate
-           max_time_step = 0.5; // Maximum time step (0.5 s*) [Constant]
+           max_time_step = 0.3; // Maximum time step (0.5 s*) [Constant]
     
     string energyFileName, // Energy file name
            posFileName,    // Position file name 
@@ -84,12 +85,12 @@ int main (int argc, char *argv[])
              "set oscillation frequency")
         ("strain,e", po::value<double>(&initStrain)->default_value(0.01), 
              "set initial strain")
-        ("temp,t", po::value<double>(&temp)->default_value(0.1), 
+        ("temp,t", po::value<double>(&temp)->default_value(0.0), 
              "set temperature")
         ("prng", po::value<int>(&prngseed)->default_value(0), 
              "set PRNG seed")
         ("job,j", po::value<int>(&job)->default_value(0), "set job number")
-        ("motors,m", po::value<int>(&motors)->default_value(1), "enable motors")
+        ("motors,m", po::value<int>(&motors)->default_value(0), "enable motors")
         ;
     
     po::options_description filename("Filename options");
@@ -270,11 +271,20 @@ int main (int argc, char *argv[])
         
         stress_array[i] = myNetwork.calcStress(strain_rate[i]);
         
+        // Test
+        /*
+        if (i % frame_sep == 0)
+        {
+            printf("%g\n", stress_array[i]);
+        }
+        */
+        
         // Quit if stress_array[i] is nan.
         
         if (stress_array[i] != stress_array[i]) 
         {
             printf("Stress has gone to NaN.\n");
+            printf("p = %.2g, w = %.4g, N = %d, e = %.2g", pBond, strRate, netSize, initStrain);
             return 2;
         }
         
