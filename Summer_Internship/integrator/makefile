@@ -8,7 +8,7 @@ EXECDIR = .
 HOSTNAME = $(shell hostname)
 
 CPP = g++
-CPPFLAGS = -g -I $(IDIR) -Wall -Weffc++ -pedantic  \
+CPPFLAGS = -g -O2 -I $(IDIR) -Wall -Weffc++ -pedantic  \
     -pedantic-errors -Wextra  -Wall -Waggregate-return -Wcast-align \
     -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion \
     -Wdisabled-optimization \

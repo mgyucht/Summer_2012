@@ -287,16 +287,28 @@ void Network::moveNodes(double shear_rate, double temp) {
             
             gamma = 6 * PI * ETA * RADIUS;
             
-            double theta = 2 * PI * randDouble(0, 1);
-            double r = sigma * sqrt(-2 * log(randDouble(0, 1)));
-            
-            double temp_fluct_x = r * cos(theta);
-            double temp_fluct_y = r * sin(theta);
+            if (temp > 1e-15) 
+            {
+                double theta = 2 * PI * randDouble(0, 1);
+                double r = sigma * sqrt(-2 * log(randDouble(0, 1)));
+                
+                double temp_fluct_x = r * cos(theta);
+                double temp_fluct_y = r * sin(theta);
 
-            pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid)
-                + temp_fluct_x;
-            pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma)
-                + temp_fluct_y;
+                pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid)
+                    + temp_fluct_x;
+                pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma)
+                    + temp_fluct_y;
+            } else // temp = 0.0
+            {
+                pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid);
+                pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma);
+            }
+            
+            if (pos[(i * netSize + j) * 2] != pos[(i * netSize + j) * 2] 
+                || pos[(i * netSize + j) * 2 + 1] != pos[(i * netSize + j) * 2 + 1]) {
+                throw("NaN value assigned");
+            }
 
         }
 
