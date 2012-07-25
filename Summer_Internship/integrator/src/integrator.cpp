@@ -189,10 +189,6 @@ int main (int argc, char *argv[])
     string stressFilePath = root_path + stressFileName + extension;
     string energyFilePath = root_path + energyFileName + extension;
     
-    char* nonaffFileFull = (char *) nonaffFilePath.c_str();
-    char* stressFileFull = (char *) stressFilePath.c_str();
-    char* energyFileFull = (char *) energyFilePath.c_str();
-    
     // Initialize PRNG.
     
     if (prngseed == 0) 
@@ -248,6 +244,8 @@ int main (int argc, char *argv[])
     Printer myPrinter(myNetwork, pBond, nTimeSteps);
     Motors myMotors(sprstiff);
     
+    printf("Starting simulation with p = %g, w = %g, and N = %d", pBond, strRate, netSize);
+    
     // Integrate motion over the nodes.
     // 
     // Technical note: Stress is a rank 2 tensor. However, because our interest
@@ -284,7 +282,8 @@ int main (int argc, char *argv[])
         if (stress_array[i] != stress_array[i]) 
         {
             printf("Stress has gone to NaN.\n");
-            printf("p = %.2g, w = %.4g, N = %d, e = %.2g", pBond, strRate, netSize, initStrain);
+            printf("p = %.2g, w = %.4g, N = %d, e = %.2g, i = %d\n", pBond, strRate, netSize, initStrain, i);
+            if (print_array[2]) myPrinter.printStress(stressFilePath.c_str(), stress_array, strain_array);
             return 2;
         }
         
@@ -294,14 +293,13 @@ int main (int argc, char *argv[])
         {
             string iter = boost::lexical_cast<string>(i);
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
-            char* posFileFull    = (char *) (posFilePath).c_str();
-            myPrinter.printPos(posFileFull);
+            myPrinter.printPos(posFilePath.c_str());
         }
         
         if (print_array[1] && strain_array[i] >= strain_array[i - 1] 
                 && strain_array[i] >= strain_array[i + 1] && i < steps_per_oscillation)
         {
-            myPrinter.printNonAff(nonaffFileFull, i);
+            myPrinter.printNonAff(nonaffFilePath.c_str(), i);
             if (!(print_array[0] || print_array[2] || print_array[3])) 
             {
                 return 0;
@@ -316,10 +314,10 @@ int main (int argc, char *argv[])
     // The boolean variables defined above determine whether or not to print 
     // this information.
     
-    if (print_array[2]) myPrinter.printStress(stressFileFull, stress_array, 
+    if (print_array[2]) myPrinter.printStress(stressFilePath.c_str(), stress_array, 
             strain_array);
     
-    if (print_array[3]) myPrinter.printEnergy(energyFileFull, myNetwork()); // Energy
+    if (print_array[3]) myPrinter.printEnergy(energyFilePath.c_str(), myNetwork()); // Energy
 
     // Cleanup
     delete[] position;
