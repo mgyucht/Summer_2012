@@ -296,10 +296,11 @@ int main (int argc, char *argv[])
             myPrinter.printPos(posFilePath.c_str());
         }
         
-        if (print_array[1] && strain_array[i] >= strain_array[i - 1] 
-                && strain_array[i] >= strain_array[i + 1] && i < steps_per_oscillation)
+        if (print_array[1] && strain_array[i] >= strain_array[i + 1]
+              && strain_array[i] >= strain_array[i - 1] && i < steps_per_oscillation)
         {
             myPrinter.printNonAff(nonaffFilePath.c_str(), i);
+            printf("Nonaffinity file printed\n");
             if (!(print_array[0] || print_array[2] || print_array[3])) 
             {
                 return 0;

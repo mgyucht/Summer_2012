@@ -8,10 +8,10 @@
 
 extern const double YOUNGMOD;
 
-//randDouble returns a random number in the range [low, high).
+//randDouble returns a random number in the range (low, high).
 inline double randDouble(int low, int high) {
 
-    double x = low + (high - low) * ((double) rand() / ((double) RAND_MAX + 1));
+    double x = low + (high - low) * ((double) (rand() + 1) / ((double) RAND_MAX + 1));
     return x;
 
 }
