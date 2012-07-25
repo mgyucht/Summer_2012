@@ -284,6 +284,7 @@ int main (int argc, char *argv[])
         if (stress_array[i] != stress_array[i]) 
         {
             printf("Stress has gone to NaN.\n");
+            printf("p = %.2g, w = %.4g, N = %d, e = %.2g", pBond, strRate, netSize, initStrain);
             return 2;
         }
         
