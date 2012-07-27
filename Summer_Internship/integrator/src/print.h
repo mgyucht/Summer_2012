@@ -22,18 +22,21 @@ struct Printer {
     
     double p;
     double n_time_steps;
-    double* pos;
-    double*** spr;
+    double *pos;
+    double *del;
+    double ***spr;
     
     Printer(const Network &net, const double &pp, const double &nts) : 
         p(pp), 
         n_time_steps(nts),
         pos(net.pos), 
+        del(net.delta),
         spr(net.spring) {}
 
     void printPos(std::string /*fileName*/);
     
-    void printNonAff(std::string /*nonaffFileName*/, int /* time */);
+    void printNonAff(std::string /*nonaffFileName*/, int /* time */, double /* str_rate */);
+    void clearNonAffFile(std::string /*nonaffFileName*/);
     
     void printEnergy(std::string /*fileName*/, const double & /*newEnergy*/);
     

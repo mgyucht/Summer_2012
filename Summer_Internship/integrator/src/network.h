@@ -24,16 +24,18 @@ extern double strain;
 
 struct Network {
     
-    double* pos;
-    double*** spring;
-    double*** forces;
+    double *pos;
+    double *delta;
+    double ***spring;
+    double ***forces;
     
     int iMax, jMax;
     
     bool isiMax, isjMax, isiMin, isjMin;
 
-    Network(double* ppos, double*** sspring, double*** fforces) : 
+    Network(double *ppos, double *ddelta, double ***sspring, double ***fforces) : 
         pos(ppos), 
+        delta(ddelta),
         spring(sspring), 
         forces(fforces),
         isiMax(false), isjMax(false), isiMin(true), isjMin(true) {
