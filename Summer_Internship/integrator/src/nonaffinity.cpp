@@ -22,9 +22,8 @@
 
 #include "nonaffinity.h"
 
-double nonAffinity(double* position, int netSize, double strain)
+double nonAffinity(double *position)
 {
-    int row, col;
     double xval, yval, currentx, currenty, prefactor, sqrdisp = 0, 
            nonaffinity = 0;
 
@@ -35,9 +34,9 @@ double nonAffinity(double* position, int netSize, double strain)
     
     prefactor = 1 / (netSize * netSize * strain * strain);
     
-    for (row = 0; row < netSize; row++)
+    for (int row = 0; row < netSize; row++)
     {
-        for (col = 0; col < netSize; col++)
+        for (int col = 0; col < netSize; col++)
         {
             currentx = position[(row * netSize + col) * 2];
             currenty = position[(row * netSize + col) * 2 + 1];
@@ -55,4 +54,35 @@ double nonAffinity(double* position, int netSize, double strain)
     
     return nonaffinity;
     
+}
+
+double nonAffinity_dd(double *position, double *delta, double str_rate)
+{
+  // dyval is always 0; the affine prediction is that nodes don't move in the y
+  // direction.
+  double dxval, currentx, currenty, sqrdisp = 0.0, nonaffinity = 0.0;
+  double currentdx, currentdy, lastx, lasty;
+  double prefactor = 1 / (netSize * netSize * str_rate * str_rate);
+  
+  for (int row = 0; row < netSize; row++)
+  {
+    for (int col = 0; col < netSize; col++)
+    {
+      currentx = position[(row * netSize + col) * 2];
+      currenty = position[(row * netSize + col) * 2 + 1];
+      
+      currentdx = delta[(row * netSize + col) * 2];
+      currentdy = delta[(row * netSize + col) * 2 + 1];
+      
+      lastx = currentx - currentdx;
+      lasty = currenty - currentdy;
+      
+      dxval = str_rate * sqrt(3.0) / 4.0 * netSize * (1 - 2 * ((float) (netSize - row)) / (netSize + 1)) * TIMESTEP;
+      
+      sqrdisp += (currentdx - dxval) * (currentdx - dxval) + currentdy * currentdy;
+    }
+  }
+  
+  nonaffinity = prefactor * sqrdisp;
+  return nonaffinity;
 }

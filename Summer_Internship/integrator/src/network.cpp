@@ -253,6 +253,9 @@ void Network::moveNodes(double shear_rate, double temp) {
 
         for (int j = 0; j <= jMax; j++) {
 
+            int currentx = (i * netSize + j) * 2;
+            int currenty = currentx + 1;
+          
             isjMax = j == jMax;
             isiMin = i == 0;
             isjMin = j == 0;
@@ -281,7 +284,7 @@ void Network::moveNodes(double shear_rate, double temp) {
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
             
-            double ypos = pos[(i * netSize + j) * 2 + 1];
+            double ypos = pos[currenty];
             
             vel_fluid = (ypos * netSize / (netSize - 1) - netSize * sqrt(3) / 4) * shear_rate;
             
@@ -294,19 +297,21 @@ void Network::moveNodes(double shear_rate, double temp) {
                 
                 double temp_fluct_x = r * cos(theta);
                 double temp_fluct_y = r * sin(theta);
-
-                pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid)
-                    + temp_fluct_x;
-                pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma)
-                    + temp_fluct_y;
+                
+                delta[currentx] = TIMESTEP * (netx / gamma + vel_fluid) + temp_fluct_x;
+                delta[currenty] = TIMESTEP * (nety / gamma) + temp_fluct_y;
+                pos[currentx] += delta[currentx];
+                pos[currenty] += delta[currenty];
             } else // temp = 0.0
             {
-                pos[(i * netSize + j) * 2] += TIMESTEP * (netx / gamma + vel_fluid);
-                pos[(i * netSize + j) * 2 + 1] += TIMESTEP * (nety / gamma);
+                delta[currentx] = TIMESTEP * (netx / gamma + vel_fluid);
+                delta[currenty] = TIMESTEP * (nety / gamma);
+                pos[currentx] += delta[currentx];
+                pos[currenty] += delta[currenty];
             }
             
-            if (pos[(i * netSize + j) * 2] != pos[(i * netSize + j) * 2] 
-                || pos[(i * netSize + j) * 2 + 1] != pos[(i * netSize + j) * 2 + 1]) {
+            if (pos[currentx] != pos[currentx] || pos[currenty] != pos[currenty])
+            {
                 throw("NaN value assigned");
             }
 

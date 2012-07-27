@@ -37,13 +37,13 @@ void Printer::printPos(std::string posFileName) {
     posFile.close();
 }
 
-void Printer::printNonAff(std::string nonaffFileName, int i) {
+void Printer::printNonAff(std::string nonaffFileName, int i, double str_rate) {
 
-    std::ofstream nonaffFile(nonaffFileName.c_str(), std::ios::trunc);
+    std::ofstream nonaffFile(nonaffFileName.c_str(), std::ios::app);
 
     if (nonaffFile.is_open()) {
         
-        double nonaff = nonAffinity(pos, netSize, strain);
+        double nonaff = nonAffinity_dd(pos, del, str_rate);
         nonaffFile << p << "," << i * TIMESTEP << "," << strain << "," 
             << nonaff << std::endl;
     
@@ -51,6 +51,12 @@ void Printer::printNonAff(std::string nonaffFileName, int i) {
     
     nonaffFile.close();
     
+}
+
+void Printer::clearNonAffFile(std::string nonaffFileName)
+{
+  std::ofstream nonaffFile(nonaffFileName.c_str(), std::ios::trunc);
+  nonaffFile.close();
 }
 
 void Printer::printEnergy(std::string energyFileName, const double &newEnergy) {

@@ -60,7 +60,7 @@ int main (int argc, char *argv[])
            temp,              // Temperature of the system
            initStrain,        // Magnitude of strain (0.01)
            test_step,         // Time step candidate from strain rate
-           max_time_step = 0.3; // Maximum time step (0.5 s*) [Constant]
+           max_time_step = 0.3; // Maximum time step (0.3 s*) [Constant]
     
     string energyFileName, // Energy file name
            posFileName,    // Position file name 
@@ -185,31 +185,28 @@ int main (int argc, char *argv[])
     print_array[2] = static_cast<bool>(stressFileName.compare(""));
     print_array[3] = static_cast<bool>(energyFileName.compare(""));
     
-    string nonaffFilePath = root_path + nonaffFileName + extension;
     string stressFilePath = root_path + stressFileName + extension;
     string energyFilePath = root_path + energyFileName + extension;
     
     // Initialize PRNG.
     
     if (prngseed == 0) 
-        
         srand( time(NULL) );
-    
     else 
-
         srand( prngseed );
 
     // Now that those are parsed, we can start to generate our network.
     
-    double* position = new double [2 * netSize * netSize];
-    double* stress_array = new double [nTimeSteps];
-    double*** sprstiff = new double** [netSize];
-    double*** netForces = new double** [netSize];
+    double *position = new double [2 * netSize * netSize];
+    double *delta = new double [2 * netSize * netSize];
+    double *stress_array = new double [nTimeSteps];
+    double ***sprstiff = new double **[netSize];
+    double ***netForces = new double **[netSize];
 
     for (int i = 0; i < netSize; i++) 
     {
-        sprstiff[i] = new double* [netSize];
-        netForces[i] = new double* [netSize];
+        sprstiff[i] = new double *[netSize];
+        netForces[i] = new double *[netSize];
 
         for (int j = 0; j < netSize; j++) 
         {
@@ -224,15 +221,14 @@ int main (int argc, char *argv[])
         }
     }
     
-    double* strain_array = new double[nTimeSteps];
-    double* strain_rate = new double[nTimeSteps];
-    
     // If the strain magnitude is gamma * network_height, the actual strain on
     // the network is 2 * gamma. Therefore, we halve gamma before making the
     // strain array so that requesting a simulation with a certain strain 
     // results in the network with that strain and not double that strain.
     
     initStrain /= 2;
+    double* strain_array = new double[nTimeSteps];
+    double* strain_rate = new double[nTimeSteps];
     
     for (int i = 0; i < nTimeSteps; i++) 
     {
@@ -240,11 +236,14 @@ int main (int argc, char *argv[])
         strain_rate[i]  = initStrain * strRate * cos(strRate * i * TIMESTEP);
     }
 
-    Network myNetwork(position, sprstiff, netForces);
+    Network myNetwork(position, delta, sprstiff, netForces);
     Printer myPrinter(myNetwork, pBond, nTimeSteps);
     Motors myMotors(sprstiff);
     
-    printf("Starting simulation with p = %g, w = %g, and N = %d", pBond, strRate, netSize);
+    {
+      string nonaffFilePath = root_path + nonaffFileName + extension;
+      myPrinter.clearNonAffFile(nonaffFilePath.c_str());
+    }
     
     // Integrate motion over the nodes.
     // 
@@ -282,25 +281,33 @@ int main (int argc, char *argv[])
         if (stress_array[i] != stress_array[i]) 
         {
             printf("Stress has gone to NaN.\n");
-            printf("p = %.2g, w = %.4g, N = %d, e = %.2g, i = %d\n", pBond, strRate, netSize, initStrain, i);
-            if (print_array[2]) myPrinter.printStress(stressFilePath.c_str(), stress_array, strain_array);
+            printf("p = %.2g, w = %.4g, N = %d, e = %.2g", pBond, strRate, netSize, initStrain);
             return 2;
         }
         
         // If a filename is specified, print the positions of the nodes.
         
-        if (print_array[0] && i % frame_sep == 0) 
+        if (i % frame_sep == 0) 
         {
+          if (print_array[0]) 
+          {
             string iter = boost::lexical_cast<string>(i);
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
             myPrinter.printPos(posFilePath.c_str());
+          }
+          //if (print_array[1]) // Time-varying nonaffinity.
+          //{
+            //string nonaffFilePath = root_path + nonaffFileName + extension;
+            //myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i]);
+            //cout << "/" << flush;
+          //}
         }
         
-        if (print_array[1] && strain_array[i] >= strain_array[i + 1]
-              && strain_array[i] >= strain_array[i - 1] && i < steps_per_oscillation)
+        if (print_array[1] && strain_rate[i] <= strain_rate[i + 1] 
+              && strain_rate[i] <= strain_array[i - 1] && i < steps_per_oscillation)
         {
-            myPrinter.printNonAff(nonaffFilePath.c_str(), i);
-            printf("Nonaffinity file printed\n");
+            string nonaffFilePath = root_path + nonaffFileName + extension;
+            myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i]);
             if (!(print_array[0] || print_array[2] || print_array[3])) 
             {
                 return 0;
@@ -311,6 +318,7 @@ int main (int argc, char *argv[])
         
         myNetwork.moveNodes(strain_rate[i], temp);
     }
+    printf("\n");
     
     // The boolean variables defined above determine whether or not to print 
     // this information.
