@@ -31,7 +31,7 @@ using namespace std;
 // Rest length for springs.
 const double RESTLEN = 1.0;
 // Viscosity of the fluid.
-const double ETA = 1.0;
+const double ETA = 1.0e0;
 // Radius for Stokes' drag.
 const double RADIUS = 0.1;
 // Young's modulus for springs.
@@ -42,16 +42,16 @@ double TIMESTEP;
 // NOTE: One unit of time in this simulation is equivalent to 10^-5 seconds in
 // reality: 1 s^* = 10^-5 s.
 
-int netSize;
-double strain;
+int netSize;          // Network size
+double strain;        // Network strain
+int frame_sep;     // Number of steps between generated output.
 
 int main (int argc, char *argv[])
 {
     int prngseed,    // Random number generator seed for springs (0)
         nTimeSteps,  // Number of time steps to simulate (200000)
         steps_per_oscillation, // Exactly what you think it is
-        out_per_oscillation = 30, // How many times to output per oscillation
-        frame_sep,   // steps_per_oscillation/out_per_oscillation
+        out_per_oscillation = 32, // How many times to output per oscillation
         motors;      // Use motors (1)
 
     double pBond,             // Bond probability (0.8)
@@ -59,7 +59,7 @@ int main (int argc, char *argv[])
            temp,              // Temperature of the system
            initStrain,        // Magnitude of strain (0.01)
            test_step,         // Time step candidate from strain rate
-           max_time_step = 0.3; // Maximum time step (0.3 s*) [Constant]
+           max_time_step = 0.1; // Maximum time step (0.3 s*) [Constant]
 
     string energyFileName, // Energy file name
            posFileName,    // Position file name
@@ -269,7 +269,8 @@ int main (int argc, char *argv[])
         if (stress_array[i] != stress_array[i])
         {
             printf("Stress has gone to NaN.\n");
-            printf("p = %.2g, w = %.4g, N = %d, e = %.2g", pBond, strRate, netSize, initStrain);
+            printf("p = %.2g, w = %.4g, N = %d, e = %.2g\n", pBond, strRate, netSize, initStrain);
+            myPrinter.printStress(stressFilePath.c_str(), stress_array, strain_array);
             return 2;
         }
 
@@ -277,29 +278,18 @@ int main (int argc, char *argv[])
 
         if (i % frame_sep == 0)
         {
-          if (print_array[0])
+          if (print_array[0]) // Position data
           {
             string iter = boost::lexical_cast<string>(i);
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
             myPrinter.printPos(posFilePath.c_str());
           }
           cout << "/" << flush;
-          //if (print_array[1]) // Time-varying nonaffinity.
-          //{
-            //string nonaffFilePath = root_path + nonaffFileName + extension;
-            //myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i]);
-          //}
-        }
-
-        if (print_array[1] && strain_rate[i] <= strain_rate[i + 1]
-              && strain_rate[i] <= strain_array[i - 1] && i < steps_per_oscillation)
-        {
+          if (print_array[1]) // Time-varying nonaffinity.
+          {
             string nonaffFilePath = root_path + nonaffFileName + extension;
             myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i]);
-            if (!(print_array[0] || print_array[2] || print_array[3]))
-            {
-                return 0;
-            }
+          }
         }
 
         // Simulate the movement for this time step.

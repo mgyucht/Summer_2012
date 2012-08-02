@@ -8,7 +8,7 @@ EXECDIR = .
 HOSTNAME = $(shell hostname)
 
 CPP = g++
-CPPFLAGS = -g -O2 -I $(IDIR) -Wall -Weffc++ -pedantic  \
+CPPFLAGS = -g -I $(IDIR) # -O2 -Wall -Weffc++ -pedantic  \
     -pedantic-errors -Wextra  -Wall -Waggregate-return -Wcast-align \
     -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion \
     -Wdisabled-optimization \
@@ -46,11 +46,12 @@ INCLUDE = $(patsubst %, $(IDIR)/%, $(_INCLUDE))
 integrator.out: $(OBJECTS) $(INCLUDE)
 	$(CPP) $(CPPFLAGS) $(LIBS) -o $(EXECDIR)/$@ $^
 
-.PHONY: clean
-	
+.PHONY: clean clena
+
+clena:
 clean:
 ifeq ($(HOSTNAME), della3)
-	rm -rf ~/data/*
+	find ~/data/ -name "*.txt" -exec rm {} \;
 	rm ~/Summer_2012/Summer_Internship/scripts/*log*
 else
 	find output/ -type f -name "*.txt" -exec rm {} \;
