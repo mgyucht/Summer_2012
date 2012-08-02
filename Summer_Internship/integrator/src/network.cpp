@@ -4,11 +4,13 @@
 // network.cpp contains the data structure for integrate.cpp. These include
 // the force calculator, the stress calculator, and the node mover.
 
-#include "network.h" 
+#include "network.h"
+#include <iostream>
+#include <math.h>
 
 // Network Function Definitions.
 double Network::operator() () {
-    
+
     double funcvalue = 0;
 
     for(int i = 0; i <= iMax; i++) {
@@ -53,7 +55,7 @@ double Network::operator() () {
             };
 
             for (int k = 1; k < 4; k++) {
-                
+
                 double delta = deltaL(tempPos, k);
                 funcvalue = 0.5 * spring[i][j][k - 1] / RESTLEN * delta * delta;
 
@@ -67,13 +69,13 @@ double Network::operator() () {
 }
 
 void Network::getNetForces(Motors motorarray) {
-    
+
     motorarray.step_motors();
 
     for (int i = 0; i <= iMax; i++) {
 
         for (int j = 0; j <= jMax; j++) {
-            
+
             isiMin = i == 0;
             isiMax = i == iMax;
             isjMin = j == 0;
@@ -99,15 +101,15 @@ void Network::getNetForces(Motors motorarray) {
             // Calculate the net x and y force on each node. Similar to gradient function.
 
             for (int k = 1; k < 4; k++) {
-                
+
                 double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
                 double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
-                
+
                 double dist = euclDist(tempPos, k);
-                
+
                 double cosx = x_displacement / dist;
                 double sinx = y_displacement / dist;
-                
+
                 double motorforce = motorarray.getforce(i, j, k);
                 double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
                     / RESTLEN + motorforce;
@@ -120,7 +122,7 @@ void Network::getNetForces(Motors motorarray) {
                     forces[i][j][2 * k - 2] = 0;
                     forces[i][j][2 * k - 1] = 0;
                 }
-                
+
             }
 
         }
@@ -130,11 +132,11 @@ void Network::getNetForces(Motors motorarray) {
 }
 
 void Network::getNetForces() {
-    
+
     for (int i = 0; i <= iMax; i++) {
 
         for (int j = 0; j <= jMax; j++) {
-            
+
             isiMin = i == 0;
             isiMax = i == iMax;
             isjMin = j == 0;
@@ -160,15 +162,15 @@ void Network::getNetForces() {
             // Calculate the net x and y force on each node. Similar to gradient function.
 
             for (int k = 1; k < 4; k++) {
-                
+
                 double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
                 double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
-                
+
                 double dist = euclDist(tempPos, k);
-                
+
                 double cosx = x_displacement / dist;
                 double sinx = y_displacement / dist;
-                
+
                 double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
                     / RESTLEN;
 
@@ -201,15 +203,15 @@ double Network::calcStress(double strain_rate) {
             isiMax = i == iMax;
             isjMin = j == 0;
             isjMax = j == jMax;
-            
+
             int j1 = isjMax ? 0 : j + 1;
             int i1 = isiMax ? 0 : i + 1;
             int j2 = isjMin ? jMax : j - 1;
 
             double tempPos[8] = {
 
-                pos[(i * netSize + j) * 2], 
-                pos[(i * netSize + j) * 2 + 1], 
+                pos[(i * netSize + j) * 2],
+                pos[(i * netSize + j) * 2 + 1],
                 pos[(i * netSize + j1) * 2],
                 pos[(i * netSize + j1) * 2 + 1],
                 pos[(i1 * netSize + j) * 2],
@@ -234,11 +236,11 @@ double Network::calcStress(double strain_rate) {
         }
 
     }
-    
+
     // Add in viscous network deformation strain.
-    
+
     stress = stress * prefactor + ETA * strain_rate;
-    
+
     return stress;
 
 }
@@ -255,11 +257,11 @@ void Network::moveNodes(double shear_rate, double temp) {
 
             int currentx = (i * netSize + j) * 2;
             int currenty = currentx + 1;
-          
+
             isjMax = j == jMax;
             isiMin = i == 0;
             isjMin = j == 0;
-            
+
             int j1 = isjMax ? 0 : j + 1;
             int i2 = isiMin ? iMax : i - 1;
             int j2 = isjMin ? jMax : j - 1;
@@ -283,21 +285,21 @@ void Network::moveNodes(double shear_rate, double temp) {
 
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
-            
+
             double ypos = pos[currenty];
-            
-            vel_fluid = (ypos * netSize / (netSize - 1) - netSize * sqrt(3) / 4) * shear_rate;
-            
+
+            vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
+
             gamma = 6 * PI * ETA * RADIUS;
-            
-            if (temp > 1e-15) 
+
+            if (temp > 1e-15)
             {
                 double theta = 2 * PI * randDouble(0, 1);
                 double r = sigma * sqrt(-2 * log(randDouble(0, 1)));
-                
+
                 double temp_fluct_x = r * cos(theta);
                 double temp_fluct_y = r * sin(theta);
-                
+
                 delta[currentx] = TIMESTEP * (netx / gamma + vel_fluid) + temp_fluct_x;
                 delta[currenty] = TIMESTEP * (nety / gamma) + temp_fluct_y;
                 pos[currentx] += delta[currentx];
@@ -309,7 +311,7 @@ void Network::moveNodes(double shear_rate, double temp) {
                 pos[currentx] += delta[currentx];
                 pos[currenty] += delta[currenty];
             }
-            
+
             if (pos[currentx] != pos[currentx] || pos[currenty] != pos[currenty])
             {
                 throw("NaN value assigned");
@@ -318,103 +320,102 @@ void Network::moveNodes(double shear_rate, double temp) {
         }
 
     }
-    
+
 }
 
 double Network::xshift(const int &k) {
-    
+
     double xshift = 0.0;
 
     switch (k) {
-        
+
         // Case where nPtr[1] is in column 0.
         case 1: 
             if (isjMax)
-                
+
                 xshift += (jMax + 1) * RESTLEN;
-            
+
             break;
-            
+
         // Case where nPtr[2] is in row 0.
         case 2: 
             if (isiMax) {
-            
+
                 xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
-                
+
             }
             break;
-            
+
         // Case where nPtr[3] is in row 0 and/or column jMax.
         case 3:
             if (isiMax) {
-            
+
                 xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
-                
+
             }
             if (isjMin)
-                
+
                 xshift -= (jMax + 1) * RESTLEN;
 
             break;
-            
+
         // Case where nPtr[4] is in column jMax.
         case 4:
             if (isjMin) {
-                
+
                 xshift -= (jMax + 1) * RESTLEN;
-                
+
             }
             break;
-            
+
         // Case where nPtr[5] is in row iMax.
         case 5: 
             if (isiMin) {
-                
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
-                
+
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+
             }
             break;
 
         // Case where nPtr[6] is in row iMax and/or column 0.
         case 6:
             if (isiMin) {
-            
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);                    
-                
+
+                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+
             }
             if (isjMax)
 
                 xshift += (jMax + 1) * RESTLEN;
-            
+
             break;
     }
-    
+
     return xshift;
 }
 
 double Network::yshift(const int &k) {
-    
+
     double yshift = 0.0;
 
     switch (k) {
-            
+
         case 2: 
         case 3:
             if (isiMax) {
-            
+
                 yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                
+
             }
             break;
-            
-            
+
         // Case where nPtr[5] is in row iMax.
         case 5: 
         case 6:
             if (isiMin) {
-                
+
                 yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
-                
+
             }
             break;
 
@@ -422,6 +423,6 @@ double Network::yshift(const int &k) {
             yshift = 0.0;
             break;
     }
-    
+
     return yshift;
 }
