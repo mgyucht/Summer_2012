@@ -11,9 +11,6 @@
 #include "utils.h"
 #include "motors.h"
 
-#define PI (3.141592653)
-#define KB (1)
-
 extern double TIMESTEP;
 extern const double RESTLEN;
 extern const double ETA;
@@ -22,31 +19,34 @@ extern const double RADIUS;
 extern int netSize;
 extern double strain;
 
+static const double KB = 1;
+static const double PI = 3.1415926535;
+
 struct Network {
-    
+
     double *pos;
     double *delta;
     double ***spring;
     double ***forces;
-    
+
     int iMax, jMax;
-    
+
     bool isiMax, isjMax, isiMin, isjMin;
 
-    Network(double *ppos, double *ddelta, double ***sspring, double ***fforces) : 
-        pos(ppos), 
+    Network(double *ppos, double *ddelta, double ***sspring, double ***fforces) :
+        pos(ppos),
         delta(ddelta),
-        spring(sspring), 
+        spring(sspring),
         forces(fforces),
         isiMax(false), isjMax(false), isiMin(true), isjMin(true) {
-            
+
         iMax = netSize - 1;
         jMax = netSize - 1;
 
     }
-    
+
     double operator() ();
-    
+
     // getNetForces sets the forces array. For each node at lattice index (i, j),
     // the forces exerted on the node by the nodes (i, j+1), (i+1, j), and 
     // (i+1, j-1) are associated with the node (i, j) in forces by the following
@@ -60,16 +60,16 @@ struct Network {
     // forces[i][j][5] - y component of force with node (i+1, j-1)
     // 
     // The force is calculated using Hooke's law.
-    
+
     void getNetForces(Motors /* Motors object */);
     void getNetForces();
-    
+
     double calcStress(double strain_rate);
-    
+
     void moveNodes(double shear_rate, double temp);
-    
+
     private:
-    
+
     // deltaLSqrd returns the square change in the length of the spring.
 
     inline double deltaL(double* pos, const int k) {
@@ -90,15 +90,15 @@ struct Network {
 
         double x = (pos[2 * k] + xshift(k) - pos[0]);
         double y = (pos[2 * k + 1] + yshift(k) - pos[1]);
-        
+
         return sqrt(x * x + y * y);
-        
+
     }
-    
+
     double xshift(const int &k);
-    
+
     double yshift(const int &k);
-    
+
 };
 
 #endif /*NETWORK_H_*/

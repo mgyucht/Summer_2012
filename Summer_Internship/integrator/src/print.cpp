@@ -44,9 +44,10 @@ void Printer::printNonAff(std::string nonaffFileName, int i, double str_rate) {
 
     if (nonaffFile.is_open()) {
 
-        double nonaff = nonAffinity_dd(pos, del, str_rate);
+        double nonaff = nonAffinity(pos);
+        double nonaffdd = nonAffinity_dd(pos, del, str_rate);
         nonaffFile << p << "," << i * TIMESTEP << "," << strain << ","
-            << nonaff << std::endl;
+            << nonaff << "," << nonaffdd << std::endl;
 
     }
 
@@ -81,7 +82,7 @@ void Printer::printStress(std::string stressFileName, const double* stress_array
 
     if (stressFile.is_open()) {
 
-        for (int i = 0; i < n_time_steps; i += 10) {
+        for (int i = 0; i < n_time_steps; i += frame_sep) {
 
             std::string time = boost::lexical_cast<std::string>(i * TIMESTEP);
 
