@@ -284,7 +284,8 @@ int main (int argc, char *argv[])
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
             myPrinter.printPos(posFilePath.c_str());
           }
-          cout << "/" << flush;
+          // cout << "/" << flush;
+          printf("%g, %g\n", nonAffinity(position), nonAffinity_dd(position, delta, strain_rate[i]));
           if (print_array[1]) // Time-varying nonaffinity.
           {
             string nonaffFilePath = root_path + nonaffFileName + extension;

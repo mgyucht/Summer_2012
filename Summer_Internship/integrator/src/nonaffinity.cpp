@@ -32,7 +32,7 @@ double nonAffinity(double *position)
     return 0.0;
   }
 
-  prefactor = 1 / ((float) netSize * netSize * strain * strain);
+  prefactor = 1; // / ((float) netSize * netSize * strain * strain);
 
   for (int row = 0; row < netSize; row++)
   {

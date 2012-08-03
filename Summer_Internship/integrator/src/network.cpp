@@ -239,7 +239,7 @@ double Network::calcStress(double strain_rate) {
 
     // Add in viscous network deformation strain.
 
-    stress = stress * prefactor + ETA * strain_rate;
+    stress = stress * prefactor; //  + ETA * strain_rate;
 
     return stress;
 
