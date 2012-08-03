@@ -52,7 +52,7 @@ clena:
 clean:
 ifeq ($(HOSTNAME), della3)
 	find ~/data/ -name "*.txt" -exec rm {} \;
-	rm ~/Summer_2012/Summer_Internship/scripts/*log*
+	rm -f ~/Summer_2012/Summer_Internship/scripts/*log*
 else
 	find output/ -type f -name "*.txt" -exec rm {} \;
 	find output/ -type f -name "*.tiff" -exec rm {} \;

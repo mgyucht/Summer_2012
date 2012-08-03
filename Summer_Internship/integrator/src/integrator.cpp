@@ -59,7 +59,7 @@ int main (int argc, char *argv[])
            temp,              // Temperature of the system
            initStrain,        // Magnitude of strain (0.01)
            test_step,         // Time step candidate from strain rate
-           max_time_step = 0.1; // Maximum time step (0.3 s*) [Constant]
+           max_time_step = 0.3; // Maximum time step (0.3 s*) [Constant]
 
     string energyFileName, // Energy file name
            posFileName,    // Position file name
