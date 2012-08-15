@@ -52,6 +52,7 @@ int main (int argc, char *argv[])
         nTimeSteps,  // Number of time steps to simulate (200000)
         steps_per_oscillation, // Exactly what you think it is
         out_per_oscillation = 32, // How many times to output per oscillation
+        num_osc = 20, // Number of oscillations
         motors;      // Use motors (1)
 
     double pBond,             // Bond probability (0.8)
@@ -160,7 +161,7 @@ int main (int argc, char *argv[])
     TIMESTEP = test_step < max_time_step ? test_step : max_time_step;
     steps_per_oscillation = (int) (strRate > 1e-15 ? (2 * PI / (strRate * TIMESTEP)) : 1000);
 
-    nTimeSteps = steps_per_oscillation * 5;
+    nTimeSteps = steps_per_oscillation * num_osc;
     frame_sep = steps_per_oscillation / out_per_oscillation;
 
     // Set the file paths.
@@ -284,8 +285,8 @@ int main (int argc, char *argv[])
             string posFilePath   = root_path + posFileName + "_" + iter + extension;
             myPrinter.printPos(posFilePath.c_str());
           }
-          // cout << "/" << flush;
-          printf("%g, %g\n", nonAffinity(position), nonAffinity_dd(position, delta, strain_rate[i]));
+          cout << "/" << flush;
+          // printf("%g, %g\n", nonAffinity(position), nonAffinity_dd(position, delta, strain_rate[i]));
           if (print_array[1]) // Time-varying nonaffinity.
           {
             string nonaffFilePath = root_path + nonaffFileName + extension;
