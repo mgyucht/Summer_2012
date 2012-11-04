@@ -129,7 +129,7 @@ int main (int argc, char *argv[])
     if (vm.count("help"))
     {
         cout << cmdline_options << endl;
-        return 0;
+        return 1;
     }
 
     // Read parameters from the config file.
@@ -159,7 +159,9 @@ int main (int argc, char *argv[])
 
     test_step = 2 * PI / (1000 * strRate);
     TIMESTEP = test_step < max_time_step ? test_step : max_time_step;
-    steps_per_oscillation = (int) (strRate > 1e-15 ? (2 * PI / (strRate * TIMESTEP)) : 1000);
+    steps_per_oscillation = (int) (strRate > 1e-15 
+                                     ? (2 * PI / (strRate * TIMESTEP)) 
+                                     : 1000);
 
     nTimeSteps = steps_per_oscillation * num_osc;
     frame_sep = steps_per_oscillation / out_per_oscillation;

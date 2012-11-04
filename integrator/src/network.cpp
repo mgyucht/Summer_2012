@@ -292,7 +292,7 @@ void Network::moveNodes(double shear_rate, double temp) {
 
             vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
 
-            gamma = 6 * PI * ETA * RADIUS;
+            gamma = 4 * PI * ETA * RADIUS;
 
             if (temp > 1e-15)
             {
