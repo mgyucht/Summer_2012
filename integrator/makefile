@@ -8,7 +8,8 @@ EXECDIR = .
 HOSTNAME = $(shell hostname)
 
 CPP = g++
-CPPFLAGS = -g -I $(IDIR) -O2 -Wall -Weffc++ -pedantic
+CPPFLAGS = -g -I $(IDIR) # -O2 -Wall -Weffc++ -pedantic  \
+    -pedantic-errors -Wextra
 LIBS = -lboost_program_options
 
 _SOURCES = integrator.cpp network.cpp nonaffinity.cpp print.cpp motors.cpp
@@ -32,7 +33,7 @@ clena:
 clean:
 ifeq ($(HOSTNAME), della3)
 	find ~/data/ -name "*.txt" -exec rm {} \;
-	rm -f ~/Summer_2012/Summer_Internship/scripts/*log*
+	rm ~/Summer_2012/Summer_Internship/scripts/*log*
 else
 	find output/ -type f -name "*.txt" -exec rm {} \;
 	find output/ -type f -name "*.tiff" -exec rm {} \;

@@ -82,7 +82,7 @@ void Printer::printStress(std::string stressFileName, const double* stress_array
 
     if (stressFile.is_open()) {
 
-        for (int i = 0; i < n_time_steps; i += frame_sep) {
+        for (int i = 0; i < n_time_steps; i++) {
 
             std::string time = boost::lexical_cast<std::string>(i * TIMESTEP);
 

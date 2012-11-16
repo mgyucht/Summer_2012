@@ -111,13 +111,15 @@ void Network::getNetForces(Motors motorarray) {
                 double sinx = y_displacement / dist;
 
                 double motorforce = motorarray.getforce(i, j, k);
-                double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
+                double temp = spring[i][j][k - 1] * deltaL(tempPos, k)
                     / RESTLEN + motorforce;
 
-                if (dist > RADIUS) 
+                if (dist > RADIUS)
                 {
-                    forces[i][j][2 * k - 2] = temp * cosx;
-                    forces[i][j][2 * k - 1] = temp * sinx;
+                    double xcomp = temp * cosx;
+                    double ycomp = temp * sinx;
+                    forces[i][j][2 * k - 2] = xcomp > 1e-10 ? xcomp : 0;
+                    forces[i][j][2 * k - 1] = ycomp > 1e-10 ? ycomp : 0;
                 } else {
                     forces[i][j][2 * k - 2] = 0;
                     forces[i][j][2 * k - 1] = 0;
@@ -171,10 +173,10 @@ void Network::getNetForces() {
                 double cosx = x_displacement / dist;
                 double sinx = y_displacement / dist;
 
-                double temp = spring[i][j][k - 1] * deltaL(tempPos, k) 
+                double temp = spring[i][j][k - 1] * deltaL(tempPos, k)
                     / RESTLEN;
 
-                if (dist > RADIUS) 
+                if (dist > RADIUS)
                 {
                     forces[i][j][2 * k - 2] = temp * cosx;
                     forces[i][j][2 * k - 1] = temp * sinx;
@@ -290,7 +292,7 @@ void Network::moveNodes(double shear_rate, double temp) {
 
             vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
 
-            gamma = 6 * PI * ETA * RADIUS;
+            gamma = 4 * PI * ETA * RADIUS;
 
             if (temp > 1e-15)
             {

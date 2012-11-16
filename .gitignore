@@ -39,7 +39,7 @@ matlab
 output
 movies
 # Ignore papers directory
-papers
+paper*
 # Ignore presentations
 presentations
 # Ignore scripts subdirectory
