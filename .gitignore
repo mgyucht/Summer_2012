@@ -24,7 +24,6 @@ feh*
 *.aux
 # Ignore the makefile, executable, and the compileinfo header
 integrator.out
-.integratorconf
 # Ignore the .gitignore also
 .gitignore
 # Ignore ctags and cscope files
@@ -35,6 +34,7 @@ cscope*
 # ---------------------
 # Ignore everything matlab
 matlab
+*.m
 # Ignore output and movies directory
 output
 movies

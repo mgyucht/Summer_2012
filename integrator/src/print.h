@@ -13,6 +13,8 @@
 #include "nonaffinity.h"
 #include "network.h"
 
+enum {num_data = 1000};
+
 extern const double YOUNGMOD;
 extern int netSize;
 extern double strain;

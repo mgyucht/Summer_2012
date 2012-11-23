@@ -82,8 +82,18 @@ void Printer::printStress(std::string stressFileName, const double* stress_array
 
     if (stressFile.is_open()) {
 
-        for (int i = 0; i < n_time_steps; i++) {
+        int i;
+        double skip;
+        if (n_time_steps > num_data)
+        {
+          skip = n_time_steps / ((double) num_data);
+        } else
+        {
+          skip = 1.0;
+        }
+        for (double j = 0; j < n_time_steps; j += skip) {
 
+            i = (int) j;
             std::string time = boost::lexical_cast<std::string>(i * TIMESTEP);
 
             stressFile << stress_array[i] << "," << strain_array[i] << ",";
