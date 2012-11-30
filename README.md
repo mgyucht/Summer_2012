@@ -36,7 +36,7 @@ system is sinusoidal. This is located in the Summer\_Internship/integrator
 subdirectory. For each node in the network, the net force is calculated which
 corresponds to the node's motion. To compile:
 
-    $ make
+    $ make integrator.out
     
 To run:
 
@@ -44,8 +44,8 @@ To run:
 
 See the options with 
 
-    $ ./integrator.out -help
-    
+    $ ./integrator.out --help
+
 Looking through my code, you might believe that it was written by an
 unexperienced, amateur coder, and you'd be exactly right. This project has
 also been a challenge in terms of learning C++ and object-oriented

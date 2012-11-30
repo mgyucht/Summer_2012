@@ -8,7 +8,7 @@ EXECDIR = .
 HOSTNAME = $(shell hostname)
 
 CPP = g++
-CPPFLAGS = -g -I $(IDIR) # -O2 -Wall -Weffc++ -pedantic  \
+CPPFLAGS = -g -I $(IDIR) -O2 # -Wall -Weffc++ -pedantic  \
     -pedantic-errors -Wextra
 LIBS = -lboost_program_options
 

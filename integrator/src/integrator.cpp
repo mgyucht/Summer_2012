@@ -52,7 +52,7 @@ int main (int argc, char *argv[])
         nTimeSteps,  // Number of time steps to simulate (200000)
         steps_per_oscillation, // Exactly what you think it is
         out_per_oscillation = 32, // How many times to output per oscillation
-        num_osc = 20, // Number of oscillations
+        num_osc = 6, // Number of oscillations
         motors;      // Use motors (1)
 
     double pBond,             // Bond probability (0.8)
@@ -90,7 +90,7 @@ int main (int argc, char *argv[])
              "set temperature")
         ("prng", po::value<int>(&prngseed)->default_value(0),
              "set PRNG seed")
-        ("job,j", po::value<string>(&job)->default_value(""), "set job directory")
+        ("job,j", po::value<string>(&job)->default_value("0"), "set job directory")
         ("motors,m", po::value<int>(&motors)->default_value(0), "enable motors")
         ;
 
@@ -168,7 +168,7 @@ int main (int argc, char *argv[])
 
     // Set the file paths.
 
-    string root_path = output_path + job + "/";
+    string root_path = output_path + "/" + job;
 
     bool print_array[4];
     print_array[0] = static_cast<bool>(posFileName.compare(""));
@@ -176,8 +176,9 @@ int main (int argc, char *argv[])
     print_array[2] = static_cast<bool>(stressFileName.compare(""));
     print_array[3] = static_cast<bool>(energyFileName.compare(""));
 
-    string stressFilePath = root_path + stressFileName + extension;
-    string energyFilePath = root_path + energyFileName + extension;
+    string stressFilePath = root_path + "/" + stressFileName + extension;
+    string energyFilePath = root_path + "/" + energyFileName + extension;
+    string nonaffFilePath = root_path + "/" + nonaffFileName + extension;
 
     // Initialize PRNG.
 
@@ -231,8 +232,8 @@ int main (int argc, char *argv[])
     Printer myPrinter(myNetwork, pBond, nTimeSteps);
     Motors myMotors(sprstiff);
 
+    if (print_array[1])
     {
-      string nonaffFilePath = root_path + nonaffFileName + extension;
       myPrinter.clearNonAffFile(nonaffFilePath.c_str());
     }
 
