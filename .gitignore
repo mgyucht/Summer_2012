@@ -24,6 +24,8 @@ feh*
 *.aux
 # Ignore the makefile, executable, and the compileinfo header
 integrator.out
+integrator-noopt.out
+debug
 # Ignore the .gitignore also
 .gitignore
 # Ignore ctags and cscope files
