@@ -49,8 +49,8 @@ integrator-noopt.out: $(OBJECTS) $(INCLUDE)
 clena:
 clean:
 ifeq ($(HOSTNAME), della3)
-	find ~/data/ -name "*.txt" -exec rm {} \;
-	rm ~/Summer_2012/Summer_Internship/scripts/*log*
+	-rm ~/Summer_2012/Summer_Internship/scripts/*log*
+	-rm ~/Summer_2012/Summer_Internship/scripts/new/*log*
 else
 	find output/ -type f -name "*.txt" -exec rm {} \;
 	find output/ -type f -name "*.tiff" -exec rm {} \;
