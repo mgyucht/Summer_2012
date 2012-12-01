@@ -25,8 +25,7 @@ namespace po = boost::program_options;
 #include "network.h"
 #include "nonaffinity.h"
 #include "print.h"
-
-using namespace std;
+#include "options.h"
 
 // Rest length for springs.
 const double RESTLEN = 1.0;
@@ -48,112 +47,40 @@ int frame_sep;     // Number of steps between generated output.
 
 int main (int argc, char *argv[])
 {
-    int prngseed,    // Random number generator seed for springs (0)
-        nTimeSteps,  // Number of time steps to simulate (200000)
-        steps_per_oscillation, // Exactly what you think it is
-        out_per_oscillation = 32, // How many times to output per oscillation
-        num_osc = 6, // Number of oscillations
-        motors;      // Use motors (1)
 
-    double pBond,             // Bond probability (0.8)
-           strRate,           // Strain rate (1.0 Hz*)
-           temp,              // Temperature of the system
-           initStrain,        // Magnitude of strain (0.01)
-           test_step,         // Time step candidate from strain rate
+    Options myOptions;
+#ifdef DEBUG
+    std::cout << "Calling setup_options" << std::endl;
+#endif
+    int ret = setup_options(argc, argv, myOptions);
+#ifdef DEBUG
+    std::cout << "setup_options returned " << ret << std::endl;
+#endif
+    if (ret)
+      return ret;
+
+    int prngseed = myOptions.prngseed,    // Random number generator seed for springs (0)
+        nTimeSteps = myOptions.nTimeSteps,  // Number of time steps to simulate (200000)
+        steps_per_oscillation = myOptions.steps_per_oscillation, // Exactly what you think it is
+        out_per_oscillation = myOptions.out_per_oscillation, // How many times to output per oscillation
+        num_osc = myOptions.num_osc, // Number of oscillations
+        motors = myOptions.motors;      // Use motors (1)
+
+    double pBond = myOptions.pBond,             // Bond probability (0.8)
+           strRate = myOptions.strRate,           // Strain rate (1.0 Hz*)
+           temp = myOptions.temp,              // Temperature of the system
+           initStrain = myOptions.initStrain,        // Magnitude of strain (0.01)
+           test_step = myOptions.test_step,         // Time step candidate from strain rate
            max_time_step = 0.1; // Maximum time step (0.3 s*) [Constant]
 
-    string energyFileName, // Energy file name
-           posFileName,    // Position file name
-           nonaffFileName, // Nonaffinity file name
-           stressFileName, // Stress file name
-           output_path,    // Output path for simulation
-           config_file,    // Name and location of config file
-           job,            // Job (only used on della) (0)
-           extension = ".txt"; // File extension
-
-    // Set up command-line parameters and config information.
-
-    po::options_description general("General options");
-    general.add_options()
-        ("help,h", "show this help text")
-        ("config,c", po::value<string>(&config_file)->default_value(
-                            ".integratorconf"), "set the config file")
-        ("netsize,z", po::value<int>(&netSize)->default_value(20),
-             "set network dimensions")
-        ("probability,p", po::value<double>(&pBond)->default_value(0.8),
-             "set bond probability")
-        ("rate,r", po::value<double>(&strRate)->default_value(1.0),
-             "set oscillation frequency")
-        ("strain,e", po::value<double>(&initStrain)->default_value(0.01),
-             "set initial strain")
-        ("temp,t", po::value<double>(&temp)->default_value(0.0),
-             "set temperature")
-        ("prng", po::value<int>(&prngseed)->default_value(0),
-             "set PRNG seed")
-        ("job,j", po::value<string>(&job)->default_value("0"), "set job directory")
-        ("motors,m", po::value<int>(&motors)->default_value(0), "enable motors")
-        ;
-
-    po::options_description filename("Filename options");
-    filename.add_options()
-        ("en-fn", po::value<string>(&energyFileName)->default_value(""),
-             "set energy data file name")
-        ("aff-fn", po::value<string>(&nonaffFileName)->default_value(""),
-             "set non-affinity data file name")
-        ("pos-fn", po::value<string>(&posFileName)->default_value(""),
-             "set position data file name")
-        ("st-fn", po::value<string>(&stressFileName)->default_value(""),
-             "set stress data file name")
-        ;
-
-    po::options_description config("Configuration");
-    config.add_options()
-        ("output", po::value<string>(&output_path)->default_value(""),
-                             "set output path")
-        ;
-
-    po::options_description cmdline_options;
-    cmdline_options.add(general).add(filename);
-
-    po::options_description config_file_options;
-    config_file_options.add(filename).add(config);
-
-    // Make the variables_map object.
-    po::variables_map vm;
-
-    // Read parameters from the command line.
-
-    store(po::parse_command_line(argc, argv, cmdline_options), vm);
-    notify(vm);
-
-    if (vm.count("help"))
-    {
-        cout << cmdline_options << endl;
-        return 1;
-    }
-
-    // Read parameters from the config file.
-
-    ifstream ifs(config_file.c_str());
-
-    if (!ifs)
-    {
-        cout << "Couldn't open config file. Please create one and store the"
-            << " output information in it.\n";
-        return 1;
-    } else
-    {
-        store(parse_config_file(ifs, config_file_options), vm);
-        notify(vm);
-    }
-
-    // Requires an output_path to be assigned in config file.
-
-    if (output_path.empty())
-    {
-        cout << "You must specify an output path in the config file.\n";
-        return 1;
-    }
+    std::string energyFileName = myOptions.energyFileName, // Energy file name
+           posFileName = myOptions.posFileName,    // Position file name
+           nonaffFileName = myOptions.nonaffFileName, // Nonaffinity file name
+           stressFileName = myOptions.stressFileName, // Stress file name
+           output_path = myOptions.output_path,    // Output path for simulation
+           config_file = myOptions.config_file,    // Name and location of config file
+           job = myOptions.job,            // Job (only used on della) (0)
+           extension = myOptions.extension; // File extension (".txt")
 
     // Set the time step.
 
@@ -166,9 +93,20 @@ int main (int argc, char *argv[])
     nTimeSteps = steps_per_oscillation * num_osc;
     frame_sep = steps_per_oscillation / out_per_oscillation;
 
+#ifdef DEBUG
+    printf("Time step for simulation: %.3g\n"
+           "Steps per oscillation:    %.3g\n"
+           "Number of time steps:     %d\n", TIMESTEP, steps_per_oscillation, 
+           nTimeSteps);
+#endif
+
     // Set the file paths.
 
-    string root_path = output_path + "/" + job;
+#ifdef DELLA3
+    std::string root_path = output_path + "/" + job;
+#else
+    std::string root_path = output_path;
+#endif
 
     bool print_array[4];
     print_array[0] = static_cast<bool>(posFileName.compare(""));
@@ -176,16 +114,34 @@ int main (int argc, char *argv[])
     print_array[2] = static_cast<bool>(stressFileName.compare(""));
     print_array[3] = static_cast<bool>(energyFileName.compare(""));
 
-    string stressFilePath = root_path + "/" + stressFileName + extension;
-    string energyFilePath = root_path + "/" + energyFileName + extension;
-    string nonaffFilePath = root_path + "/" + nonaffFileName + extension;
+    std::string stressFilePath = root_path + "/" + stressFileName + extension;
+    std::string energyFilePath = root_path + "/" + energyFileName + extension;
+    std::string nonaffFilePath = root_path + "/" + nonaffFileName + extension;
+
+#ifdef DEBUG
+    printf("Output path: %s\n"
+           "Stress file: %s\n"
+           "Energy file: %s\n"
+           "Nonaffinity file: %s\n", output_path.c_str(), stressFilePath.c_str(), 
+           energyFilePath.c_str(), nonaffFilePath.c_str());
+#endif
 
     // Initialize PRNG.
 
     if (prngseed == 0)
-        srand( time(NULL) );
-    else
+    {
+        unsigned int seed = (unsigned int) time(NULL);
+#ifdef DEBUG
+        printf("Random seed: %d\n", seed);
+#endif
+        srand( seed );
+    } else
+    {
+#ifdef DEBUG
+        printf("Random seed: %d\n", prngseed);
+#endif
         srand( prngseed );
+    }
 
     // Now that those are parsed, we can start to generate our network.
 
@@ -213,6 +169,11 @@ int main (int argc, char *argv[])
         }
     }
 
+#ifdef DEBUG
+    printf("position, delta, stress_array, sprstiff, and netForces are all"
+           " allocated.\n");
+#endif
+
     // If the strain magnitude is gamma * network_height, the actual strain on
     // the network is 2 * gamma. Therefore, we halve gamma before making the
     // strain array so that requesting a simulation with a certain strain
@@ -231,6 +192,11 @@ int main (int argc, char *argv[])
     Network myNetwork(position, delta, sprstiff, netForces);
     Printer myPrinter(myNetwork, pBond, nTimeSteps);
     Motors myMotors(sprstiff);
+
+#ifdef DEBUG
+    printf("myNetwork, myPrinter, myMotors, strain_array, and strain_rate all"
+           " allocated.\n");
+#endif
 
     if (print_array[1])
     {
@@ -260,14 +226,6 @@ int main (int argc, char *argv[])
 
         stress_array[i] = myNetwork.calcStress(strain_rate[i]);
 
-        // Test
-        /*
-        if (i % frame_sep == 0)
-        {
-            printf("%g\n", stress_array[i]);
-        }
-        */
-
         // Quit if stress_array[i] is nan.
 
         if (stress_array[i] != stress_array[i])
@@ -284,15 +242,16 @@ int main (int argc, char *argv[])
         {
           if (print_array[0]) // Position data
           {
-            string iter = boost::lexical_cast<string>(i);
-            string posFilePath   = root_path + posFileName + "_" + iter + extension;
+            std::string iter = boost::lexical_cast<std::string>(i);
+            std::string posFilePath   = root_path + posFileName + "_" + iter + extension;
             myPrinter.printPos(posFilePath.c_str());
           }
-          cout << "/" << flush;
-          // printf("%g, %g\n", nonAffinity(position), nonAffinity_dd(position, delta, strain_rate[i]));
+#ifdef DEBUG
+          std::cout << "/" << std::flush;
+#endif
           if (print_array[1]) // Time-varying nonaffinity.
           {
-            string nonaffFilePath = root_path + nonaffFileName + extension;
+            std::string nonaffFilePath = root_path + nonaffFileName + extension;
             myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i]);
           }
         }
