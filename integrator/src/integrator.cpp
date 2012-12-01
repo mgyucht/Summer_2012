@@ -80,7 +80,7 @@ int main (int argc, char *argv[])
            output_path = myOptions.output_path,    // Output path for simulation
            config_file = myOptions.config_file,    // Name and location of config file
            job = myOptions.job,            // Job (only used on della) (0)
-           extension = myOptions.extension; // File extension (".txt")
+           extension = ".txt"; // File extension (".txt")
 
     // Set the time step.
 
@@ -242,13 +242,12 @@ int main (int argc, char *argv[])
         {
           if (print_array[0]) // Position data
           {
-            std::string iter = boost::lexical_cast<std::string>(i);
-            std::string posFilePath   = root_path + posFileName + "_" + iter + extension;
+            int frame = i / frame_sep;
+            std::string iter = boost::lexical_cast<std::string>(frame);
+            std::string posFilePath = root_path + posFileName + "_" + iter + extension;
             myPrinter.printPos(posFilePath.c_str());
           }
-#ifdef DEBUG
           std::cout << "/" << std::flush;
-#endif
           if (print_array[1]) // Time-varying nonaffinity.
           {
             std::string nonaffFilePath = root_path + nonaffFileName + extension;
@@ -265,10 +264,15 @@ int main (int argc, char *argv[])
     // The boolean variables defined above determine whether or not to print
     // this information.
 
-    if (print_array[2]) myPrinter.printStress(stressFilePath.c_str(), stress_array,
-            strain_array);
+    if (print_array[2])
+    {
+      myPrinter.printStress(stressFilePath.c_str(), stress_array, strain_array);
+    }
 
-    if (print_array[3]) myPrinter.printEnergy(energyFilePath.c_str(), myNetwork()); // Energy
+    if (print_array[3])
+    {
+      myPrinter.printEnergy(energyFilePath.c_str(), myNetwork()); // Energy
+    }
 
     // Cleanup
     delete[] position;
