@@ -198,11 +198,6 @@ int main (int argc, char *argv[])
            " allocated.\n");
 #endif
 
-    if (print_array[1])
-    {
-      myPrinter.clearNonAffFile(nonaffFilePath.c_str());
-    }
-
     // Integrate motion over the nodes.
     //
     // Technical note: Stress is a rank 2 tensor. However, because our interest
@@ -240,17 +235,14 @@ int main (int argc, char *argv[])
 
         if (i % frame_sep == 0)
         {
-          if (print_array[0]) // Position data
-          {
+          std::cout << "/" << std::flush;
+          if (print_array[0]) { // Position data
             int frame = i / frame_sep;
             std::string iter = boost::lexical_cast<std::string>(frame);
             std::string posFilePath = root_path + posFileName + "_" + iter + extension;
             myPrinter.printPos(posFilePath.c_str());
           }
-          std::cout << "/" << std::flush;
-          if (print_array[1]) // Time-varying nonaffinity.
-          {
-            std::string nonaffFilePath = root_path + nonaffFileName + extension;
+          if (print_array[1]) { // Time-varying nonaffinity.
             myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i]);
           }
         }
