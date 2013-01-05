@@ -274,12 +274,12 @@ double Network::calcStress(double strain_rate) {
 
 void Network::moveNodes(double shear_rate, double temp) {
 
-    double netx, nety, vel_fluid, gamma;
+    double netx, nety, affvel, gamma;
     double d = KB * temp / (6 * PI * ETA * RADIUS);
     double sigma = sqrt(2 * d * TIMESTEP);
 
-    vel_fluid = sqrt(3.0) / 2.0 * netSize * shear_rate;
-    affdel += vel_fluid * TIMESTEP;
+    affvel = sqrt(3.0) / 2.0 * netSize * shear_rate;
+    affdel += affvel * TIMESTEP;
 
     for (int i = 0; i <= iMax; i++) {
 
@@ -316,7 +316,7 @@ void Network::moveNodes(double shear_rate, double temp) {
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
 
-            vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * ((2.0 * i) / (netSize - 1) - 1.0);
+            affvel = sqrt(3.0) / 4.0 * netSize * shear_rate * ((2.0 * i) / (netSize - 1) - 1.0);
             // vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
 
             gamma = 4 * PI * ETA * RADIUS;
@@ -329,13 +329,13 @@ void Network::moveNodes(double shear_rate, double temp) {
                 double temp_fluct_x = r * cos(theta);
                 double temp_fluct_y = r * sin(theta);
 
-                delta[currentx] = TIMESTEP * (netx / gamma + vel_fluid) + temp_fluct_x;
+                delta[currentx] = TIMESTEP * (netx / gamma + affvel) + temp_fluct_x;
                 delta[currenty] = TIMESTEP * (nety / gamma) + temp_fluct_y;
                 pos[currentx] += delta[currentx];
                 pos[currenty] += delta[currenty];
             } else // temp = 0.0
             {
-                delta[currentx] = TIMESTEP * (netx / gamma + vel_fluid);
+                delta[currentx] = TIMESTEP * (netx / gamma + affvel);
                 delta[currenty] = TIMESTEP * (nety / gamma);
                 pos[currentx] += delta[currentx];
                 pos[currenty] += delta[currenty];

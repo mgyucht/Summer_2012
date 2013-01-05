@@ -37,6 +37,7 @@ const double RADIUS = 0.1;
 const double YOUNGMOD = 1.0;
 // Time step for the simulation.
 double TIMESTEP;
+double affdel = 0.0;
 
 // NOTE: One unit of time in this simulation is equivalent to 10^-5 seconds in
 // reality: 1 s^* = 10^-5 s.
@@ -243,7 +244,7 @@ int main (int argc, char *argv[])
             myPrinter.printPos(posFilePath.c_str());
           }
           if (print_array[1]) { // Time-varying nonaffinity.
-            myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i]);
+            myPrinter.printNonAff(nonaffFilePath.c_str(), i, strain_rate[i > 0 ? i - 1 : 0]);
           }
         }
 

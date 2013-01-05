@@ -18,13 +18,13 @@ extern const double RADIUS;
 
 extern int netSize;
 extern double strain;
+extern double affdel;
 
 static const double KB = 1;
 static const double PI = 3.1415926535;
 
 struct Network {
 
-    double affdel;
     double *pos;
     double *delta;
     double ***spring;
@@ -43,8 +43,6 @@ struct Network {
 
         iMax = netSize - 1;
         jMax = netSize - 1;
-
-        affdel = 0.0;
     }
 
     double operator() ();

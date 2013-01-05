@@ -21,6 +21,7 @@
 // affine one.
 
 extern int netSize;
+extern double affdel;
 extern double strain;
 extern double TIMESTEP;
 

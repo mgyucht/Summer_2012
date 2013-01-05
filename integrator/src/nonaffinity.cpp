@@ -22,6 +22,16 @@
 
 #include "nonaffinity.h"
 
+double affxpos(int r, int c)
+{
+    return c + r / 2.0 + affdel / 2.0 * ((2.0 * r) / (netSize - 1.0) - 1.0);
+}
+
+double affypos(int r)
+{
+    return sqrt(3.0) / 2.0 * r;
+}
+
 double nonAffinity(double *position)
 {
   double xval, yval, currentx, currenty, prefactor, sqrdisp = 0, nonaffinity = 0;
@@ -38,8 +48,8 @@ double nonAffinity(double *position)
       currentx = position[(row * netSize + col) * 2];
       currenty = position[(row * netSize + col) * 2 + 1];
 
-      xval = col + row / 2.0 + strain * sqrt(3.0) / 4.0 * netSize * ((2.0 * row) / (netSize - 1.0) - 1.0);
-      yval = sqrt(3.0) / 2.0 * row;
+      xval = affxpos(row, col);
+      yval = affypos(row);
 
       double temp = (currentx - xval) * (currentx - xval) + (currenty - yval)
         * (currenty - yval);

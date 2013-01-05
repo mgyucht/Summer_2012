@@ -8,7 +8,7 @@
 
 double Printer::affposx(int r, int c)
 {
-      return (c + r / 2.0 + *affdel / 2.0 * ((2.0 * r) / (netSize - 1.0) - 1.0));
+      return (c + r / 2.0 + affdel / 2.0 * ((2.0 * r) / (netSize - 1.0) - 1.0));
 }
 
 double Printer::affposy(int r)
@@ -23,7 +23,7 @@ void Printer::printPos(std::string posFileName) {
     if (posFile.is_open()) {
 
         posFile << "NetSize,Strain,YoungMod,pbond,Spr1,Spr2,Spr3" << std::endl;
-        posFile << netSize << "," << *affdel << "," << YOUNGMOD << ","
+        posFile << netSize << "," << affdel << "," << YOUNGMOD << ","
             << p << ",1,1,1" << std::endl;
 
         for (int i = 0; i < netSize; i++) {
@@ -61,7 +61,7 @@ void Printer::printNonAff(std::string nonaffFileName, int i, double str_rate) {
         } else {
             double nonaff = nonAffinity(pos);
             double nonaffdd = nonAffinity_dd(pos, del, str_rate);
-            nonaffFile << i * TIMESTEP << "," << *affdel << ","
+            nonaffFile << i * TIMESTEP << "," << affdel << ","
                 << nonaff << "," << str_rate << "," << nonaffdd << std::endl;
         }
     }
@@ -82,7 +82,7 @@ void Printer::printEnergy(std::string energyFileName, const double &newEnergy) {
 
     if (engFile.is_open()) {
 
-        engFile << newEnergy << "," << p << "," << *affdel << std::endl;
+        engFile << newEnergy << "," << p << "," << affdel << std::endl;
 
     }
 

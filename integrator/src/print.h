@@ -10,8 +10,9 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include "nonaffinity.h"
 #include "network.h"
+
+#include "nonaffinity.h"
 
 enum {num_data = 1000};
 
@@ -21,11 +22,12 @@ extern double strain;
 extern double TIMESTEP;
 extern int frame_sep;
 
+extern double affdel;
+
 struct Printer {
 
     double p;
     double n_time_steps;
-    double *affdel;
     double *pos;
     double *del;
     double ***spr;
@@ -35,8 +37,7 @@ struct Printer {
         n_time_steps(nts),
         pos(net.pos),
         del(net.delta),
-        spr(net.spring),
-        affdel((double *) &(net.affdel)) {}
+        spr(net.spring) {}
 
     double affposx(int r, int c);
     double affposy(int r);
