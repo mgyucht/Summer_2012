@@ -179,7 +179,7 @@ int main (int argc, char *argv[])
     // strain array so that requesting a simulation with a certain strain
     // results in the network with that strain and not double that strain.
 
-    initStrain /= 2;
+    initStrain *= 1 / 2.0;
     double* strain_array = new double[nTimeSteps];
     double* strain_rate = new double[nTimeSteps];
 

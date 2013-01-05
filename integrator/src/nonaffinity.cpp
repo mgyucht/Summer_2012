@@ -38,7 +38,7 @@ double nonAffinity(double *position)
       currentx = position[(row * netSize + col) * 2];
       currenty = position[(row * netSize + col) * 2 + 1];
 
-      xval = col + row / 2.0 + strain / 2.0 * ((2.0 * row) / (netSize - 1) - 1);
+      xval = col + row / 2.0 + strain * sqrt(3.0) / 4.0 * netSize * ((2.0 * row) / (netSize - 1.0) - 1.0);
       yval = sqrt(3.0) / 2.0 * row;
 
       double temp = (currentx - xval) * (currentx - xval) + (currenty - yval)
@@ -57,8 +57,7 @@ double nonAffinity_dd(double *position, double *delta, double str_rate)
 {
   // dyval is always 0; the affine prediction is that nodes don't move in the y
   // direction.
-  double dxval, sqrdisp = 0.0, nonaffinity = 0.0;
-  double currentdx, currentdy;
+  double dxval, sqrdisp = 0.0, nonaffinity = 0.0, currentdx, currentdy;
   double prefactor = 1; /* / ((float) netSize * netSize * str_rate * str_rate
       * TIMESTEP * TIMESTEP); */
 
@@ -66,10 +65,11 @@ double nonAffinity_dd(double *position, double *delta, double str_rate)
   {
     for (int col = 0; col < netSize; col++)
     {
-      currentdx = delta[(row * netSize + col) * 2];
-      currentdy = delta[(row * netSize + col) * 2 + 1];
+      currentdx = delta[(row * netSize + col) * 2] / TIMESTEP;
+      currentdy = delta[(row * netSize + col) * 2 + 1] / TIMESTEP;
 
-      dxval = 1 / 2.0 * ((2.0 * row) / (netSize - 1) - 1) * str_rate;
+      // dxval = 1 / 2.0 * ((2.0 * row) / (netSize - 1) - 1) * str_rate;
+      dxval = sqrt(3.0) / 4.0 * netSize * str_rate * ((2.0 * row) / (netSize - 1) - 1.0);
 
       sqrdisp += (currentdx - dxval) * (currentdx - dxval) + currentdy * currentdy;
     }

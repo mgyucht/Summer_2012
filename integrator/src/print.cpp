@@ -6,6 +6,16 @@
 #include <boost/lexical_cast.hpp>
 #include "print.h"
 
+double Printer::affposx(int r, int c)
+{
+      return (c + r / 2.0 + *affdel / 2.0 * ((2.0 * r) / (netSize - 1.0) - 1.0));
+}
+
+double Printer::affposy(int r)
+{
+      return sqrt(3.0) / 2.0 * r;
+}
+
 void Printer::printPos(std::string posFileName) {
 
     std::ofstream posFile(posFileName.c_str(), std::ios::trunc);
@@ -13,7 +23,7 @@ void Printer::printPos(std::string posFileName) {
     if (posFile.is_open()) {
 
         posFile << "NetSize,Strain,YoungMod,pbond,Spr1,Spr2,Spr3" << std::endl;
-        posFile << netSize << "," << strain << "," << YOUNGMOD << ","
+        posFile << netSize << "," << *affdel << "," << YOUNGMOD << ","
             << p << ",1,1,1" << std::endl;
 
         for (int i = 0; i < netSize; i++) {
@@ -22,8 +32,8 @@ void Printer::printPos(std::string posFileName) {
 
                 // Print row, col, position, sprstiff, rlen information to file.
 
-                posFile << i << "," << j << "," << pos[(i * netSize + j) * 2]
-                    << "," << pos[(i * netSize + j) * 2 + 1];
+                posFile << i << "," << j << "," << pos[(i * netSize + j) * 2] - affposx(i, j)
+                    << "," << pos[(i * netSize + j) * 2 + 1] - affposy(i);
 
                 for (int k = 0; k < 3; k++)
                     posFile << "," << spr[i][j][k];
@@ -51,7 +61,7 @@ void Printer::printNonAff(std::string nonaffFileName, int i, double str_rate) {
         } else {
             double nonaff = nonAffinity(pos);
             double nonaffdd = nonAffinity_dd(pos, del, str_rate);
-            nonaffFile << i * TIMESTEP << "," << strain << ","
+            nonaffFile << i * TIMESTEP << "," << *affdel << ","
                 << nonaff << "," << str_rate << "," << nonaffdd << std::endl;
         }
     }
@@ -72,7 +82,7 @@ void Printer::printEnergy(std::string energyFileName, const double &newEnergy) {
 
     if (engFile.is_open()) {
 
-        engFile << newEnergy << "," << p << "," << strain << std::endl;
+        engFile << newEnergy << "," << p << "," << *affdel << std::endl;
 
     }
 
