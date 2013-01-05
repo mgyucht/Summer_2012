@@ -290,7 +290,8 @@ void Network::moveNodes(double shear_rate, double temp) {
 
             double ypos = pos[currenty];
 
-            vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
+            vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * ((2.0 * i) / (netSize - 1) - 1.0);
+            // vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
 
             gamma = 4 * PI * ETA * RADIUS;
 
@@ -335,7 +336,7 @@ double Network::xshift(const int &k) {
         case 1: 
             if (isjMax)
 
-                xshift += (jMax + 1) * RESTLEN;
+                xshift += netSize;
 
             break;
 
@@ -343,7 +344,7 @@ double Network::xshift(const int &k) {
         case 2: 
             if (isiMax) {
 
-                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                xshift += netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
 
             }
             break;
@@ -352,12 +353,12 @@ double Network::xshift(const int &k) {
         case 3:
             if (isiMax) {
 
-                xshift += RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                xshift += netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
 
             }
             if (isjMin)
 
-                xshift -= (jMax + 1) * RESTLEN;
+                xshift -= netSize;
 
             break;
 
@@ -365,7 +366,7 @@ double Network::xshift(const int &k) {
         case 4:
             if (isjMin) {
 
-                xshift -= (jMax + 1) * RESTLEN;
+                xshift -= netSize;
 
             }
             break;
@@ -374,7 +375,7 @@ double Network::xshift(const int &k) {
         case 5: 
             if (isiMin) {
 
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                xshift -= netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
 
             }
             break;
@@ -383,12 +384,12 @@ double Network::xshift(const int &k) {
         case 6:
             if (isiMin) {
 
-                xshift -= RESTLEN * (jMax + 1) / 2.0 * (1 + sqrt(3.0) * strain);
+                xshift -= netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
 
             }
             if (isjMax)
 
-                xshift += (jMax + 1) * RESTLEN;
+                xshift += netSize;
 
             break;
     }
@@ -406,7 +407,7 @@ double Network::yshift(const int &k) {
         case 3:
             if (isiMax) {
 
-                yshift += (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+                yshift += netSize * sqrt(3.0) / 2.0;
 
             }
             break;
@@ -416,13 +417,12 @@ double Network::yshift(const int &k) {
         case 6:
             if (isiMin) {
 
-                yshift -= (iMax + 1) * RESTLEN * sqrt(3.0) / 2.0;
+                yshift -= netSize * sqrt(3.0) / 2.0;
 
             }
             break;
 
         default: 
-            yshift = 0.0;
             break;
     }
 
