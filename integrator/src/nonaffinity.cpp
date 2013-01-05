@@ -57,8 +57,7 @@ double nonAffinity_dd(double *position, double *delta, double str_rate)
 {
   // dyval is always 0; the affine prediction is that nodes don't move in the y
   // direction.
-  double dxval, sqrdisp = 0.0, nonaffinity = 0.0;
-  double currentdx, currentdy;
+  double dxval, sqrdisp = 0.0, nonaffinity = 0.0, currentdx, currentdy;
   double prefactor = 1; /* / ((float) netSize * netSize * str_rate * str_rate
       * TIMESTEP * TIMESTEP); */
 
