@@ -1,0 +1,7 @@
+# My integrator configuration. Read at the beginning of execution.
+
+output = /home/myucht/data/working/affinity
+# st-fn = stress_data
+aff-fn = nonaff_data
+num-osc = 2
+out-per-osc = 100
