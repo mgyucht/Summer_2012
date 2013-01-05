@@ -6,6 +6,16 @@
 #include <boost/lexical_cast.hpp>
 #include "print.h"
 
+double Printer::affposx(int r, int c)
+{
+      return (c + r / 2.0 + *affdel / 2.0 * ((2.0 * r) / (netSize - 1.0) - 1.0));
+}
+
+double Printer::affposy(int r)
+{
+      return sqrt(3.0) / 2.0 * r;
+}
+
 void Printer::printPos(std::string posFileName) {
 
     std::ofstream posFile(posFileName.c_str(), std::ios::trunc);
@@ -22,8 +32,8 @@ void Printer::printPos(std::string posFileName) {
 
                 // Print row, col, position, sprstiff, rlen information to file.
 
-                posFile << i << "," << j << "," << pos[(i * netSize + j) * 2]
-                    << "," << pos[(i * netSize + j) * 2 + 1];
+                posFile << i << "," << j << "," << pos[(i * netSize + j) * 2] - affposx(i, j)
+                    << "," << pos[(i * netSize + j) * 2 + 1] - affposy(i);
 
                 for (int k = 0; k < 3; k++)
                     posFile << "," << spr[i][j][k];

@@ -25,6 +25,7 @@ struct Printer {
 
     double p;
     double n_time_steps;
+    double *affdel;
     double *pos;
     double *del;
     double ***spr;
@@ -34,7 +35,11 @@ struct Printer {
         n_time_steps(nts),
         pos(net.pos),
         del(net.delta),
-        spr(net.spring) {}
+        spr(net.spring),
+        affdel((double *) &(net.affdel)) {}
+
+    double affposx(int r, int c);
+    double affposy(int r);
 
     void printPos(std::string /*fileName*/);
 

@@ -8,6 +8,31 @@
 #include <iostream>
 #include <math.h>
 
+// euclDist is a Euclidean distance calculator that works with the
+// pointer nPtr declared in operator(). It takes into account the periodic
+// boundary condition for the system. This is the function that incorporates
+// strain into the network.
+// 
+// Note that we use jMax + 1 and iMax + 1 in these expressions because they
+// are equivalent to the size of the network netSize. 
+
+double euclDist(const double* pos, const int k) {
+
+    double x = (pos[2 * k] - pos[0]);
+    double y = (pos[2 * k + 1] - pos[1]);
+
+    return sqrt(x * x + y * y);
+
+}
+
+// deltaLSqrd returns the square change in the length of the spring.
+
+double deltaL(double* pos, const int k) {
+
+    return euclDist(pos, k) - RESTLEN;
+
+}
+
 // Network Function Definitions.
 double Network::operator() () {
 
@@ -152,12 +177,12 @@ void Network::getNetForces() {
 
                 pos[(i * netSize + j) * 2], 
                 pos[(i * netSize + j) * 2 + 1], 
-                pos[(i * netSize + j1) * 2],
-                pos[(i * netSize + j1) * 2 + 1] ,
-                pos[(i1 * netSize + j) * 2],
-                pos[(i1 * netSize + j) * 2 + 1],
-                pos[(i1 * netSize + j2) * 2],
-                pos[(i1 * netSize + j2) * 2 + 1]
+                pos[(i * netSize + j1) * 2] + xshift(1),
+                pos[(i * netSize + j1) * 2 + 1] + yshift(1),
+                pos[(i1 * netSize + j) * 2] + xshift(2),
+                pos[(i1 * netSize + j) * 2 + 1] + yshift(2),
+                pos[(i1 * netSize + j2) * 2] + xshift(3),
+                pos[(i1 * netSize + j2) * 2 + 1] + yshift(3)
 
             };
 
@@ -165,8 +190,8 @@ void Network::getNetForces() {
 
             for (int k = 1; k < 4; k++) {
 
-                double x_displacement = tempPos[2 * k] + xshift(k) - tempPos[0];
-                double y_displacement = tempPos[2 * k + 1] + yshift(k) - tempPos[1];
+                double x_displacement = tempPos[2 * k] - tempPos[0];
+                double y_displacement = tempPos[2 * k + 1] - tempPos[1];
 
                 double dist = euclDist(tempPos, k);
 
@@ -253,6 +278,9 @@ void Network::moveNodes(double shear_rate, double temp) {
     double d = KB * temp / (6 * PI * ETA * RADIUS);
     double sigma = sqrt(2 * d * TIMESTEP);
 
+    vel_fluid = sqrt(3.0) / 2.0 * netSize * shear_rate;
+    affdel += vel_fluid * TIMESTEP;
+
     for (int i = 0; i <= iMax; i++) {
 
         for (int j = 0; j <= jMax; j++) {
@@ -287,8 +315,6 @@ void Network::moveNodes(double shear_rate, double temp) {
 
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
-
-            double ypos = pos[currenty];
 
             vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * ((2.0 * i) / (netSize - 1) - 1.0);
             // vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
@@ -329,6 +355,9 @@ void Network::moveNodes(double shear_rate, double temp) {
 double Network::xshift(const int &k) {
 
     double xshift = 0.0;
+    double netwidth = netSize;
+    double d = affdel; // delta for the entire network
+    double netshift = netSize / 2.0 + netSize / (netSize - 1.0) * d;
 
     switch (k) {
 
@@ -336,7 +365,7 @@ double Network::xshift(const int &k) {
         case 1: 
             if (isjMax)
 
-                xshift += netSize;
+                xshift += netwidth;
 
             break;
 
@@ -344,7 +373,7 @@ double Network::xshift(const int &k) {
         case 2: 
             if (isiMax) {
 
-                xshift += netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
+                xshift += netshift;
 
             }
             break;
@@ -353,12 +382,12 @@ double Network::xshift(const int &k) {
         case 3:
             if (isiMax) {
 
-                xshift += netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
+                xshift += netshift;
 
             }
             if (isjMin)
 
-                xshift -= netSize;
+                xshift -= netwidth;
 
             break;
 
@@ -375,7 +404,7 @@ double Network::xshift(const int &k) {
         case 5: 
             if (isiMin) {
 
-                xshift -= netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
+                xshift -= netshift;
 
             }
             break;
@@ -384,12 +413,12 @@ double Network::xshift(const int &k) {
         case 6:
             if (isiMin) {
 
-                xshift -= netSize / 2.0 + sqrt(3) * 3 / 4.0 * netSize * strain;
+                xshift -= netshift;
 
             }
             if (isjMax)
 
-                xshift += netSize;
+                xshift += netwidth;
 
             break;
     }
