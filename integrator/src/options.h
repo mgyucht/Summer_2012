@@ -16,7 +16,6 @@ class Options
 
     int prngseed,    // Random number generator seed for springs (0)
         nTimeSteps,  // Number of time steps to simulate (200000)
-        steps_per_oscillation, // Exactly what you think it is
         out_per_oscillation, // How many times to output per oscillation
         num_osc, // Number of oscillations
         motors;      // Use motors (1)

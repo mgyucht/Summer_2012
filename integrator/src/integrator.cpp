@@ -62,7 +62,7 @@ int main (int argc, char *argv[])
 
     int prngseed = myOptions.prngseed,    // Random number generator seed for springs (0)
         nTimeSteps = myOptions.nTimeSteps,  // Number of time steps to simulate (200000)
-        steps_per_oscillation = myOptions.steps_per_oscillation, // Exactly what you think it is
+        steps_per_oscillation,              // Exactly what you think it is
         out_per_oscillation = myOptions.out_per_oscillation, // How many times to output per oscillation
         num_osc = myOptions.num_osc, // Number of oscillations
         motors = myOptions.motors;      // Use motors (1)
@@ -186,12 +186,11 @@ int main (int argc, char *argv[])
 
     for (int i = 0; i < nTimeSteps; i++)
     {
-        strain_array[i] = initStrain * sin(strRate * i * TIMESTEP);
         strain_rate[i]  = initStrain * strRate * cos(strRate * i * TIMESTEP);
     }
 
     Network myNetwork(position, delta, sprstiff, netForces);
-    Printer myPrinter(myNetwork, pBond, nTimeSteps);
+    Printer myPrinter(myNetwork, pBond, nTimeSteps, frame_sep);
     Motors myMotors(sprstiff);
 
 #ifdef DEBUG
@@ -207,10 +206,8 @@ int main (int argc, char *argv[])
     // is only one real term of interest, because σ_xy = σ_yx. This is the
     // number that is output by calcStress.
 
-    for (int i = 0; i < nTimeSteps; i++)
-    {
-        strain = strain_array[i];
-
+    for (int i = 0; i < nTimeSteps; i++) {
+        strain_array[i] = affdel;
         // Calculate the net forces in the network.
 
         if (motors != 0)

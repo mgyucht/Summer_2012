@@ -28,13 +28,15 @@ struct Printer {
 
     double p;
     double n_time_steps;
+    double fs;
     double *pos;
     double *del;
     double ***spr;
 
-    Printer(const Network &net, const double &pp, const double &nts) :
+    Printer(const Network &net, const double &pp, const double &nts, const double &fskip) :
         p(pp),
         n_time_steps(nts),
+        fs(fskip),
         pos(net.pos),
         del(net.delta),
         spr(net.spring) {}
