@@ -27,5 +27,6 @@ extern double TIMESTEP;
 
 double nonAffinity(double* position);
 double nonAffinity_dd(double* position, double* delta, double str_rate);
+double affvx(int r, double str_rate);
 
 #endif /* _NONAFFINITY_H_ */

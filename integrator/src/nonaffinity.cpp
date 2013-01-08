@@ -36,7 +36,7 @@ double nonAffinity(double *position)
 {
   double xval, yval, currentx, currenty, prefactor, sqrdisp = 0, nonaffinity = 0;
 
-  if (std::abs(strain) < 1E-15)
+  if (std::abs(affdel) < 1E-15)
   {
     return 0.0;
   }
@@ -79,7 +79,7 @@ double nonAffinity_dd(double *position, double *delta, double str_rate)
       currentdy = delta[(row * netSize + col) * 2 + 1] / TIMESTEP;
 
       // dxval = 1 / 2.0 * ((2.0 * row) / (netSize - 1) - 1) * str_rate;
-      dxval = sqrt(3.0) / 4.0 * netSize * str_rate * ((2.0 * row) / (netSize - 1) - 1.0);
+      dxval = affvx(row, str_rate);
 
       sqrdisp += (currentdx - dxval) * (currentdx - dxval) + currentdy * currentdy;
     }

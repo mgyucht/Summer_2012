@@ -32,7 +32,7 @@ const double RESTLEN = 1.0;
 // Viscosity of the fluid.
 const double ETA = 1.0e0;
 // Radius for Stokes' drag.
-const double RADIUS = 0.1;
+const double RADIUS = 1.0;
 // Young's modulus for springs.
 const double YOUNGMOD = 1.0;
 // Time step for the simulation.
@@ -207,7 +207,7 @@ int main (int argc, char *argv[])
     // number that is output by calcStress.
 
     for (int i = 0; i < nTimeSteps; i++) {
-        strain_array[i] = affdel;
+        strain_array[i] = affdel * 2 / (sqrt(3.0) / 2.0 * netSize);;
         // Calculate the net forces in the network.
 
         if (motors != 0)

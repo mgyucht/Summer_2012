@@ -139,16 +139,10 @@ void Network::getNetForces(Motors motorarray) {
                 double temp = spring[i][j][k - 1] * deltaL(tempPos, k)
                     / RESTLEN + motorforce;
 
-                if (dist > RADIUS)
-                {
-                    double xcomp = temp * cosx;
-                    double ycomp = temp * sinx;
-                    forces[i][j][2 * k - 2] = xcomp > 1e-10 ? xcomp : 0;
-                    forces[i][j][2 * k - 1] = ycomp > 1e-10 ? ycomp : 0;
-                } else {
-                    forces[i][j][2 * k - 2] = 0;
-                    forces[i][j][2 * k - 1] = 0;
-                }
+                double xcomp = temp * cosx;
+                double ycomp = temp * sinx;
+                forces[i][j][2 * k - 2] = xcomp > 1e-10 ? xcomp : 0;
+                forces[i][j][2 * k - 1] = ycomp > 1e-10 ? ycomp : 0;
 
             }
 
@@ -201,14 +195,8 @@ void Network::getNetForces() {
                 double temp = spring[i][j][k - 1] * deltaL(tempPos, k)
                     / RESTLEN;
 
-                if (dist > RADIUS)
-                {
-                    forces[i][j][2 * k - 2] = temp * cosx;
-                    forces[i][j][2 * k - 1] = temp * sinx;
-                } else {
-                    forces[i][j][2 * k - 2] = 0;
-                    forces[i][j][2 * k - 1] = 0;
-                }
+                forces[i][j][2 * k - 2] = temp * cosx;
+                forces[i][j][2 * k - 1] = temp * sinx;
             }
 
         }
@@ -272,13 +260,20 @@ double Network::calcStress(double strain_rate) {
 
 }
 
+double affvx(int r, double s_rate)
+{
+    double hmid = (netSize-1.0)/2.0;
+    //return sqrt(3.0) / 2.0 * s_rate * ((r-hmid) / hmid);
+    return sqrt(3.0) / 2.0 * s_rate * (r-hmid);
+}
+
 void Network::moveNodes(double shear_rate, double temp) {
 
     double netx, nety, affvel, gamma;
     double d = KB * temp / (6 * PI * ETA * RADIUS);
     double sigma = sqrt(2 * d * TIMESTEP);
 
-    affvel = sqrt(3.0) / 2.0 * netSize * shear_rate;
+    affvel = affvx(netSize - 1, shear_rate);
     affdel += affvel * TIMESTEP;
 
     for (int i = 0; i <= iMax; i++) {
@@ -316,7 +311,7 @@ void Network::moveNodes(double shear_rate, double temp) {
             netx = fHooke[0] + fHooke[2] + fHooke[4] - fHooke[6] - fHooke[8] - fHooke[10];
             nety = fHooke[1] + fHooke[3] + fHooke[5] - fHooke[7] - fHooke[9] - fHooke[11];
 
-            affvel = sqrt(3.0) / 4.0 * netSize * shear_rate * ((2.0 * i) / (netSize - 1) - 1.0);
+            affvel = affvx(i, shear_rate);
             // vel_fluid = sqrt(3.0) / 4.0 * netSize * shear_rate * (2 * ((double) i - netSize) / (netSize + 1) + 1);
 
             gamma = 4 * PI * ETA * RADIUS;
@@ -357,7 +352,7 @@ double Network::xshift(const int &k) {
     double xshift = 0.0;
     double netwidth = netSize;
     double d = affdel; // delta for the entire network
-    double netshift = netSize / 2.0 + netSize / (netSize - 1.0) * d;
+    double netshift = netSize / 2.0 + (2.0 + 2.0 / (netSize - 1.0)) * d;
 
     switch (k) {
 
