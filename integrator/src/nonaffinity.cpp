@@ -24,7 +24,7 @@
 
 double affxpos(int r, int c)
 {
-    return c + r / 2.0 + affdel / 2.0 * ((2.0 * r) / (netSize - 1.0) - 1.0);
+    return c + r / 2.0 + affdel * ((2.0 * r) / (netSize - 1.0) - 1.0);
 }
 
 double affypos(int r)
